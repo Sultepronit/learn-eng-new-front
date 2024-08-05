@@ -6,6 +6,10 @@ h2 {
   color: green;
 }
 
+.status-bar {
+  height: 3px;
+}
+
 .clear {
   background-color: green;
 }
@@ -16,4 +20,16 @@ h2 {
 
 .failed {
   background-color: red;
+}
+
+.error-message {
+  position: absolute;
+  width: 75%;
+  margin-inline: 10%;
+  /* display: flex;
+  justify-content: space-between; */
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  padding: 0.1em 0.5em;
 }

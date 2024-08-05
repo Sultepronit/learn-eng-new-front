@@ -1,44 +1,31 @@
 import { useState, useEffect } from "react";
+import useFetch from "../../hooks/useFetch.js";
+import StatusBar from "../../components/StatusBar.jsx";
+import fetchStatus from "../../services/fetchStatus.js";
 
 export default function DatabaseEdit({ setFetchStatus }) {
     const [db, setDb] = useState([]);
-
-    useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        async function getTheData() {
-            setFetchStatus('loading');
-            const response = await fetch(apiUrl + '/words');
-            const data = await response.json();
-            console.log(data);
-            setFetchStatus('clear');
-            return data;
-            // setDb(data);
-        }
-
-        getTheData().then(data => {setDb(data)});
-        // const response = await fetch(apiUrl + '/words');
-        
-        return () => {
-            console.log('cleanup!');
-        };
-
-    }, []);
-
-    // console.log("I'm here!");
+    const [counter, setCounter] = useState(0);
 
     // setTimeout(() => {
     //     setCounter(counter+1);
-    // }, 2 * 1000);
+    // }, 2000);
+    // console.log("I'm repeating!");
 
-    let index = 1;
+    const { data, status: fetchStatus, error: fetchError } = useFetch('/words');
+
     return (
         <section>
+            <StatusBar
+                fetchStatus={fetchStatus}
+                error={fetchError?.message}
+            />
             <h1>Here will be the table!</h1>
+            <p>{counter}</p>
             <ol>
-                {db.map(card => (
-                    // <li key={index++}>{card.main.id} {card.main.word}</li>
-                    <li key={index}>
-                        {index++}
+                {data?.length && data?.map(card => (
+                    <li key={card.main.id}>
+                        {card.main.id} 
                         {card.main.word} 
                         {card.main.transcription} 
                         {card.main.translation}
