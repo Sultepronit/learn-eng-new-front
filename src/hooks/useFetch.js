@@ -16,10 +16,25 @@ export default function useFetch(path, method, input) {
         
             try {
                 setStatus('loading');
+                
+                const local = JSON.parse(localStorage.getItem('db')); // for dev purpuses
+                if(local?.length) {
+                    setData(local);
+                    setStatus('');
+                    console.log('local!');
+                    return;
+                }
+
                 const response = await fetch(apiUrl + path, options);
                 const data = await response.json();
+
+                if(data?.length) { // for dev purpuses
+                    localStorage.setItem('db', JSON.stringify(data)); 
+                }
+
                 setData(data);
                 setStatus('');
+                console.log('from server!');
             } catch (error) {
                 setError(error);
                 setStatus('failed');

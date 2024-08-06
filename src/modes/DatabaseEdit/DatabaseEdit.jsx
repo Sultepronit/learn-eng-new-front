@@ -1,12 +1,14 @@
+import './DatabaseEdit.css';
 import { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch.js";
 import StatusBar from "../../components/StatusBar.jsx";
-import fetchStatus from "../../services/fetchStatus.js";
+import Table from "./components/Table.jsx";
+// import fetchStatus from "../../services/fetchStatus.js";
 
-export default function DatabaseEdit({ setFetchStatus }) {
+export default function DatabaseEdit() {
     const [db, setDb] = useState([]);
-    const [counter, setCounter] = useState(0);
 
+    // const [counter, setCounter] = useState(0);
     // setTimeout(() => {
     //     setCounter(counter+1);
     // }, 2000);
@@ -20,9 +22,10 @@ export default function DatabaseEdit({ setFetchStatus }) {
                 fetchStatus={fetchStatus}
                 error={fetchError?.message}
             />
-            <h1>Here will be the table!</h1>
-            <p>{counter}</p>
-            <ol>
+            <Table data={data} />
+            {/* <h1>Here will be the table!</h1> */}
+            {/* <p>{counter}</p> */}
+            {/* <ol>
                 {data?.length && data?.map(card => (
                     <li key={card.main.id}>
                         {card.main.id} 
@@ -31,7 +34,7 @@ export default function DatabaseEdit({ setFetchStatus }) {
                         {card.main.translation}
                     </li>
                 ))}
-            </ol>
+            </ol> */}
         </section>
     );
 }
