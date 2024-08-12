@@ -3,7 +3,7 @@ import TableRow from "./TableRow";
 
 export default function Table({ data }) {
     const [selectedNumer, setSelectedNumber] = useState(0);
-    console.log(data);
+    // console.log(data);
 
     return (
         <section className="table">

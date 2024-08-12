@@ -11,7 +11,8 @@ h2 {
 }
 
 .loading {
-  background-color: green;
+  /* background-color: green; */
+  background-color: orange;
 }
 
 .stalled {

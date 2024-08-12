@@ -26,7 +26,6 @@ async function fetchWithFeatures(path, method, inputData, refetch = true) {
         const response = await fetch(apiUrl + path, options);
         return await response.json();
     } catch (error) {
-        // return await fetchWithFeatures(path, method, inputData);
         if(refetch) {
             return await retry(fetchWithFeatures, path, method, inputData, refetch);
         } else {
@@ -37,10 +36,6 @@ async function fetchWithFeatures(path, method, inputData, refetch = true) {
 
 export const fetchDb = createAsyncThunk('db/fetchDb', async () => {
     return await fetchWithFeatures('/words');
-});
-
-export const testConnection = createAsyncThunk('api/testConnection', async () => {
-    return await fetchWithFeatures('/conn', 'GET', null, false);
 });
 
 const apiSlice = createSlice({
