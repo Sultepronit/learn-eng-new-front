@@ -10,12 +10,12 @@ h2 {
   height: 3px;
 }
 
-.clear {
+.loading {
   background-color: green;
 }
 
-.loading {
-  background-color: yellow;
+.stalled {
+  background-color: orange;
 }
 
 .failed {

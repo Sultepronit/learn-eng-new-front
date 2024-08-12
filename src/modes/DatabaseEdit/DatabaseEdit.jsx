@@ -3,10 +3,13 @@ import { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch.js";
 import StatusBar from "../../components/StatusBar.jsx";
 import Table from "./components/Table.jsx";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDb, selectDb } from '../../features/api/apiSlice.js';
 // import fetchStatus from "../../services/fetchStatus.js";
 
 export default function DatabaseEdit() {
-    const [db, setDb] = useState([]);
+    const dispatch = useDispatch();
+    // const [db, setDb] = useState([]);
 
     // const [counter, setCounter] = useState(0);
     // setTimeout(() => {
@@ -14,27 +17,19 @@ export default function DatabaseEdit() {
     // }, 2000);
     // console.log("I'm repeating!");
 
-    const { data, status: fetchStatus, error: fetchError } = useFetch('/words');
+    // const { data, status: fetchStatus, error: fetchError } = useFetch('/words');
+
+    const db = useSelector(selectDb);
+    useEffect(() => {
+        dispatch(fetchDb());
+    }, [dispatch]);
 
     return (
         <section>
-            <StatusBar
-                fetchStatus={fetchStatus}
-                error={fetchError?.message}
-            />
-            <Table data={data} />
-            {/* <h1>Here will be the table!</h1> */}
-            {/* <p>{counter}</p> */}
-            {/* <ol>
-                {data?.length && data?.map(card => (
-                    <li key={card.main.id}>
-                        {card.main.id} 
-                        {card.main.word} 
-                        {card.main.transcription} 
-                        {card.main.translation}
-                    </li>
-                ))}
-            </ol> */}
+            <button onClick={() => dispatch(fetchDb())}>
+                refresh
+            </button>
+            <Table data={db} />
         </section>
     );
 }
