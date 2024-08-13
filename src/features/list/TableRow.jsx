@@ -6,7 +6,7 @@ export default function TableRow({ card }) {
     const dispatch = useDispatch();
 
     function select(card) {
-        console.log(card.main.number);
+        console.log(card.number);
         // console.log(card);
         dispatch(selectCard(card));
     }
@@ -14,7 +14,7 @@ export default function TableRow({ card }) {
     const selectedCard = useSelector(getSelectedCard);
 
     const classNames = useMemo(() => {
-        return 'table-row' + (selectedCard.main?.number === card.main.number ? ' selected' : '');
+        return 'table-row' + (selectedCard?.number === card.number ? ' selected' : '');
     }, [selectedCard, card]);
 
     const columns = {
@@ -29,7 +29,7 @@ export default function TableRow({ card }) {
             onClick={() => select(card)}
         >
             {/* <p className="cell">{card.main.id}</p> */}
-            <p className="cell">{card.main.number}</p>
+            <p className="cell">{card.number}</p>
 
             <p className="cell tap-stats">{card.tapStats.repeatStatus}</p>
             <p className="cell">{card.tapStats.forward.progress}</p>
