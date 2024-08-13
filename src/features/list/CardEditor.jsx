@@ -1,10 +1,15 @@
-import { useSelector } from "react-redux";
-import { getEditedCard } from "./listSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getSelectedCard, selectCardByNumber } from "./listSlice";
 
 export default function CardEditor() {
-    const card = useSelector(getEditedCard);
+    const dispatch = useDispatch();
+    const card = useSelector(getSelectedCard);
     // const card = useSelector(state => state.list.editedCard);
     // console.log(card);
+
+    function select(number) {
+        dispatch(selectCardByNumber(number));
+    }
 
     return (
         <section>
@@ -13,13 +18,12 @@ export default function CardEditor() {
                 type="number"
                 name="card-number"
                 value={card.main?.number}
-                defaultValue="1"
-                onChange={(e) => console.log(e.target.value)}
+                onChange={(e) => select(e.target.value)}
             />
             <input
                 type="text"
                 name="word"
-                value={card.main?.word || ''}
+                value={card.main?.word}
             />
         </section>
     );

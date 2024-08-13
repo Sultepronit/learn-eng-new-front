@@ -6,7 +6,7 @@ export default function Table({ data }) {
         <section className="table">
             {data?.length && data.map(card => (
                 <TableRow
-                    key={card.main.id}
+                    key={card.id}
                     card={card}
                 />
             ))}

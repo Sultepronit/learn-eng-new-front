@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getEditedCard, selectCard } from "./listSlice";
+import { getSelectedCard, selectCard } from "./listSlice";
 
 export default function TableRow({ card }) {
     const dispatch = useDispatch();
@@ -11,11 +11,11 @@ export default function TableRow({ card }) {
         dispatch(selectCard(card));
     }
 
-    const editedCard = useSelector(getEditedCard);
+    const selectedCard = useSelector(getSelectedCard);
 
     const classNames = useMemo(() => {
-        return 'table-row' + (editedCard.main?.number === card.main.number ? ' selected' : '');
-    }, [editedCard, card]);
+        return 'table-row' + (selectedCard.main?.number === card.main.number ? ' selected' : '');
+    }, [selectedCard, card]);
 
     const columns = {
         gridTemplateColumns:
