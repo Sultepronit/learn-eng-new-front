@@ -2,14 +2,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 
 const initialState = {
-    db: [],
+    // db: [],
     status: 'idle',
     error: ''
 };
 
-export const fetchDb = createAsyncThunk('db/fetchDb', async () => {
-    return await fetchWithFeatures('/words');
-});
+// export const fetchDb = createAsyncThunk('db/fetchDb', async () => {
+//     return await fetchWithFeatures('/words');
+// });
 
 const apiSlice = createSlice({
     name: 'api',
@@ -17,10 +17,11 @@ const apiSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchDb.fulfilled, (state, action) => {
-                state.db = action.payload;
-            })
+            // .addCase(fetchDb.fulfilled, (state, action) => {
+            //     state.db = action.payload;
+            // })
             .addMatcher((action) => action.meta?.requestStatus, (state, action) => {
+                console.log(action);
                 const statusToStatus = {
                     pending: 'loading',
                     fulfilled: 'idle',
@@ -31,7 +32,7 @@ const apiSlice = createSlice({
     }
 });
 
-export const selectDb = (state) => state.api.db;
-export const getStatus = (state) => state.api.status;
+// export const selectDb = (state) => state.api.db;
+// export const getStatus = (state) => state.api.status;
 
 export default apiSlice.reducer;

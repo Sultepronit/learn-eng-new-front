@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { getStatus } from "../api/apiSlice";
+// import { getStatus } from "../api/apiSlice";
+import { getStatus } from "./statusSlice";
 export default function StatusBar() {
     const status = useSelector(getStatus);
     const error = '';
@@ -9,7 +10,6 @@ export default function StatusBar() {
     return (
         <>
             <p className={`status-bar ${status}`}></p>
-            {/* <p>{timePassed}</p> */}
             {error && showMessage ?
                 (<div className="error-message">
                     <p>{error}</p>
