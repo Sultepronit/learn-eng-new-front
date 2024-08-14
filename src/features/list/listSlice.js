@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
+import logProxy from "../../dev-helpers/logProxy";
 
 const emptyCard = {
     number: 0,
@@ -12,7 +13,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
     return await fetchWithFeatures('/words');
 });
 
-export const updateCard = createAsyncThunk('data/updateCard', async ({ id, number, changes }) => {
+export const updateCard = createAsyncThunk('data/updateCard', async ({ id, changes }) => {
     console.log('Here we go!');
     return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
 });
@@ -43,18 +44,12 @@ const listSlice = createSlice({
                 state.data = action.payload;
             })
             .addCase(updateCard.pending, (state, action) => {
-                console.log(action);
-                console.log(action.meta.arg);
-                console.log(action.meta.arg.number);
-                console.log(action.meta.arg.changes);
-                console.log('Here we go?')
-                const card = state.data[action.meta.arg.number - 1];
-                console.log('Here we go???')
-                console.log(card.number);
-                // console.log(card);
-                // Object.assign(card.main, action.meta.arg.changes);
-                card.main.word = action.meta.arg.changes;
-                console.log(card.main.word);
+                const card = state.data[action.meta.arg.index];
+                const { block, fields } = action.meta.arg.changes;
+                // logProxy(card[block]);
+                for(const title in fields) {
+                    card[block][title] = fields[title];
+                }
             })
     }
 });
