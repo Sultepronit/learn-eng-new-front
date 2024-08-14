@@ -9,7 +9,7 @@ const statusSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addMatcher((action) => action.meta?.requestStatus, (state, action) => {
-            console.log(action);
+            // console.log(action);
             const statusToStatus = {
                 pending: 'loading',
                 fulfilled: 'idle',

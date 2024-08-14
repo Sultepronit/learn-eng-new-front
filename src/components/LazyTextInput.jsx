@@ -17,7 +17,9 @@ export default function LazyTextInput({ name, value, onChange }) {
     function handleSubmit(changes) {
         // console.log(changes);
         if(changes === value) return;
-        console.log("here we go!");
+        // console.log(changes, value);
+        // console.log("here we go!");
+        console.log(value);
         console.log(changes);
         onChange({ name, value: changes });
     }

@@ -12,7 +12,7 @@ export default function CardEditor() {
     }
 
     function update({ name, value }) {
-        console.log(name, value);
+        // console.log(name, value);
         const [block, field] = name.split('.');
         const data = {
             id: card.id,
