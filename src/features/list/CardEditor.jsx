@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCard, selectCardByNumber, updateCard } from "./listSlice";
+import { getSelectedCard, selectCardByIndex, updateCard } from "./listSlice";
 import { useEffect, useRef, useState } from "react";
 import LazyTextInput from "../../components/LazyTextInput";
 
@@ -8,7 +8,7 @@ export default function CardEditor() {
     const card = useSelector(getSelectedCard);
 
     function select(number) {
-        dispatch(selectCardByNumber(number));
+        dispatch(selectCardByIndex(number));
     }
 
     function update({ name, value }) {
@@ -16,7 +16,7 @@ export default function CardEditor() {
         const [block, field] = name.split('.');
         const data = {
             id: card.id,
-            index: card.number - 1,
+            index: card.index,
             changes: {
                 block,
                 fields: {
@@ -30,22 +30,32 @@ export default function CardEditor() {
 
     return (
         <section>
-            <h1>Edit!</h1>
+            <LazyTextInput
+                name="article.word"
+                value={card.article?.word}
+                onChange={update}
+            />
+            <LazyTextInput
+                name="article.transcription"
+                value={card.article?.transcription}
+                onChange={update}
+            />
+            <LazyTextInput
+                name="article.translation"
+                value={card.article?.translation}
+                onChange={update}
+            />
+            <LazyTextInput
+                name="article.example"
+                value={card.article?.example}
+                onChange={update}
+            />
+            <br />
             <input
                 type="number"
                 name="card-number"
-                value={card.number}
-                onChange={(e) => select(e.target.value)}
-            />
-            <LazyTextInput
-                name="main.word"
-                value={card.main.word}
-                onChange={update}
-            />
-            <LazyTextInput
-                name="main.translation"
-                value={card.main.translation}
-                onChange={update}
+                value={card.index + 1}
+                onChange={(e) => select(e.target.value - 1)}
             />
         </section>
     );

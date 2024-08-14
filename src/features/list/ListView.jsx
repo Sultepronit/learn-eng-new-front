@@ -20,7 +20,7 @@ export default function ListView() {
     return (
         <section>
             <CardEditor />
-            <button onClick={() => dispatch(fetchDb())}>
+            <button onClick={() => dispatch(fetchData())}>
                 refresh
             </button>
             <Table data={data} />

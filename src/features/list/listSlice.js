@@ -3,10 +3,7 @@ import fetchWithFeatures from "../../services/fetchWithFeatures";
 import logProxy from "../../dev-helpers/logProxy";
 
 const emptyCard = {
-    number: 0,
-    main: {
-        word: ''
-    }
+    // index: 0,
 }
 
 export const fetchData = createAsyncThunk('data/fetchData', async () => {
@@ -30,8 +27,8 @@ const listSlice = createSlice({
             // console.log(action);
             console.log(state.selectedCard);
         },
-        selectCardByNumber: (state, action) => {
-            const inputIndex = Math.round(action.payload - 1); // card number is data array index + 1
+        selectCardByIndex: (state, action) => {
+            const inputIndex = Math.round(action.payload);
             const lastIndex = state.data.length - 1;
             const index = inputIndex < 0 ? 0 : inputIndex > lastIndex ? lastIndex : inputIndex;
 
@@ -57,6 +54,6 @@ const listSlice = createSlice({
 export const selectData = (state) => state.list.data;
 export const getSelectedCard = (state) => state.list.selectedCard;
 
-export const { selectCard, selectCardByNumber } = listSlice.actions;
+export const { selectCard, selectCardByIndex } = listSlice.actions;
 
 export default listSlice.reducer;
