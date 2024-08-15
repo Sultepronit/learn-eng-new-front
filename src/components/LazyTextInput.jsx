@@ -20,8 +20,8 @@ export default function LazyTextInput({ name, value, onChange }) {
 
     function handleSubmit(newValue) {
         if(newValue === lastValue) return;
-        console.log(lastValue);
-        console.log(newValue);
+        // console.log(lastValue);
+        // console.log(newValue);
 
         setLastValue(newValue);
         onChange({ name, value: newValue });

@@ -22,9 +22,8 @@ const listSlice = createSlice({
         selectedCard: emptyCard
     },
     reducers: {
-        selectCard: (state, action) => { // rename to setSelectedCard!
-            state.selectedCard = action.payload
-            // console.log(action);
+        selectCard: (state, action) => {
+            state.selectedCard = action.payload;
             console.log(state.selectedCard);
         },
         selectCardByIndex: (state, action) => {
@@ -42,10 +41,7 @@ const listSlice = createSlice({
             })
             .addCase(updateCard.pending, (state, action) => {
                 const { index, changes } = action.meta.arg;
-                // console.log(index, changes);
-                // const card = state.data[action.meta.arg.index];
                 const card = state.data[index];
-                // const { block, fields } = action.meta.arg.changes;
                 const { block, fields } = changes;
                 // logProxy(card[block]);
                 for(const title in fields) {
