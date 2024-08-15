@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Text input which value is set at creation; it can be freely edited afterwards.
@@ -6,26 +6,28 @@ import { useEffect, useRef } from "react";
  * if so, the callback "onChange" is invoked with { name, value } object as argument.
  */
 export default function LazyTextInput({ name, value, onChange }) {
-    const ref = useRef(null);
-    // console.log(value);
+    const inputRef = useRef(null);
+    
+    const [lastValue, setLastValue] = useState(value);
 
     useEffect(() => {
-        ref.current.value = value;
-        // console.log(value);
+        setLastValue(value);
     }, [value]);
 
-    function handleSubmit(changes) {
-        // console.log(changes);
-        if(changes === value) return;
-        // console.log(changes, value);
-        // console.log("here we go!");
-        console.log(value);
-        console.log(changes);
-        onChange({ name, value: changes });
+    useEffect(() => {
+        inputRef.current.value = lastValue;
+    }, [lastValue]);
+
+    function handleSubmit(newValue) {
+        if(newValue === lastValue) return;
+        console.log(lastValue);
+        console.log(newValue);
+
+        setLastValue(newValue);
+        onChange({ name, value: newValue });
     }
 
     function handleKeyUp(event) {
-        // console.log(event.key);
         if(event.key !== 'Enter') return;
         handleSubmit(event.target.value);
     }
@@ -34,7 +36,7 @@ export default function LazyTextInput({ name, value, onChange }) {
         <input
             type="text"
             name={name}
-            ref={ref}
+            ref={inputRef}
             onKeyUp={handleKeyUp}
             onBlur={(e) => handleSubmit(e.target.value)}
         />
