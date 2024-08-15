@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 export default function LazyTextInput({ name, value, onChange }) {
     const inputRef = useRef(null);
     
-    const [lastValue, setLastValue] = useState(value);
+    const [lastValue, setLastValue] = useState('');
 
     useEffect(() => {
         setLastValue(value);
