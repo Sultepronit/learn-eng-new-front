@@ -1,4 +1,8 @@
 .table {
+    display: flex;
+}
+
+.rows {
     border-top: 1px solid;
     border-left: 1px solid;
 }

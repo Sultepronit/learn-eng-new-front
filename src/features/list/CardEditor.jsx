@@ -51,12 +51,12 @@ export default function CardEditor() {
                 onChange={update}
             />
             <br />
-            <input
+            {/* <input
                 type="number"
                 name="card-number"
                 value={card.index + 1}
                 onChange={(e) => select(e.target.value - 1)}
-            />
+            /> */}
         </section>
     );
 }

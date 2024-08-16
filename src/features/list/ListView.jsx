@@ -1,4 +1,5 @@
 import './listStyle.css';
+import './scrollerStyle.css';
 import { useState, useEffect } from "react";
 import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +24,8 @@ export default function ListView() {
             <button onClick={() => dispatch(fetchData())}>
                 refresh
             </button>
-            <Table data={data} />
+            {/* <Table data={data.slice(0, 22)} /> */}
+            {data?.length && (<Table data={data} />)}
         </section>
     );
 }

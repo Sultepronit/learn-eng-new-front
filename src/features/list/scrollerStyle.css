@@ -1,0 +1,20 @@
+.scroller {
+    appearance: none;
+    writing-mode: vertical-rl;
+    margin: 0 3px;
+}
+.scroller:focus {
+outline: none;
+}
+.scroller::-webkit-slider-runnable-track {
+    cursor: pointer;
+    background: #dadada;
+    border-radius: 25px;
+}
+.scroller::-webkit-slider-thumb {
+    appearance: none;
+    /* height: 24px; */
+    width: 10px;
+    border-radius: 6px;
+    background: #747373;
+}
