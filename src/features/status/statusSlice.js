@@ -16,7 +16,10 @@ const statusSlice = createSlice({
                 rejected: 'failed'
             };
             state.status = statusToStatus[action.meta.requestStatus];
-        });
+        })
+        // .addMatcher(action => true, (state, action) => {
+        //     console.log(action);
+        // });
     }
 });
 

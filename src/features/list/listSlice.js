@@ -13,6 +13,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
 export const updateCard = createAsyncThunk('data/updateCard', async ({ id, changes }) => {
     console.log('Here we go!');
     return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
+    // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes));
 });
 
 const listSlice = createSlice({
