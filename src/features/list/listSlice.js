@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import logProxy from "../../dev-helpers/logProxy";
+import updateWithQueue from "../../services/updateQueue";
 
 const emptyCard = {
     // index: 0,
@@ -11,9 +12,10 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
 });
 
 export const updateCard = createAsyncThunk('data/updateCard', async ({ id, changes }) => {
-    console.log('Here we go!');
-    return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
+    console.log('Saving...', JSON.stringify(changes));
+    // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
     // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes));
+    return await updateWithQueue('/words', id, changes);
 });
 
 const listSlice = createSlice({
