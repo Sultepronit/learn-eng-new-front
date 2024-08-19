@@ -5,28 +5,20 @@ import LazyTextInput from "../../components/LazyTextInput";
 
 export default function CardEditor() {
     const dispatch = useDispatch();
-    // const card = useSelector(getSelectedCard);
     const cardId = useSelector(getSelectedCardId);
     const card = useSelector(state => selectCardById(state, cardId));
-    const card2 = useSelector(state => selectCardById(state, cardId));
-    console.log(cardId);
+    // console.log(cardId);
     console.log(card);
 
-    function select(number) {
-        dispatch(selectCardByIndex(number));
-    }
+    // function select(number) {
+    //     dispatch(selectCardByIndex(number));
+    // }
 
     function update({ name, value }) {
-        // console.log(name, value);
-        // const [block, field] = name.split('.');
         const data = {
             id: card.id,
             dbId: card.dbId,
             changes: {
-                // block,
-                // fields: {
-                //     [field]: value
-                // }
                 [name]: value
             }
         };
@@ -36,37 +28,37 @@ export default function CardEditor() {
 
     return (
         <section>
-            <LazyTextInput
-                name="word"
-                value={card.word}
-                placeholder="word"
-                onChange={update}
-            />
-            <LazyTextInput
-                name="transcription"
-                value={card2?.transcription}
-                placeholder="transcription"
-                onChange={update}
-            />
+            <div className="word-filed">
+                <LazyTextInput
+                    name="word"
+                    value={card.word}
+                    placeholder="word"
+                    className="edit-filed"
+                    onChange={update}
+                />
+                <LazyTextInput
+                    name="transcription"
+                    value={card.transcription}
+                    placeholder="transcription"
+                    className="edit-filed"
+                    onChange={update}
+                    
+                />
+            </div>
             <LazyTextInput
                 name="translation"
                 value={card.translation}
                 placeholder="translation"
+                className="edit-filed"
                 onChange={update}
             />
             <LazyTextInput
                 name="example"
-                value={card2?.example}
+                value={card.example}
                 placeholder="example"
+                className="edit-filed"
                 onChange={update}
             />
-            <br />
-            {/* <input
-                type="number"
-                name="card-number"
-                value={card.index + 1}
-                onChange={(e) => select(e.target.value - 1)}
-            /> */}
         </section>
     );
 }

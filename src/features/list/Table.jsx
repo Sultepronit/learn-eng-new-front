@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import TableRow from "./TableRow";
 
 export default function Table({ cardIds }) {
-    const rowNumber = 25;
+    const rowNumber = 22;
 
     const [lastRow, setLastRow] = useState(0);
 

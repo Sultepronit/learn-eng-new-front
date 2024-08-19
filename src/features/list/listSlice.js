@@ -41,7 +41,10 @@ const listSlice = createSlice({
         //     state.selectedCard = state.data[index];
         // }
         setSelectedCardId: (state, action) => {
-            state.selectedCardId = action.payload;
+            const inputId = Math.round(action.payload);
+            const lastId = state.ids.length;
+            const id = (inputId < 1) ? 1 : (inputId > lastId) ? lastId : inputId;
+            state.selectedCardId = id;
         }
     },
     extraReducers: (builder) => {

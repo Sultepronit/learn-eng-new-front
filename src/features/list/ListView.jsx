@@ -5,6 +5,7 @@ import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import CardEditor from './CardEditor.jsx';
 import { fetchData, selectCardIds } from './listSlice.js';
+import SearchBar from './SearchBar.jsx';
 
 export default function ListView() {
     const dispatch = useDispatch();
@@ -21,6 +22,7 @@ export default function ListView() {
             <button onClick={() => dispatch(fetchData())}>
                 refresh
             </button>
+            <SearchBar />
             <Table cardIds={cardIds} />
         </section>
     );

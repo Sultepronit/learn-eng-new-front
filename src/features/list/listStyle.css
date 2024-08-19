@@ -1,3 +1,11 @@
+.edit-filed {
+    width: 100%;
+}
+
+.word-filed {
+    display: flex;
+}
+
 .table {
     display: flex;
 }

@@ -9,16 +9,6 @@ export default function TableRow({ cardId }) {
 
     const card = useSelector(state => selectCardById(state, cardId));
 
-    // function select(card) {
-    //     dispatch(selectCard(card));
-    // }
-
-    // const selectedCard = useSelector(getSelectedCard);
-
-    // const classNames = useMemo(() => {
-    //     return 'table-row' + (selectedCard?.id === card.id ? ' selected' : '');
-    // }, [selectedCard, card]);
-
     const selectedCardId = useSelector(getSelectedCardId);
     const classNames = useMemo(() => {
         return 'table-row' + (selectedCardId === card.id ? ' selected' : '');
