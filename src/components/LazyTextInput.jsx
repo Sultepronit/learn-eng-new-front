@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
  * At blur or Enter key press it checks if new value has been inputted,
  * if so, the callback "onChange" is invoked with { name, value } object as argument.
  */
-export default function LazyTextInput({ name, value, placeholder, onChange }) {
+export default function LazyTextInput({ name, value, placeholder, className, onChange }) {
     const inputRef = useRef(null);
     
     const [lastValue, setLastValue] = useState('');
@@ -37,6 +37,7 @@ export default function LazyTextInput({ name, value, placeholder, onChange }) {
         <input
             type="text"
             name={name}
+            className={className}
             placeholder={placeholder}
             ref={inputRef}
             onKeyUp={handleKeyUp}
