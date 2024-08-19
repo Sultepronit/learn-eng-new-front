@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Text input which value is set at creation; it can be freely edited afterwards.
- * At blur or Enter key press it checks if the value has been changed,
+ * A text input that can be freely edited without redundant rerendering.
+ * The value is set at the value prop changes.
+ * At blur or Enter key press it checks if new value has been inputted,
  * if so, the callback "onChange" is invoked with { name, value } object as argument.
  */
-export default function LazyTextInput({ name, value, onChange }) {
+export default function LazyTextInput({ name, value, placeholder, onChange }) {
     const inputRef = useRef(null);
     
     const [lastValue, setLastValue] = useState('');
@@ -36,6 +37,7 @@ export default function LazyTextInput({ name, value, onChange }) {
         <input
             type="text"
             name={name}
+            placeholder={placeholder}
             ref={inputRef}
             onKeyUp={handleKeyUp}
             onBlur={(e) => handleSubmit(e.target.value)}

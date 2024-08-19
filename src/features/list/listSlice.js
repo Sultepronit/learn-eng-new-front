@@ -48,34 +48,8 @@ const listSlice = createSlice({
             })
             .addCase(updateCard.pending, (state, action) => {
                 console.log(action.meta.arg);
-                // const { index, changes } = action.meta.arg;
-                // const card = state.data[index];
-                // const { block, fields } = changes;
-                // // logProxy(card[block]);
-                // for(const title in fields) {
-                //     card[block][title] = fields[title];
-                // }
                 const { id, changes } = action.meta.arg;
                 cardsAdapter.updateOne(state, { id, changes });
-                // console.log({
-                //     id,
-                //     changes: {
-                //         [changes.block]: changes.fields
-                //     }
-                // });
-                // cardsAdapter.updateOne(state, {
-                //     id,
-                //     changes: {
-                //         [changes.block]: changes.fields
-                //     }
-                // });
-                // cardsAdapter.upsertOne(state, {
-                //     id,
-                //     [changes.block]: changes.fields
-                //     // changes: {
-                //     //     [changes.block]: changes.fields
-                //     // }
-                // });
             })
     }
 });
