@@ -13,15 +13,16 @@ export default function CardEditor() {
 
     function update({ name, value }) {
         // console.log(name, value);
-        const [block, field] = name.split('.');
+        // const [block, field] = name.split('.');
         const data = {
             id: card.id,
-            index: card.index,
+            dbId: card.dbId,
             changes: {
-                block,
-                fields: {
-                    [field]: value
-                }
+                // block,
+                // fields: {
+                //     [field]: value
+                // }
+                [name]: value
             }
         };
         console.log(data);
@@ -31,23 +32,23 @@ export default function CardEditor() {
     return (
         <section>
             <LazyTextInput
-                name="article.word"
-                value={card.article?.word}
+                name="word"
+                value={card.word}
                 onChange={update}
             />
             <LazyTextInput
-                name="article.transcription"
-                value={card.article?.transcription}
+                name="transcription"
+                value={card.transcription}
                 onChange={update}
             />
             <LazyTextInput
-                name="article.translation"
-                value={card.article?.translation}
+                name="translation"
+                value={card.translation}
                 onChange={update}
             />
             <LazyTextInput
-                name="article.example"
-                value={card.article?.example}
+                name="example"
+                value={card.example}
                 onChange={update}
             />
             <br />

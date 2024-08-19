@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCard, selectCard } from "./listSlice";
+import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
 
-export default function TableRow({ card }) {
+// export default function TableRow({ card }) {
+export default function TableRow({ cardId }) {
+    const card = useSelector(state => selectCardById(state, cardId));
     const dispatch = useDispatch();
 
     function select(card) {
@@ -14,7 +16,7 @@ export default function TableRow({ card }) {
     const selectedCard = useSelector(getSelectedCard);
 
     const classNames = useMemo(() => {
-        return 'table-row' + (selectedCard?.index === card.index ? ' selected' : '');
+        return 'table-row' + (selectedCard?.id === card.id ? ' selected' : '');
     }, [selectedCard, card]);
 
     const columns = {
@@ -29,7 +31,7 @@ export default function TableRow({ card }) {
             onClick={() => select(card)}
         >
             {/* <p className="cell">{card.main.id}</p> */}
-            <p className="cell">{card.index + 1}</p>
+            <p className="cell">{card.id}</p>
 
             <p className="cell tap-stats">{card.tapStats.repeatStatus}</p>
             <p className="cell">{card.tapStats.forward.progress}</p>
@@ -51,10 +53,10 @@ export default function TableRow({ card }) {
                 {card.writeStats.backward.record}
             </p>
 
-            <p className="cell eng">{card.article.word}</p>
-            <p className="cell">{card.article.transcription}</p>
-            <p className="cell">{card.article.translation}</p>
-            <p className="cell">{card.article.example}</p>
+            <p className="cell eng">{card.word}</p>
+            <p className="cell">{card.transcription}</p>
+            <p className="cell">{card.translation}</p>
+            <p className="cell">{card.example}</p>
         </div>
     );
 }

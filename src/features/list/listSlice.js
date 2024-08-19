@@ -1,29 +1,32 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import logProxy from "../../dev-helpers/logProxy";
 import updateWithQueue from "../../services/updateQueue";
 
-const emptyCard = {
-    // index: 0,
-}
+const cardsAdapter = createEntityAdapter();
+
+const initialState = cardsAdapter.getInitialState({
+    selectedCard: {}
+});
 
 export const fetchData = createAsyncThunk('data/fetchData', async () => {
     return await fetchWithFeatures('/words');
 });
 
-export const updateCard = createAsyncThunk('data/updateCard', async ({ id, changes }) => {
+export const updateCard = createAsyncThunk('data/updateCard', async ({ dbId, changes }) => {
     console.log('Saving...', JSON.stringify(changes));
     // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
     // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes));
-    return await updateWithQueue('/words', id, changes);
+    return await updateWithQueue('/words', dbId, changes);
 });
 
 const listSlice = createSlice({
     name: 'list',
-    initialState: {
-        data: [],
-        selectedCard: emptyCard
-    },
+    // initialState: {
+    //     data: [],
+    //     selectedCard: emptyCard
+    // },
+    initialState,
     reducers: {
         selectCard: (state, action) => {
             state.selectedCard = action.payload;
@@ -40,21 +43,50 @@ const listSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchData.fulfilled, (state, action) => {
-                state.data = action.payload;
+                // state.data = action.payload;
+                cardsAdapter.upsertMany(state, action.payload);
             })
             .addCase(updateCard.pending, (state, action) => {
-                const { index, changes } = action.meta.arg;
-                const card = state.data[index];
-                const { block, fields } = changes;
-                // logProxy(card[block]);
-                for(const title in fields) {
-                    card[block][title] = fields[title];
-                }
+                console.log(action.meta.arg);
+                // const { index, changes } = action.meta.arg;
+                // const card = state.data[index];
+                // const { block, fields } = changes;
+                // // logProxy(card[block]);
+                // for(const title in fields) {
+                //     card[block][title] = fields[title];
+                // }
+                const { id, changes } = action.meta.arg;
+                cardsAdapter.updateOne(state, { id, changes });
+                // console.log({
+                //     id,
+                //     changes: {
+                //         [changes.block]: changes.fields
+                //     }
+                // });
+                // cardsAdapter.updateOne(state, {
+                //     id,
+                //     changes: {
+                //         [changes.block]: changes.fields
+                //     }
+                // });
+                // cardsAdapter.upsertOne(state, {
+                //     id,
+                //     [changes.block]: changes.fields
+                //     // changes: {
+                //     //     [changes.block]: changes.fields
+                //     // }
+                // });
             })
     }
 });
 
-export const selectData = (state) => state.list.data;
+// export const selectData = (state) => state.list.data;
+export const {
+    selectAll: selectData,
+    selectIds: selectCardIds,
+    selectById: selectCardById
+} = cardsAdapter.getSelectors(state => state.list);
+
 export const getSelectedCard = (state) => state.list.selectedCard;
 
 export const { selectCard, selectCardByIndex } = listSlice.actions;
