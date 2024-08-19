@@ -1,23 +1,28 @@
 import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
+// import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
+import { getSelectedCardId, selectCardById, setSelectedCardId } from "./listSlice";
 
 // export default function TableRow({ card }) {
 export default function TableRow({ cardId }) {
-    const card = useSelector(state => selectCardById(state, cardId));
     const dispatch = useDispatch();
 
-    function select(card) {
-        // console.log(card.index);
-        // console.log(card);
-        dispatch(selectCard(card));
-    }
+    const card = useSelector(state => selectCardById(state, cardId));
 
-    const selectedCard = useSelector(getSelectedCard);
+    // function select(card) {
+    //     dispatch(selectCard(card));
+    // }
 
+    // const selectedCard = useSelector(getSelectedCard);
+
+    // const classNames = useMemo(() => {
+    //     return 'table-row' + (selectedCard?.id === card.id ? ' selected' : '');
+    // }, [selectedCard, card]);
+
+    const selectedCardId = useSelector(getSelectedCardId);
     const classNames = useMemo(() => {
-        return 'table-row' + (selectedCard?.id === card.id ? ' selected' : '');
-    }, [selectedCard, card]);
+        return 'table-row' + (selectedCardId === card.id ? ' selected' : '');
+    }, [selectedCardId, card]);
 
     const columns = {
         gridTemplateColumns:
@@ -28,7 +33,8 @@ export default function TableRow({ cardId }) {
         <div
             className={classNames}
             style={columns}
-            onClick={() => select(card)}
+            // onClick={() => select(card.id)}
+            onClick={() => dispatch(setSelectedCardId(card.id))}
         >
             {/* <p className="cell">{card.main.id}</p> */}
             <p className="cell">{card.id}</p>

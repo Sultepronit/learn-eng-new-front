@@ -6,7 +6,8 @@ import updateWithQueue from "../../services/updateQueue";
 const cardsAdapter = createEntityAdapter();
 
 const initialState = cardsAdapter.getInitialState({
-    selectedCard: {}
+    // selectedCard: {}
+    selectedCardId: 1
 });
 
 export const fetchData = createAsyncThunk('data/fetchData', async () => {
@@ -28,16 +29,19 @@ const listSlice = createSlice({
     // },
     initialState,
     reducers: {
-        selectCard: (state, action) => {
-            state.selectedCard = action.payload;
-            console.log(state.selectedCard);
-        },
-        selectCardByIndex: (state, action) => {
-            const inputIndex = Math.round(action.payload);
-            const lastIndex = state.data.length - 1;
-            const index = inputIndex < 0 ? 0 : inputIndex > lastIndex ? lastIndex : inputIndex;
+        // selectCard: (state, action) => {
+        //     state.selectedCard = action.payload;
+        //     console.log(state.selectedCard);
+        // },
+        // selectCardByIndex: (state, action) => {
+        //     const inputIndex = Math.round(action.payload);
+        //     const lastIndex = state.data.length - 1;
+        //     const index = inputIndex < 0 ? 0 : inputIndex > lastIndex ? lastIndex : inputIndex;
 
-            state.selectedCard = state.data[index];
+        //     state.selectedCard = state.data[index];
+        // }
+        setSelectedCardId: (state, action) => {
+            state.selectedCardId = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -56,13 +60,15 @@ const listSlice = createSlice({
 
 // export const selectData = (state) => state.list.data;
 export const {
-    selectAll: selectData,
+    // selectAll: selectData,
     selectIds: selectCardIds,
     selectById: selectCardById
 } = cardsAdapter.getSelectors(state => state.list);
 
-export const getSelectedCard = (state) => state.list.selectedCard;
+// export const getSelectedCard = (state) => state.list.selectedCard;
+export const getSelectedCardId = (state) => state.list.selectedCardId;
 
-export const { selectCard, selectCardByIndex } = listSlice.actions;
+// export const { selectCard, selectCardByIndex } = listSlice.actions;
+export const { setSelectedCardId } = listSlice.actions;
 
 export default listSlice.reducer;

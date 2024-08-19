@@ -1,13 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCard, selectCardById, selectCardByIndex, updateCard } from "./listSlice";
-import { useEffect, useRef, useState } from "react";
+import { getSelectedCardId, selectCardById, updateCard } from "./listSlice";
+// import { useEffect, useRef, useState } from "react";
 import LazyTextInput from "../../components/LazyTextInput";
 
 export default function CardEditor() {
     const dispatch = useDispatch();
-    const card = useSelector(getSelectedCard);
-    const card2 = useSelector(state => selectCardById(state, card.id));
-    console.log(card2)
+    // const card = useSelector(getSelectedCard);
+    const cardId = useSelector(getSelectedCardId);
+    const card = useSelector(state => selectCardById(state, cardId));
+    const card2 = useSelector(state => selectCardById(state, cardId));
+    console.log(cardId);
+    console.log(card);
 
     function select(number) {
         dispatch(selectCardByIndex(number));
@@ -36,11 +39,13 @@ export default function CardEditor() {
             <LazyTextInput
                 name="word"
                 value={card.word}
+                placeholder="word"
                 onChange={update}
             />
             <LazyTextInput
                 name="transcription"
                 value={card2?.transcription}
+                placeholder="transcription"
                 onChange={update}
             />
             <LazyTextInput
