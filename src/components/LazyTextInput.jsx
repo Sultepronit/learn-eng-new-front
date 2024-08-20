@@ -14,6 +14,7 @@ export default function LazyTextInput({ name, value, placeholder, className, onC
     useEffect(() => {
         setLastValue(value);
     }, [value]);
+    console.log(name, value);
 
     useEffect(() => {
         inputRef.current.value = lastValue;

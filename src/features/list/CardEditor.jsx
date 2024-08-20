@@ -27,8 +27,8 @@ export default function CardEditor() {
     }
 
     return (
-        <section>
-            <div className="word-filed">
+        <section className="card-editor">
+            <div className="word-fileds">
                 <LazyTextInput
                     name="word"
                     value={card.word}

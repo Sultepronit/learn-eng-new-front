@@ -1,6 +1,8 @@
 // import { useState } from "react";
 import { useEffect, useMemo, useState } from "react";
 import TableRow from "./TableRow";
+import { useSelector } from "react-redux";
+import { getSelectedCardId } from "./listSlice";
 
 export default function Table({ cardIds }) {
     const rowNumber = 22;
@@ -37,6 +39,8 @@ export default function Table({ cardIds }) {
         return result;
     }, [cardIds, lastRow]);
 
+    const selectedCardId = useSelector(getSelectedCardId);
+
     return (
         <section className="table">
             <div className="rows">
@@ -44,6 +48,7 @@ export default function Table({ cardIds }) {
                 <TableRow
                     key={cardId}
                     cardId={cardId}
+                    isSelected={selectedCardId === cardId}
                 />
             ))}
             </div>

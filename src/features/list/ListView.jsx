@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import CardEditor from './CardEditor.jsx';
-import { fetchData, selectCardIds } from './listSlice.js';
+import { fetchData, selectCardIds, selectPreparedList } from './listSlice.js';
 import SearchBar from './SearchBar.jsx';
 
 export default function ListView() {
     const dispatch = useDispatch();
 
-    const cardIds = useSelector(selectCardIds);
+    // const cardIds = useSelector(selectCardIds);
+    const cardIds = useSelector(selectPreparedList);
 
     useEffect(() => {
         dispatch(fetchData());

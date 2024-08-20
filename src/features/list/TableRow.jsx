@@ -1,18 +1,22 @@
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
 import { getSelectedCardId, selectCardById, setSelectedCardId } from "./listSlice";
 
 // export default function TableRow({ card }) {
-export default function TableRow({ cardId }) {
+// export default function TableRow({ cardId }) {
+const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
+    // console.log(isSelected);
     const dispatch = useDispatch();
 
     const card = useSelector(state => selectCardById(state, cardId));
 
-    const selectedCardId = useSelector(getSelectedCardId);
-    const classNames = useMemo(() => {
-        return 'table-row' + (selectedCardId === card.id ? ' selected' : '');
-    }, [selectedCardId, card]);
+    // const selectedCardId = useSelector(getSelectedCardId);
+    // const classNames = useMemo(() => {
+    //     return 'table-row' + (selectedCardId === card.id ? ' selected' : '');
+    // }, [selectedCardId, card]);
+
+    const classNames = 'table-row' + (isSelected ? ' selected' : '');
 
     const columns = {
         gridTemplateColumns:
@@ -55,4 +59,6 @@ export default function TableRow({ cardId }) {
             <p className="cell">{card.example}</p>
         </div>
     );
-}
+});
+
+export default TableRow;

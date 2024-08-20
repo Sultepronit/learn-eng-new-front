@@ -1,4 +1,4 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import logProxy from "../../dev-helpers/logProxy";
 import updateWithQueue from "../../services/updateQueue";
@@ -6,8 +6,8 @@ import updateWithQueue from "../../services/updateQueue";
 const cardsAdapter = createEntityAdapter();
 
 const initialState = cardsAdapter.getInitialState({
-    // selectedCard: {}
-    selectedCardId: 1
+    selectedCardId: 1,
+    reverse: true
 });
 
 export const fetchData = createAsyncThunk('data/fetchData', async () => {
@@ -29,22 +29,14 @@ const listSlice = createSlice({
     // },
     initialState,
     reducers: {
-        // selectCard: (state, action) => {
-        //     state.selectedCard = action.payload;
-        //     console.log(state.selectedCard);
-        // },
-        // selectCardByIndex: (state, action) => {
-        //     const inputIndex = Math.round(action.payload);
-        //     const lastIndex = state.data.length - 1;
-        //     const index = inputIndex < 0 ? 0 : inputIndex > lastIndex ? lastIndex : inputIndex;
-
-        //     state.selectedCard = state.data[index];
-        // }
         setSelectedCardId: (state, action) => {
             const inputId = Math.round(action.payload);
             const lastId = state.ids.length;
             const id = (inputId < 1) ? 1 : (inputId > lastId) ? lastId : inputId;
             state.selectedCardId = id;
+        },
+        toggleReverse: (state) => {
+            state.reverse = !state.reverse;
         }
     },
     extraReducers: (builder) => {
@@ -61,17 +53,36 @@ const listSlice = createSlice({
     }
 });
 
-// export const selectData = (state) => state.list.data;
 export const {
-    // selectAll: selectData,
+    selectAll: selectAllCards,
     selectIds: selectCardIds,
     selectById: selectCardById
 } = cardsAdapter.getSelectors(state => state.list);
 
-// export const getSelectedCard = (state) => state.list.selectedCard;
 export const getSelectedCardId = (state) => state.list.selectedCardId;
+export const getRerverseValue = (state) => state.list.reverse;
 
-// export const { selectCard, selectCardByIndex } = listSlice.actions;
-export const { setSelectedCardId } = listSlice.actions;
+export const { setSelectedCardId, toggleReverse } = listSlice.actions;
+
+export const selectPreparedList = createSelector(
+    [selectAllCards, (state) => state.list.reverse],
+    (list, reverse) => {
+        const ids = list.map(card => card.id);
+
+        if(reverse) ids.reverse();
+
+        return ids;
+    }
+);
 
 export default listSlice.reducer;
+
+// by the copilot:
+// export const selectSortedAndFilteredIds = createSelector(
+// [
+//     selectAllCards, // All cards from the state
+//     (state) => state.list.sortCriteria, // Sort criteria from the state
+//     (state) => state.list.filterCriteria, // Filter criteria from the state
+//     (state) => state.list.reverse, // Reverse flag from the state
+// ],
+// (cards, sortCriteria, filterCriteria, reverse) => {
