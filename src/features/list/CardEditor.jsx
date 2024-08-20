@@ -1,9 +1,11 @@
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { getSelectedCardId, selectCardById, updateCard } from "./listSlice";
 // import { useEffect, useRef, useState } from "react";
 import LazyTextInput from "../../components/LazyTextInput";
 
-export default function CardEditor() {
+// export default function CardEditor() {
+const CardEditor = React.memo(function CardEditor() {
     const dispatch = useDispatch();
     const cardId = useSelector(getSelectedCardId);
     const card = useSelector(state => selectCardById(state, cardId));
@@ -61,4 +63,7 @@ export default function CardEditor() {
             />
         </section>
     );
-}
+});
+
+export default CardEditor;
+    

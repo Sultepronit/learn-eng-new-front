@@ -12,18 +12,19 @@ export default function LazyTextInput({ name, value, placeholder, className, onC
     const [lastValue, setLastValue] = useState('');
 
     useEffect(() => {
-        setLastValue(value);
+        // setLastValue(value);
+        inputRef.current.value = value;
     }, [value]);
+
+    // useEffect(() => {
+    //     inputRef.current.value = lastValue;
+    // }, [lastValue]);
+
     console.log(name, value);
 
-    useEffect(() => {
-        inputRef.current.value = lastValue;
-    }, [lastValue]);
-
     function handleSubmit(newValue) {
-        if(newValue === lastValue) return;
-        // console.log(lastValue);
-        // console.log(newValue);
+        // if(newValue === lastValue) return;
+        if(newValue === value) return;
 
         setLastValue(newValue);
         onChange({ name, value: newValue });
