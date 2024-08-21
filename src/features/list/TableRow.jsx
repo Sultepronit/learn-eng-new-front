@@ -11,11 +11,6 @@ const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
 
     const card = useSelector(state => selectCardById(state, cardId));
 
-    // const selectedCardId = useSelector(getSelectedCardId);
-    // const classNames = useMemo(() => {
-    //     return 'table-row' + (selectedCardId === card.id ? ' selected' : '');
-    // }, [selectedCardId, card]);
-
     const classNames = 'table-row' + (isSelected ? ' selected' : '');
 
     const columns = {

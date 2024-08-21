@@ -21,19 +21,28 @@ export const updateCard = createAsyncThunk('data/updateCard', async ({ dbId, cha
     return await updateWithQueue('/words', dbId, changes);
 });
 
+function checkLimist(value, min, max) {
+    value = Math.round(value);
+    return (value < min) ? min : (value > max) ? max : value;
+}
+
 const listSlice = createSlice({
     name: 'list',
-    // initialState: {
-    //     data: [],
-    //     selectedCard: emptyCard
-    // },
     initialState,
     reducers: {
         setSelectedCardId: (state, action) => {
-            const inputId = Math.round(action.payload);
-            const lastId = state.ids.length;
-            const id = (inputId < 1) ? 1 : (inputId > lastId) ? lastId : inputId;
-            state.selectedCardId = id;
+            // const inputId = Math.round(action.payload);
+            // const maxId = state.ids.length;
+            // const id = (inputId < 1) ? 1 : (inputId > maxId) ? maxId : inputId;
+            // state.selectedCardId = id;
+            state.selectedCardId = checkLimist(action.payload, 1, state.ids.length);
+        },
+        changeSelectedCardId: (state, action) => {
+            // const changedId = state.selectedCardId + Math.round(action.payload);
+            // const maxId = state.ids.length;
+            // const id = (changedId < 1) ? 1 : (changedId > maxId) ? maxId : changedId;
+            // state.selectedCardId = id;
+            state.selectedCardId = checkLimist(state.selectedCardId + action.payload, 1, state.ids.length);
         },
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
@@ -62,7 +71,7 @@ export const {
 export const getSelectedCardId = (state) => state.list.selectedCardId;
 export const getRerverseValue = (state) => state.list.reverse;
 
-export const { setSelectedCardId, toggleReverse } = listSlice.actions;
+export const { setSelectedCardId, changeSelectedCardId, toggleReverse } = listSlice.actions;
 
 export const selectPreparedList = createSelector(
     [selectAllCards, (state) => state.list.reverse],

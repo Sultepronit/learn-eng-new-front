@@ -1,13 +1,48 @@
-// import { useState } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import TableRow from "./TableRow";
 import { useSelector } from "react-redux";
-import { getSelectedCardId } from "./listSlice";
+import { changeSelectedCardId, getSelectedCardId } from "./listSlice";
+import { useDispatch } from "react-redux";
 
 export default function Table({ cardIds }) {
+    const dispatch = useDispatch();
+    const tableRef = useRef(null);
+
     const rowNumber = 22;
 
     const [lastRow, setLastRow] = useState(0);
+
+    function handleScroll(e) {
+        // console.log(e);
+        console.log('scroll', e.deltaY);
+        // dispatch(changeSelectedCardId(e.deltaY / 16));
+        setLastRow(Math.round(lastRow + e.deltaY / 16))
+        console.log(lastRow)
+    }
+
+    function handleKeyUp(e) {
+        console.log(e.key)
+        switch(e.key) {
+            case 'ArrowUp':
+                dispatch(changeSelectedCardId(1));
+                break;
+            case 'ArrowDown':
+                dispatch(changeSelectedCardId(-1));
+                break;
+            case 'PageUp':
+                setLastRow(lastRow - 100);
+                break;
+            case 'PageDown':
+                setLastRow(lastRow + 100);
+                break;
+            case 'Home':
+                setLastRow(rowNumber);
+                break;
+            case 'End':
+                setLastRow(cardIds.length);
+                break;
+        }
+    }
 
     useEffect(() => {
         setLastRow(cardIds.length);
@@ -27,11 +62,6 @@ export default function Table({ cardIds }) {
         }
     }, [cardIds.length]);
 
-    function changeLastRow(value) {
-        console.log(value);
-        setLastRow(value);
-    }
-
     const displayRange = useMemo(() => {
 
         const result = cardIds.slice(lastRow - rowNumber, lastRow);
@@ -42,15 +72,27 @@ export default function Table({ cardIds }) {
     const selectedCardId = useSelector(getSelectedCardId);
 
     return (
-        <section className="table">
+        <section
+            className="table"
+            ref={tableRef}
+            tabIndex={-1}
+            onWheel={handleScroll}
+            // onKeyUp={(e) => console.log(e.key)}
+            // onKeyUp={handleKeyUp}
+            onKeyDown={handleKeyUp}
+            onMouseEnter={() => tableRef.current.focus()}
+            // onMouseEnter={(e) => e.target.focus()} // the target can be child!
+            // onMouseOver={() => tableRef.current.focus()}
+            onMouseLeave={() => tableRef.current.blur()}
+        >
             <div className="rows">
-            {displayRange.map(cardId => (
-                <TableRow
-                    key={cardId}
-                    cardId={cardId}
-                    isSelected={selectedCardId === cardId}
-                />
-            ))}
+                {displayRange.map(cardId => (
+                    <TableRow
+                        key={cardId}
+                        cardId={cardId}
+                        isSelected={selectedCardId === cardId}
+                    />
+                ))}
             </div>
             <input
                 type="range"
@@ -59,7 +101,8 @@ export default function Table({ cardIds }) {
                 min={rowNumber}
                 max={cardIds.length}
                 value={lastRow}
-                onChange={(e) => changeLastRow(e.target.value)}
+                onChange={(e) => setLastRow(Number(e.target.value))}
+                onKeyDown={(e) => e.preventDefault()}
             />
         </section>
     );
