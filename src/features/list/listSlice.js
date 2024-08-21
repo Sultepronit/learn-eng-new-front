@@ -6,6 +6,8 @@ import updateWithQueue from "../../services/updateQueue";
 const cardsAdapter = createEntityAdapter();
 
 const initialState = cardsAdapter.getInitialState({
+    displayedRowNumber: 22,
+    lastDisplayedId: 0,
     selectedCardId: 1,
     reverse: true
 });
@@ -16,12 +18,10 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
 
 export const updateCard = createAsyncThunk('data/updateCard', async ({ dbId, changes }) => {
     console.log('Saving...', JSON.stringify(changes));
-    // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes), false);
-    // return await fetchWithFeatures(`/words/${id}`, 'PATCH', JSON.stringify(changes));
     return await updateWithQueue('/words', dbId, changes);
 });
 
-function checkLimist(value, min, max) {
+function checkLimits(value, min, max) {
     value = Math.round(value);
     return (value < min) ? min : (value > max) ? max : value;
 }
@@ -30,19 +30,18 @@ const listSlice = createSlice({
     name: 'list',
     initialState,
     reducers: {
+        setLastDisplayedId: (state, action) => {
+            state.lastDisplayedId = checkLimits(
+                action.payload,
+                state.displayedRowNumber,
+                state.ids.length
+            );
+        },
         setSelectedCardId: (state, action) => {
-            // const inputId = Math.round(action.payload);
-            // const maxId = state.ids.length;
-            // const id = (inputId < 1) ? 1 : (inputId > maxId) ? maxId : inputId;
-            // state.selectedCardId = id;
-            state.selectedCardId = checkLimist(action.payload, 1, state.ids.length);
+            state.selectedCardId = checkLimits(action.payload, 1, state.ids.length);
         },
         changeSelectedCardId: (state, action) => {
-            // const changedId = state.selectedCardId + Math.round(action.payload);
-            // const maxId = state.ids.length;
-            // const id = (changedId < 1) ? 1 : (changedId > maxId) ? maxId : changedId;
-            // state.selectedCardId = id;
-            state.selectedCardId = checkLimist(state.selectedCardId + action.payload, 1, state.ids.length);
+            state.selectedCardId = checkLimits(state.selectedCardId + action.payload, 1, state.ids.length);
         },
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
@@ -68,10 +67,17 @@ export const {
     selectById: selectCardById
 } = cardsAdapter.getSelectors(state => state.list);
 
+export const getDisplayedRowNumber = (state) => state.list.displayedRowNumber;
+export const getLastDisplayedId = (state) => state.list.lastDisplayedId;
 export const getSelectedCardId = (state) => state.list.selectedCardId;
 export const getRerverseValue = (state) => state.list.reverse;
 
-export const { setSelectedCardId, changeSelectedCardId, toggleReverse } = listSlice.actions;
+export const {
+    setLastDisplayedId,
+    setSelectedCardId,
+    changeSelectedCardId,
+    toggleReverse
+} = listSlice.actions;
 
 export const selectPreparedList = createSelector(
     [selectAllCards, (state) => state.list.reverse],
@@ -83,6 +89,19 @@ export const selectPreparedList = createSelector(
         return ids;
     }
 );
+
+export const selectDisplayRange = createSelector(
+    [
+        selectPreparedList,
+        (state) => state.list.lastDisplayedId,
+        (state) => state.list.displayedRowNumber
+    ],
+    (list, lastId, rowNumber) => {
+        const result = list.slice(lastId - rowNumber, lastId);
+        console.log(result);
+        return result;
+    }
+)
 
 export default listSlice.reducer;
 

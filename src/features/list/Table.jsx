@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import TableRow from "./TableRow";
 import { useSelector } from "react-redux";
-import { changeSelectedCardId, getSelectedCardId } from "./listSlice";
+import { changeSelectedCardId, getLastDisplayedId, getSelectedCardId, selectDisplayRange, setLastDisplayedId } from "./listSlice";
 import { useDispatch } from "react-redux";
 
 export default function Table({ cardIds }) {
@@ -10,14 +10,18 @@ export default function Table({ cardIds }) {
 
     const rowNumber = 22;
 
-    const [lastRow, setLastRow] = useState(0);
+    // const [lastRow, setLastRow] = useState(0);
+    const lastRow = useSelector(getLastDisplayedId);
+    function setLastRow(value) {
+        dispatch(setLastDisplayedId(value))
+    }
+
+    const displayRange = useSelector(selectDisplayRange);
+
+    const selectedCardId = useSelector(getSelectedCardId);
 
     function handleScroll(e) {
-        // console.log(e);
-        console.log('scroll', e.deltaY);
-        // dispatch(changeSelectedCardId(e.deltaY / 16));
         setLastRow(Math.round(lastRow + e.deltaY / 16))
-        console.log(lastRow)
     }
 
     function handleKeyUp(e) {
@@ -51,9 +55,9 @@ export default function Table({ cardIds }) {
         const thumbHeight = calculated >= 20 ? calculated : 20;
         const style = document.createElement('style');
         style.innerHTML = `
-        .scroller::-webkit-slider-thumb {
-            height: ${thumbHeight}px;
-        }
+            .scroller::-webkit-slider-thumb {
+                height: ${thumbHeight}px;
+            }
         `;
         document.head.appendChild(style);
 
@@ -62,14 +66,12 @@ export default function Table({ cardIds }) {
         }
     }, [cardIds.length]);
 
-    const displayRange = useMemo(() => {
+    // const displayRange = useMemo(() => {
 
-        const result = cardIds.slice(lastRow - rowNumber, lastRow);
-        console.log(result);
-        return result;
-    }, [cardIds, lastRow]);
-
-    const selectedCardId = useSelector(getSelectedCardId);
+    //     const result = cardIds.slice(lastRow - rowNumber, lastRow);
+    //     console.log(result);
+    //     return result;
+    // }, [cardIds, lastRow]);
 
     return (
         <section
@@ -77,7 +79,6 @@ export default function Table({ cardIds }) {
             ref={tableRef}
             tabIndex={-1}
             onWheel={handleScroll}
-            // onKeyUp={(e) => console.log(e.key)}
             // onKeyUp={handleKeyUp}
             onKeyDown={handleKeyUp}
             onMouseEnter={() => tableRef.current.focus()}
