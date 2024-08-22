@@ -2,8 +2,13 @@ import { useSelector } from "react-redux";
 import { getRerverseValue, getSelectedCardId, setSelectedCardId, toggleReverse } from "./listSlice";
 import { useDispatch } from "react-redux";
 
-export default function SearchBar() {
+export default function SearchBar({ changeDisplayRange }) {
     const dispatch = useDispatch();
+
+    function selectCard(id) {
+        dispatch(setSelectedCardId(id));
+        changeDisplayRange(id);
+    }
 
     const reverseValue = useSelector(getRerverseValue);
 
@@ -13,7 +18,7 @@ export default function SearchBar() {
                 type="number"
                 name="card-number"
                 value={useSelector(getSelectedCardId)}
-                onChange={(e) => dispatch(setSelectedCardId(e.target.value))}
+                onChange={(e) => selectCard(e.target.value)}
             />
 
             <button

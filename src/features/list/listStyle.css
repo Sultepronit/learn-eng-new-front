@@ -16,7 +16,11 @@
     display: flex;
 }
 
-.rows {
+.table:focus {
+    outline: none;
+}
+
+.table-body {
     border-top: 1px solid;
     border-left: 1px solid;
 }
@@ -27,7 +31,7 @@
 }
 
 .selected {
-    background-color: aqua;
+    background-color: #80f5f5;
 }
 
 .cell {
