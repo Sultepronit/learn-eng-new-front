@@ -1,17 +1,8 @@
-h1, h2 {
-  text-align: center;
-}
-
-h2 {
-  color: green;
-}
-
 .status-bar {
   height: 3px;
 }
 
 .loading {
-  /* background-color: green; */
   background-color: orange;
 }
 
@@ -33,4 +24,12 @@ h2 {
   color: white;
   font-weight: bold;
   padding: 0.1em 0.5em;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }

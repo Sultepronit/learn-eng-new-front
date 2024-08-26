@@ -12,6 +12,14 @@
     gap: 3px;
 }
 
+.search-bar * {
+    margin: 2px 0.1rem;
+}
+
+.card-id {
+    width: 4em;
+}
+
 .table {
     display: flex;
 }

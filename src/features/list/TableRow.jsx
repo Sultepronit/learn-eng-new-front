@@ -26,32 +26,32 @@ const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
             onClick={() => dispatch(setSelectedCardId(card.id))}
         >
             {/* <p className="cell">{card.main.id}</p> */}
-            <p className="cell">{card.id}</p>
+            <p className="cell text-right">{card.id}</p>
 
-            <p className="cell tap-stats">{card.tapStats.repeatStatus}</p>
-            <p className="cell">{card.tapStats.forward.progress}</p>
-            <p className="cell">{card.tapStats.backward.progress}</p>
-            <p className={`cell ${card.tapStats.forward.autorepeat ? 'autorepeat' : ''}`}>
+            <p className="cell text-right">{card.tapStats.repeatStatus}</p>
+            <p className="cell text-center">{card.tapStats.forward.progress}</p>
+            <p className="cell text-center">{card.tapStats.backward.progress}</p>
+            <p className={`cell text-center ${card.tapStats.forward.autorepeat ? 'autorepeat' : ''}`}>
                 {card.tapStats.forward.record}
             </p>
-            <p className={`cell ${card.tapStats.backward.autorepeat ? 'autorepeat' : ''}`}>
+            <p className={`cell text-center ${card.tapStats.backward.autorepeat ? 'autorepeat' : ''}`}>
                 {card.tapStats.backward.record}
             </p>
 
-            <p className="cell write-stats">{card.writeStats.repeatStatus}</p>
-            <p className="cell">{card.writeStats.forward.progress}</p>
-            <p className="cell">{card.writeStats.backward.progress}</p>
-            <p className={`cell ${card.writeStats.forward.autorepeat ? 'autorepeat' : ''}`}>
+            <p className="cell text-right">{card.writeStats.repeatStatus}</p>
+            <p className="cell text-center">{card.writeStats.forward.progress}</p>
+            <p className="cell text-center">{card.writeStats.backward.progress}</p>
+            <p className={`cell text-center ${card.writeStats.forward.autorepeat ? 'autorepeat' : ''}`}>
                 {card.writeStats.forward.record}
             </p>
-            <p className={`cell ${card.writeStats.backward.autorepeat ? 'autorepeat' : ''}`}>
+            <p className={`cell text-center ${card.writeStats.backward.autorepeat ? 'autorepeat' : ''}`}>
                 {card.writeStats.backward.record}
             </p>
 
-            <p className="cell eng">{card.word}</p>
-            <p className="cell">{card.transcription}</p>
-            <p className="cell">{card.translation}</p>
-            <p className="cell">{card.example}</p>
+            <p className="cell" title={card.word}>{card.word}</p>
+            <p className="cell" title={card.transcription}>{card.transcription}</p>
+            <p className="cell" title={card.translation}>{card.translation}</p>
+            <p className="cell" title={card.example}>{card.example}</p>
         </div>
     );
 });

@@ -13,10 +13,11 @@ export default function SearchBar({ changeDisplayRange }) {
     const reverseValue = useSelector(getRerverseValue);
 
     return (
-        <section>
+        <section className="search-bar">
             <input
                 type="number"
-                name="card-number"
+                name="card-id"
+                className="card-id"
                 value={useSelector(getSelectedCardId)}
                 onChange={(e) => selectCard(e.target.value)}
             />
