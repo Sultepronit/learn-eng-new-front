@@ -11,7 +11,7 @@ export default function ListView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchData())
+        dispatch(fetchData());
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);

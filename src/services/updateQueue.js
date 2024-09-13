@@ -13,7 +13,7 @@ async function emptyQueue() {
 
     if(!queue.length) {
         localStorage.removeItem('updateQueue');
-        return 'Saved all the queue!';
+        return 'Saved whole the queue!';
     }
 
     return await emptyQueue();
@@ -23,7 +23,7 @@ async function updateWithQueue(path, id, changes) {
     queue.push({ path, id, changes });
     localStorage.setItem('updateQueue', JSON.stringify(queue));
 
-    // if the queue wasn't empty the function simply reporst about adding the request
+    // if the queue is't empty the function simply report about adding the request
     if(queue.length > 1) {
         return new Promise(resolve => resolve('Added to queue'));
     }

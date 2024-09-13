@@ -15,10 +15,13 @@ export const fetchData = createAsyncThunk('data/fetchData', async () => {
     return await fetchWithFeatures('/words');
 });
 
-export const updateCard = createAsyncThunk('data/updateCard', async ({ dbId, changes }) => {
-    console.log('Saving...', JSON.stringify(changes));
-    return await updateWithQueue('/words', dbId, changes);
-});
+export const updateCard = createAsyncThunk(
+    'data/updateCard',
+    async ({ dbId, changes }) => {
+        console.log('Saving...', JSON.stringify(changes));
+        return await updateWithQueue('/words', dbId, changes);
+    }
+);
 
 const listSlice = createSlice({
     name: 'list',
@@ -34,7 +37,18 @@ const listSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchData.fulfilled, (state, action) => {
-                cardsAdapter.upsertMany(state, action.payload);
+                // logProxy(state);
+                // logProxy(state.ids.length);
+                console.log(state.ids[state.ids.length - 1]);
+                const list = [ ...action.payload, {
+                    id: state.ids[state.ids.length - 1] + 1,
+                    word: 'successss',
+                    tapStats: {
+                        repeatStatus: -1
+                    }
+                } ];
+                // cardsAdapter.upsertMany(state, action.payload);
+                cardsAdapter.upsertMany(state, list);
             })
             .addCase(updateCard.pending, (state, action) => {
                 console.log(action.meta.arg);
