@@ -4,6 +4,8 @@ import TableScroller from "./TableScroller";
 import TableBody from "./TableBody";
 
 export default function Table({ displayRange, rowNumber, lastRow, setLastRow, lastPossibleRow }) {
+    // const dispatch = useDispatch();
+
     const tableRef = useRef(null);
 
     function handleScroll(e) {

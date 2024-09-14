@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCardId, selectCardById, updateCard } from "./listSlice";
-// import { useEffect, useRef, useState } from "react";
+// import { getSelectedCardId, selectCardById, updateCard, saveNewCard, deleteCard } from "./listSlice";
+import { getSelectedCardId, selectCardById } from "./listSlice";
+import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 
 export default function CardEditor() {
@@ -13,17 +14,29 @@ export default function CardEditor() {
     function update({ name, value }) {
         const data = {
             id: card.id,
-            dbId: card.dbId,
             changes: {
                 [name]: value
             }
         };
         console.log(data);
-        dispatch(updateCard(data));
+
+        if (card.isNew) {
+            data.changes.isNew = false;
+            dispatch(saveNewCard(data));
+        } else {
+            dispatch(updateCard(data));
+        }
+    }
+
+    function handleDelete() {
+        if(!confirm('Delete this card?')) return;
+
+        dispatch(deleteCard(card.id));
     }
 
     return (
         <section className="card-editor">
+            <button onClick={handleDelete}>delete</button>
             <div className="word-fileds">
                 <LazyTextInput
                     name="word"

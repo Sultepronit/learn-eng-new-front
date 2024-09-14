@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
-import { getSelectedCardId, selectCardById, setSelectedCardId } from "./listSlice";
+import { selectCardById, setSelectedCardId } from "./listSlice";
 
 // export default function TableRow({ card }) {
 // export default function TableRow({ cardId }) {
@@ -25,27 +25,26 @@ const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
             // onClick={() => select(card.id)}
             onClick={() => dispatch(setSelectedCardId(card.id))}
         >
-            {/* <p className="cell">{card.main.id}</p> */}
             <p className="cell text-right">{card.id}</p>
 
-            <p className="cell text-right">{card.tapStats.repeatStatus}</p>
-            <p className="cell text-center">{card.tapStats.forward.progress}</p>
-            <p className="cell text-center">{card.tapStats.backward.progress}</p>
-            <p className={`cell text-center ${card.tapStats.forward.autorepeat ? 'autorepeat' : ''}`}>
-                {card.tapStats.forward.record}
+            <p className="cell text-right">{card.tapStatus}</p>
+            <p className="cell text-center">{card.tapFProgress}</p>
+            <p className="cell text-center">{card.tapBProgress}</p>
+            <p className={`cell text-center ${card.tapFAutorepeat ? 'autorepeat' : ''}`}>
+                {card.tapFRecord}
             </p>
-            <p className={`cell text-center ${card.tapStats.backward.autorepeat ? 'autorepeat' : ''}`}>
-                {card.tapStats.backward.record}
+            <p className={`cell text-center ${card.tapBAutorepeat ? 'autorepeat' : ''}`}>
+                {card.tapBRecord}
             </p>
 
-            <p className="cell text-right">{card.writeStats.repeatStatus}</p>
-            <p className="cell text-center">{card.writeStats.forward.progress}</p>
-            <p className="cell text-center">{card.writeStats.backward.progress}</p>
-            <p className={`cell text-center ${card.writeStats.forward.autorepeat ? 'autorepeat' : ''}`}>
-                {card.writeStats.forward.record}
+            <p className="cell text-right">{card.writeStatus}</p>
+            <p className="cell text-center">{card.writeFProgress}</p>
+            <p className="cell text-center">{card.writeBProgress}</p>
+            <p className={`cell text-center ${card.writeFAutorepeat ? 'autorepeat' : ''}`}>
+                {card.writeFRecord}
             </p>
-            <p className={`cell text-center ${card.writeStats.backward.autorepeat ? 'autorepeat' : ''}`}>
-                {card.writeStats.backward.record}
+            <p className={`cell text-center ${card.writeBAutorepeat ? 'autorepeat' : ''}`}>
+                {card.writeBRecord}
             </p>
 
             <p className="cell" title={card.word}>{card.word}</p>

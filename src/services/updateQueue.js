@@ -5,8 +5,8 @@ const queue = [];
 
 // recursively fetch all the updates stored in the queue, chronologically
 async function emptyQueue() {
-    const { path, id, changes } = queue[0];
-    await fetchWithFeatures(`${path}/${id}`, 'PATCH', changes);
+    const { path, data, method } = queue[0];
+    await fetchWithFeatures(path, method, data);
     
     queue.shift();
     localStorage.setItem('updateQueue', JSON.stringify(queue));
@@ -19,8 +19,9 @@ async function emptyQueue() {
     return await emptyQueue();
 }
 
-async function updateWithQueue(path, id, changes) {
-    queue.push({ path, id, changes });
+// async function updateWithQueue(path, id, changes) {
+async function updateWithQueue(path, data, method = 'PATCH') {
+    queue.push({ path, data, method });
     localStorage.setItem('updateQueue', JSON.stringify(queue));
 
     // if the queue is't empty the function simply report about adding the request

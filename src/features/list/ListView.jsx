@@ -3,7 +3,9 @@ import { useState, useEffect, useMemo } from "react";
 import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import CardEditor from './CardEditor.jsx';
-import { fetchData, selectPreparedList, setSelectedCardId } from './listSlice.js';
+// import { fetchData, selectPreparedList, setSelectedCardId } from './listSlice.js';
+import { selectPreparedList } from './listSlice.js';
+import { fetchCards } from '../cards/cardsThunks.js';
 import SearchBar from './SearchBar.jsx';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 
@@ -11,12 +13,12 @@ export default function ListView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchData());
+        dispatch(fetchCards());
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);
 
-    const rowNumber = 22;
+    const rowNumber = 21;
     const [lastRow, setLastRow] = useState(0);
 
     function setLastRowWithCaution(value) {
@@ -32,7 +34,7 @@ export default function ListView() {
     useEffect(() => {
         setLastRow(rowNumber);
         if(preparedList.length) {
-            dispatch(setSelectedCardId(preparedList[0]));
+            // dispatch(setSelectedCardId(preparedList[0]));
         }
     }, [preparedList, dispatch]);
 
@@ -45,7 +47,7 @@ export default function ListView() {
     const template = (
         <section>
             <CardEditor />
-            <button onClick={() => dispatch(fetchData())}>
+            <button onClick={() => dispatch(fetchCards())}>
                 refresh
             </button>
             <SearchBar

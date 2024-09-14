@@ -1,8 +1,7 @@
-import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
-import fetchWithFeatures from "../../services/fetchWithFeatures";
+import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import updateWithQueue from "../../services/updateQueue";
 import checkIntLimits from "../../helpers/chekIntLimits";
+import { fetchCards, updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 
 const cardsAdapter = createEntityAdapter();
 
@@ -11,17 +10,27 @@ const initialState = cardsAdapter.getInitialState({
     reverse: true
 });
 
-export const fetchData = createAsyncThunk('data/fetchData', async () => {
-    return await fetchWithFeatures('/words');
-});
-
-export const updateCard = createAsyncThunk(
-    'data/updateCard',
-    async ({ dbId, changes }) => {
-        console.log('Saving...', JSON.stringify(changes));
-        return await updateWithQueue('/words', dbId, changes);
+function createNewCard(lastCard) {
+    return {
+        number: lastCard.number + 1,
+        id: lastCard.id + 1,
+        isNew: true,
+        word: '',
+        transcription: '',
+        translation: '',
+        example: ''
     }
-);
+}
+
+const setNewList = (state, action) => {
+    const lastCard = action.payload[action.payload.length - 1];
+    const list = [
+        ...action.payload,
+        createNewCard(lastCard)
+    ];
+    cardsAdapter.setAll(state, list);
+    state.selectedCardId = lastCard.id + 1;
+};
 
 const listSlice = createSlice({
     name: 'list',
@@ -36,25 +45,15 @@ const listSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchData.fulfilled, (state, action) => {
-                // logProxy(state);
-                // logProxy(state.ids.length);
-                console.log(state.ids[state.ids.length - 1]);
-                const list = [ ...action.payload, {
-                    id: state.ids[state.ids.length - 1] + 1,
-                    word: 'successss',
-                    tapStats: {
-                        repeatStatus: -1
-                    }
-                } ];
-                // cardsAdapter.upsertMany(state, action.payload);
-                cardsAdapter.upsertMany(state, list);
-            })
+            .addCase(fetchCards.fulfilled, setNewList)
             .addCase(updateCard.pending, (state, action) => {
-                console.log(action.meta.arg);
-                const { id, changes } = action.meta.arg;
-                cardsAdapter.updateOne(state, { id, changes });
+                cardsAdapter.updateOne(state, action.meta.arg);
             })
+            .addCase(saveNewCard.pending, (state, action) => {
+                cardsAdapter.updateOne(state, action.meta.arg);
+                cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
+            })
+            .addCase(deleteCard.fulfilled, setNewList)
     }
 });
 
