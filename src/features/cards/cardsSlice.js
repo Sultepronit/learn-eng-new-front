@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard } from "./cardsThunks";
-import checkIntLimits from "../../helpers/chekIntLimits";
+// import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter();
 const initialState = cardsAdapter.getInitialState();
@@ -25,6 +25,10 @@ const updateData = (state, action) => {
         createNewCard(lastCard)
     ];
     cardsAdapter.setAll(state, list);
+
+    // console.time('idb');
+    // initIndexedDb();
+    // console.timeEnd('idb');
 };
 
 const cardsSlice = createSlice({

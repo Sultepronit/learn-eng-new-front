@@ -3,12 +3,10 @@ import { useState, useEffect, useMemo } from "react";
 import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import CardEditor from './CardEditor.jsx';
-// import { fetchData, selectPreparedList, setSelectedCardId } from './listSlice.js';
-import { getSelectedCardId, selectPreparedList } from './listSlice.js';
+import { selectPreparedList } from './listSlice.js';
 import { fetchCards } from '../cards/cardsThunks.js';
 import SearchBar from './SearchBar.jsx';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
-// import { selectCardsNumber } from '../cards/cardsSlice.js';
 
 export default function ListView() {
     const dispatch = useDispatch();

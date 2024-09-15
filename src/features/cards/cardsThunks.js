@@ -1,9 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
+import { getCardsList, setCardsList } from "./indexedDbHandler";
 
 export const fetchCards = createAsyncThunk('cards/fetchData', async () => {
-    return await fetchWithFeatures('/words');
+    console.timeLog('idb');
+    // return await fetchWithFeatures('/words');
+    const localList = await getCardsList();
+    console.log(localList);
+    console.timeLog('idb', 'received the local list');
+    if(localList?.length) return localList;
+    
+    console.log('Fetching remote list...');
+
+    const list = await fetchWithFeatures('/words');
+
+    // console.time('idb');
+    console.timeLog('idb');
+    setCardsList(list);
+    console.timeLog('idb', 'set data?');
+    // console.timeEnd('idb');
+    return list;
 });
 
 export const updateCard = createAsyncThunk(
