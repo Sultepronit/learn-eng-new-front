@@ -4,10 +4,11 @@ import Table from "./Table.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import CardEditor from './CardEditor.jsx';
 // import { fetchData, selectPreparedList, setSelectedCardId } from './listSlice.js';
-import { selectPreparedList } from './listSlice.js';
+import { getSelectedCardId, selectPreparedList } from './listSlice.js';
 import { fetchCards } from '../cards/cardsThunks.js';
 import SearchBar from './SearchBar.jsx';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
+// import { selectCardsNumber } from '../cards/cardsSlice.js';
 
 export default function ListView() {
     const dispatch = useDispatch();
@@ -25,17 +26,25 @@ export default function ListView() {
         setLastRow(checkIntLimits(value, rowNumber, preparedList.length));
     }
 
-    function setLastRowByCardId(cardId) {
-        const theCardIndex = preparedList.findIndex(listCardId => listCardId === Number(cardId));
+    function setLastRowByCardNumber(cardNumber) {
+        if(cardNumber < 1) return;
+        console.log(cardNumber);
+        const theCardIndex = preparedList.findIndex(
+            // listCardId => listCardId === Number(cardNumber)
+            listCardId => {
+                // console.log(listCardId);
+                if(listCardId === Number(cardNumber)) {
+                    console.log(listCardId, Number(cardNumber))
+                    return true;
+                }
+            }
+        );
         if(theCardIndex < 0) return;
         setLastRowWithCaution(theCardIndex + rowNumber);
     }
 
     useEffect(() => {
         setLastRow(rowNumber);
-        if(preparedList.length) {
-            // dispatch(setSelectedCardId(preparedList[0]));
-        }
     }, [preparedList, dispatch]);
 
     const displayRange = useMemo(() => {
@@ -51,7 +60,7 @@ export default function ListView() {
                 refresh
             </button>
             <SearchBar
-                changeDisplayRange={setLastRowByCardId}
+                changeDisplayRange={setLastRowByCardNumber}
             />
             <Table
                 displayRange={displayRange}

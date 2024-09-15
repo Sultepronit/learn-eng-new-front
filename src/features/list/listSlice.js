@@ -1,35 +1,12 @@
-import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import checkIntLimits from "../../helpers/chekIntLimits";
-import { fetchCards, updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
+import { selectAllCards } from "../cards/cardsSlice";
+import { fetchCards } from "../cards/cardsThunks";
 
-const cardsAdapter = createEntityAdapter();
-
-const initialState = cardsAdapter.getInitialState({
-    selectedCardId: 1,
+const initialState = {
+    selectedCardId: 0,
+    selectedCardNumber: 0,
     reverse: true
-});
-
-function createNewCard(lastCard) {
-    return {
-        number: lastCard.number + 1,
-        id: lastCard.id + 1,
-        isNew: true,
-        word: '',
-        transcription: '',
-        translation: '',
-        example: ''
-    }
-}
-
-const setNewList = (state, action) => {
-    const lastCard = action.payload[action.payload.length - 1];
-    const list = [
-        ...action.payload,
-        createNewCard(lastCard)
-    ];
-    cardsAdapter.setAll(state, list);
-    state.selectedCardId = lastCard.id + 1;
 };
 
 const listSlice = createSlice({
@@ -37,7 +14,7 @@ const listSlice = createSlice({
     initialState,
     reducers: {
         setSelectedCardId: (state, action) => {
-            state.selectedCardId = checkIntLimits(action.payload, 1, state.ids.length);
+            state.selectedCardId = action.payload;
         },
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
@@ -45,23 +22,12 @@ const listSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCards.fulfilled, setNewList)
-            .addCase(updateCard.pending, (state, action) => {
-                cardsAdapter.updateOne(state, action.meta.arg);
-            })
-            .addCase(saveNewCard.pending, (state, action) => {
-                cardsAdapter.updateOne(state, action.meta.arg);
-                cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
-            })
-            .addCase(deleteCard.fulfilled, setNewList)
+            .addCase(fetchCards.fulfilled, (state, action) => {
+                const lastCard = action.payload[action.payload.length - 1];
+                state.selectedCardId = lastCard.id + 1;
+            });
     }
 });
-
-export const {
-    selectAll: selectAllCards,
-    selectIds: selectCardIds,
-    selectById: selectCardById
-} = cardsAdapter.getSelectors(state => state.list);
 
 export const getSelectedCardId = (state) => state.list.selectedCardId;
 export const getRerverseValue = (state) => state.list.reverse;
@@ -70,6 +36,17 @@ export const {
     setSelectedCardId,
     toggleReverse
 } = listSlice.actions;
+
+const selectCardIdByNumber = createSelector(
+    [selectAllCards, (state, cardNumber) => cardNumber],
+    (cards, cardNumber) => cards.find(card => card.number === cardNumber)?.id
+);
+
+// thunk, is what this thing called
+export const setSelectedCardIdByNumber = (cardNumber) => (dispatch, getState) => {
+    const id = selectCardIdByNumber(getState(), cardNumber);
+    if(id) dispatch(setSelectedCardId(id));
+}
 
 export const selectPreparedList = createSelector(
     [selectAllCards, (state) => state.list.reverse],

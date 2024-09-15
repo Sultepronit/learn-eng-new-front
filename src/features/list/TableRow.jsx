@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { getSelectedCard, selectCard, selectCardById } from "./listSlice";
-import { selectCardById, setSelectedCardId } from "./listSlice";
+import { selectCardById } from "../cards/cardsSlice";
+import { setSelectedCardId } from "./listSlice";
+// import { selectCardById, setSelectedCardId } from "./listSlice";
 
 // export default function TableRow({ card }) {
 // export default function TableRow({ cardId }) {

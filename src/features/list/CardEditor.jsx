@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 // import { getSelectedCardId, selectCardById, updateCard, saveNewCard, deleteCard } from "./listSlice";
-import { getSelectedCardId, selectCardById } from "./listSlice";
+// import { getSelectedCardId, selectCardById } from "./listSlice";
+import { getSelectedCardId } from "./listSlice";
+import { selectCardById } from "../cards/cardsSlice";
 import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 

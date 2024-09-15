@@ -1,13 +1,20 @@
 import { useSelector } from "react-redux";
-import { getRerverseValue, getSelectedCardId, setSelectedCardId, toggleReverse } from "./listSlice";
+import { getRerverseValue, getSelectedCardId, setSelectedCardId, setSelectedCardIdByNumber, toggleReverse } from "./listSlice";
 import { useDispatch } from "react-redux";
+import checkIntLimits from "../../helpers/chekIntLimits";
+import { selectCardsTotal } from "../cards/cardsSlice";
+// import { selectCardsNumber } from "../cards/cardsSlice";
 
 export default function SearchBar({ changeDisplayRange }) {
     const dispatch = useDispatch();
+    const cardsTotal = useSelector(selectCardsTotal);
 
-    function selectCard(id) {
-        dispatch(setSelectedCardId(id));
-        changeDisplayRange(id);
+    function selectCard(cardNumber) {
+        const adequate = checkIntLimits(cardNumber, 1, cardsTotal);
+        
+        console.log(cardNumber, adequate);
+        dispatch(setSelectedCardIdByNumber(Number(cardNumber)));
+        changeDisplayRange(cardNumber);
     }
 
     const reverseValue = useSelector(getRerverseValue);
