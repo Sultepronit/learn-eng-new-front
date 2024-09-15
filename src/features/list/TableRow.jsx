@@ -1,8 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCardById } from "../cards/cardsSlice";
-import { setSelectedCardId } from "./listSlice";
-// import { selectCardById, setSelectedCardId } from "./listSlice";
+import { setSelectedCard, setSelectedCardId } from "./listSlice";
 
 // export default function TableRow({ card }) {
 // export default function TableRow({ cardId }) {
@@ -23,8 +22,8 @@ const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
         <div
             className={classNames}
             style={columns}
-            // onClick={() => select(card.id)}
-            onClick={() => dispatch(setSelectedCardId(card.id))}
+            // onClick={() => dispatch(setSelectedCardId(card.id))}
+            onClick={() => dispatch(setSelectedCard(card))}
         >
             <p className="cell text-right">{card.id}</p>
 

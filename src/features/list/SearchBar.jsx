@@ -1,20 +1,21 @@
 import { useSelector } from "react-redux";
-import { getRerverseValue, getSelectedCardId, setSelectedCardId, setSelectedCardIdByNumber, toggleReverse } from "./listSlice";
+import { getRerverseValue, getSelectedCard, setSelectedCard, toggleReverse } from "./listSlice";
 import { useDispatch } from "react-redux";
 import checkIntLimits from "../../helpers/chekIntLimits";
-import { selectCardsTotal } from "../cards/cardsSlice";
+import { selectAllCards } from "../cards/cardsSlice";
 // import { selectCardsNumber } from "../cards/cardsSlice";
 
 export default function SearchBar({ changeDisplayRange }) {
     const dispatch = useDispatch();
-    const cardsTotal = useSelector(selectCardsTotal);
+    const allCards = useSelector(selectAllCards);
+    const selectedCard = useSelector(getSelectedCard);
 
     function selectCard(cardNumber) {
-        const adequate = checkIntLimits(cardNumber, 1, cardsTotal);
-        
-        console.log(cardNumber, adequate);
-        dispatch(setSelectedCardIdByNumber(Number(cardNumber)));
-        changeDisplayRange(cardNumber);
+        const adequate = checkIntLimits(cardNumber, 1, allCards.length);
+        const selectedCard = allCards.find(card => card.number === adequate); // yeah, inner one
+        // console.log(selectedCard);
+        dispatch(setSelectedCard(selectedCard));
+        changeDisplayRange(selectedCard.id);
     }
 
     const reverseValue = useSelector(getRerverseValue);
@@ -25,7 +26,7 @@ export default function SearchBar({ changeDisplayRange }) {
                 type="number"
                 name="card-id"
                 className="card-id"
-                value={useSelector(getSelectedCardId)}
+                value={selectedCard.number}
                 onChange={(e) => selectCard(e.target.value)}
             />
 

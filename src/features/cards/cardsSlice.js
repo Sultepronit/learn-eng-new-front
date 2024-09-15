@@ -8,8 +8,8 @@ const initialState = cardsAdapter.getInitialState();
 
 function createNewCard(lastCard) {
     return {
-        number: lastCard.number + 1,
         id: lastCard.id + 1,
+        number: lastCard.number + 1,
         isNew: true,
         word: '',
         transcription: '',
@@ -49,20 +49,8 @@ export const {
     selectAll: selectAllCards,
     // selectIds: selectCardIds,
     selectById: selectCardById,
-    selectTotal: selectCardsTotal
+    // selectTotal: selectCardsTotal
 } = cardsAdapter.getSelectors(state => state.cards);
-
-export const selectCardIdByNumber = createSelector(
-    [
-        selectAllCards,
-        selectCardsTotal,
-        (state, cardNumber) => cardNumber
-    ],
-    (cards, max, cardNumber) => {
-        const adequate = checkIntLimits(cardNumber, 1, max);
-        cards.find(card => card.number === adequate)?.id
-    }
-);
 
 
 export default cardsSlice.reducer;

@@ -26,19 +26,8 @@ export default function ListView() {
         setLastRow(checkIntLimits(value, rowNumber, preparedList.length));
     }
 
-    function setLastRowByCardNumber(cardNumber) {
-        if(cardNumber < 1) return;
-        console.log(cardNumber);
-        const theCardIndex = preparedList.findIndex(
-            // listCardId => listCardId === Number(cardNumber)
-            listCardId => {
-                // console.log(listCardId);
-                if(listCardId === Number(cardNumber)) {
-                    console.log(listCardId, Number(cardNumber))
-                    return true;
-                }
-            }
-        );
+    function setLastRowByCardId(cardId) {
+        const theCardIndex = preparedList.findIndex(listCardId => listCardId === Number(cardId));
         if(theCardIndex < 0) return;
         setLastRowWithCaution(theCardIndex + rowNumber);
     }
@@ -60,7 +49,7 @@ export default function ListView() {
                 refresh
             </button>
             <SearchBar
-                changeDisplayRange={setLastRowByCardNumber}
+                changeDisplayRange={setLastRowByCardId}
             />
             <Table
                 displayRange={displayRange}

@@ -5,7 +5,7 @@ import { fetchCards } from "../cards/cardsThunks";
 
 const initialState = {
     selectedCardId: 0,
-    selectedCardNumber: 0,
+    selectedCard: {},
     reverse: true
 };
 
@@ -13,6 +13,9 @@ const listSlice = createSlice({
     name: 'list',
     initialState,
     reducers: {
+        setSelectedCard: (state, action) => {
+            state.selectedCard = action.payload;
+        },
         setSelectedCardId: (state, action) => {
             state.selectedCardId = action.payload;
         },
@@ -25,28 +28,31 @@ const listSlice = createSlice({
             .addCase(fetchCards.fulfilled, (state, action) => {
                 const lastCard = action.payload[action.payload.length - 1];
                 state.selectedCardId = lastCard.id + 1;
+                state.selectedCard = action.payload[action.payload.length - 1];
             });
     }
 });
 
+export const getSelectedCard = (state) => state.list.selectedCard;
 export const getSelectedCardId = (state) => state.list.selectedCardId;
 export const getRerverseValue = (state) => state.list.reverse;
 
 export const {
+    setSelectedCard,
     setSelectedCardId,
     toggleReverse
 } = listSlice.actions;
 
-const selectCardIdByNumber = createSelector(
-    [selectAllCards, (state, cardNumber) => cardNumber],
-    (cards, cardNumber) => cards.find(card => card.number === cardNumber)?.id
-);
+// const selectCardByNumber = createSelector(
+//     [selectAllCards, (state, cardNumber) => cardNumber],
+//     (cards, cardNumber) => cards.find(card => card.number === cardNumber)
+// );
 
-// thunk, is what this thing called
-export const setSelectedCardIdByNumber = (cardNumber) => (dispatch, getState) => {
-    const id = selectCardIdByNumber(getState(), cardNumber);
-    if(id) dispatch(setSelectedCardId(id));
-}
+// // thunk, is what this thing called
+// export const setSelectedCardByNumber = (cardNumber) => (dispatch, getState) => {
+//     const card = selectCardByNumber(getState(), cardNumber);
+//     dispatch(setSelectedCard(card));
+// }
 
 export const selectPreparedList = createSelector(
     [selectAllCards, (state) => state.list.reverse],

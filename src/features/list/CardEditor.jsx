@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 // import { getSelectedCardId, selectCardById, updateCard, saveNewCard, deleteCard } from "./listSlice";
 // import { getSelectedCardId, selectCardById } from "./listSlice";
-import { getSelectedCardId } from "./listSlice";
+import { getSelectedCard, getSelectedCardId } from "./listSlice";
 import { selectCardById } from "../cards/cardsSlice";
 import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 
 export default function CardEditor() {
     const dispatch = useDispatch();
-    const cardId = useSelector(getSelectedCardId);
-    const card = useSelector(state => selectCardById(state, cardId));
-    // console.log(cardId);
+    // const cardId = useSelector(getSelectedCardId);
+    // const card = useSelector(state => selectCardById(state, cardId));
+    const card = useSelector(getSelectedCard);
     console.log(card);
 
     function update({ name, value }) {
