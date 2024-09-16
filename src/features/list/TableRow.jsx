@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCardById } from "../cards/cardsSlice";
-import { setSelectedCard, setSelectedCardId } from "./listSlice";
+import { setSelectedCard } from "./listSlice";
 
 // export default function TableRow({ card }) {
 // export default function TableRow({ cardId }) {

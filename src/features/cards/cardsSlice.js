@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { fetchCards, updateCard, saveNewCard, deleteCard } from "./cardsThunks";
+import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
+import { setBackup } from "../../services/cardsBackup";
 // import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter();
@@ -19,16 +20,24 @@ function createNewCard(lastCard) {
 }
 
 const updateData = (state, action) => {
-    const lastCard = action.payload[action.payload.length - 1];
+    const data = action.payload.data;
+    const lastCard = data[data.length - 1];
+    console.log(data);
+    console.log(lastCard);
     const list = [
-        ...action.payload,
+        ...data,
         createNewCard(lastCard)
     ];
     cardsAdapter.setAll(state, list);
 
-    // console.time('idb');
-    // initIndexedDb();
-    // console.timeEnd('idb');
+    setBackup(list);
+
+    const dbVersions = {
+        articles: 145,
+        tap: 458,
+        write: 1
+    };
+    localStorage.setItem('dbVersions', JSON.stringify(dbVersions));
 };
 
 const cardsSlice = createSlice({
@@ -37,6 +46,11 @@ const cardsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(restoreCards.fulfilled, (state, action) => {
+                console.timeLog('t', 'use restored');
+                console.log(action.payload);
+                cardsAdapter.setAll(state, action.payload);
+            })
             .addCase(fetchCards.fulfilled, updateData)
             .addCase(updateCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);

@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
-import { fetchCards } from "../cards/cardsThunks";
+import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
     selectedCardId: 0,
@@ -16,19 +16,24 @@ const listSlice = createSlice({
         setSelectedCard: (state, action) => {
             state.selectedCard = action.payload;
         },
-        setSelectedCardId: (state, action) => {
-            state.selectedCardId = action.payload;
-        },
+        // setSelectedCardId: (state, action) => {
+        //     state.selectedCardId = action.payload;
+        // },
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCards.fulfilled, (state, action) => {
-                const lastCard = action.payload[action.payload.length - 1];
-                state.selectedCardId = lastCard.id + 1;
+            .addCase(restoreCards.fulfilled, (state, action) => {
                 state.selectedCard = action.payload[action.payload.length - 1];
+            })
+            .addCase(fetchCards.fulfilled, (state, action) => {
+                // const lastCard = action.payload[action.payload.length - 1];
+                // state.selectedCardId = lastCard.id + 1;
+                // state.selectedCard = action.payload[action.payload.length - 1];
+                const data = action.payload.data;
+                state.selectedCard = data[data.length - 1];
             });
     }
 });
@@ -39,7 +44,7 @@ export const getRerverseValue = (state) => state.list.reverse;
 
 export const {
     setSelectedCard,
-    setSelectedCardId,
+    // setSelectedCardId,
     toggleReverse
 } = listSlice.actions;
 

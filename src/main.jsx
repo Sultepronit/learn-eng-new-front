@@ -5,6 +5,7 @@ import './index.css'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
 import { openLocalDb } from './features/cards/indexedDbHandler.js'
+import { restoreCards } from './features/cards/cardsThunks.js'
 
 // ReactDOM.createRoot(document.getElementById('root')).render(
 //   <React.StrictMode>
@@ -14,14 +15,11 @@ import { openLocalDb } from './features/cards/indexedDbHandler.js'
 //   </React.StrictMode>,
 // )
 
-console.log('So, here we go!');
 
-console.time('idb');
-  // await openLocalDb();
-  openLocalDb();
-  // initIndexedDb();
-// console.timeEnd('idb');
-console.timeLog('idb');
+console.time('t');
+console.timeLog('t', 'start');
+store.dispatch(restoreCards());
+console.timeLog('t', 'called restore');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>

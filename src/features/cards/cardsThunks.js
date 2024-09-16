@@ -2,29 +2,39 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 import { getCardsList, setCardsList } from "./indexedDbHandler";
+import { restoreBackup } from "../../services/cardsBackup";
 
-export const fetchCards = createAsyncThunk('cards/fetchData', async () => {
-    console.timeLog('idb');
-    // return await fetchWithFeatures('/words');
-    const localList = await getCardsList();
-    console.log(localList);
-    console.timeLog('idb', 'received the local list');
-    if(localList?.length) return localList;
-    
-    console.log('Fetching remote list...');
+export const restoreCards = createAsyncThunk(
+    'cards/restoreCards',
+    async () => {
+        console.timeLog('t', 'start restore');
+        // return await restoreBackup();
+        const cards = await restoreBackup();
+        console.timeLog('t', 'end restore');
+        return cards;
+    }
+);
 
-    const list = await fetchWithFeatures('/words');
+export const fetchCards = createAsyncThunk('cards/fetchCards', async () => {
+    let path = '/words';
+    console.timeLog('t', 'pull versions');
+    const dbVersions = JSON.parse(localStorage.getItem('dbVersions'));
+    console.log(dbVersions);
+    if(dbVersions) {
+        const { articles, tap, write } = dbVersions;
+        path += `?articles=${articles}&tap=${tap}&write=${write}`;
+    }
 
-    // console.time('idb');
-    console.timeLog('idb');
-    setCardsList(list);
-    console.timeLog('idb', 'set data?');
-    // console.timeEnd('idb');
+    console.timeLog('t', 'start fetching remote');
+    // const list = await fetchWithFeatures('/words?aa=bb');
+    const list = await fetchWithFeatures(path);
+    // setCardsList(list);
+    console.timeLog('t', 'end fetching remote');
     return list;
 });
 
 export const updateCard = createAsyncThunk(
-    'list/updateCard',
+    'cards/updateCard',
     async ({ id, changes }) => {
         console.log('Saving...', JSON.stringify(changes));
         return await updateWithQueue(`/words/${id}`, changes);
