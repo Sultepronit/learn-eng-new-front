@@ -4,7 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
-import { openLocalDb } from './features/cards/indexedDbHandler.js'
+// import { openLocalDb } from './features/cards/indexedDbHandler.js'
 import { restoreCards } from './features/cards/cardsThunks.js'
 
 // ReactDOM.createRoot(document.getElementById('root')).render(

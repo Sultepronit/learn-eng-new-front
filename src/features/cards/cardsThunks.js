@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
-import { getCardsList, setCardsList } from "./indexedDbHandler";
+// import { getCardsList, setCardsList } from "./indexedDbHandler";
 import { restoreBackup } from "../../services/cardsBackup";
 
 export const restoreCards = createAsyncThunk(
@@ -15,18 +15,15 @@ export const restoreCards = createAsyncThunk(
     }
 );
 
-export const fetchCards = createAsyncThunk('cards/fetchCards', async () => {
+export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion) => {
     let path = '/words';
-    console.timeLog('t', 'pull versions');
-    const dbVersions = JSON.parse(localStorage.getItem('dbVersions'));
-    console.log(dbVersions);
-    if(dbVersions) {
-        const { articles, tap, write } = dbVersions;
+
+    if(dbVersion) {
+        const { articles, tap, write } = dbVersion;
         path += `?articles=${articles}&tap=${tap}&write=${write}`;
     }
 
     console.timeLog('t', 'start fetching remote');
-    // const list = await fetchWithFeatures('/words?aa=bb');
     const list = await fetchWithFeatures(path);
     // setCardsList(list);
     console.timeLog('t', 'end fetching remote');

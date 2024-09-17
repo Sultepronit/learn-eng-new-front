@@ -7,12 +7,17 @@ import { selectPreparedList } from './listSlice.js';
 import { fetchCards } from '../cards/cardsThunks.js';
 import SearchBar from './SearchBar.jsx';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
+import { selectDbVersion } from '../cards/cardsSlice.js';
 
 export default function ListView() {
     const dispatch = useDispatch();
+    const dbVersion = useSelector(selectDbVersion);
+    // console.log(dbVersion);
 
     useEffect(() => {
-        dispatch(fetchCards());
+        console.log('Here we go!');
+        dispatch(fetchCards(dbVersion));
+    // }, [dispatch, dbVersion]);
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);
@@ -43,7 +48,7 @@ export default function ListView() {
     const template = (
         <section>
             <CardEditor />
-            <button onClick={() => dispatch(fetchCards())}>
+            <button onClick={() => dispatch(fetchCards(dbVersion))}>
                 refresh
             </button>
             <SearchBar

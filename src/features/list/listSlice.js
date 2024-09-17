@@ -29,11 +29,10 @@ const listSlice = createSlice({
                 state.selectedCard = action.payload[action.payload.length - 1];
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
-                // const lastCard = action.payload[action.payload.length - 1];
-                // state.selectedCardId = lastCard.id + 1;
-                // state.selectedCard = action.payload[action.payload.length - 1];
-                const data = action.payload.data;
-                state.selectedCard = data[data.length - 1];
+                if(action.payload.totalUpdate) {
+                    const data = action.payload.data;
+                    state.selectedCard = data[data.length - 1];
+                }
             });
     }
 });

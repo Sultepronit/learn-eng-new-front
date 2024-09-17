@@ -45,7 +45,7 @@ export function setBackup(list) {
     }
     const transaction = db.transaction('cards', 'readwrite');
     const cards = transaction.objectStore('cards');
-    // cards.clear();
+    cards.clear();
     for(const card of list) {
         const request = cards.put(card);
         request.onerror = () => console.warn(request.error);

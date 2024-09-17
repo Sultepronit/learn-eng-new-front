@@ -5,7 +5,13 @@ import { setBackup } from "../../services/cardsBackup";
 // import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter();
-const initialState = cardsAdapter.getInitialState();
+const initialState = cardsAdapter.getInitialState({
+    dbVersion: {
+        articles: 145,
+        tap: 12,
+        write: 14
+    }
+});
 
 function createNewCard(lastCard) {
     return {
@@ -20,24 +26,27 @@ function createNewCard(lastCard) {
 }
 
 const updateData = (state, action) => {
-    const data = action.payload.data;
-    const lastCard = data[data.length - 1];
-    console.log(data);
-    console.log(lastCard);
-    const list = [
-        ...data,
-        createNewCard(lastCard)
-    ];
-    cardsAdapter.setAll(state, list);
+    console.log(action.payload);
+    if(!action.payload.dbVersion) return;
 
-    setBackup(list);
+    // logProxy(state);
+    let data = action.payload.data;
 
-    const dbVersions = {
-        articles: 145,
-        tap: 458,
-        write: 1
-    };
-    localStorage.setItem('dbVersions', JSON.stringify(dbVersions));
+    if(action.payload.totalUpdate) {
+        const lastCard = data[data.length - 1];
+        data = [...data, createNewCard(lastCard)];
+        cardsAdapter.setAll(state, data);
+    } else {
+        cardsAdapter.upsertMany(state, data);
+    }
+
+    const dbVersion = { ...state.dbVersion, ...action.payload.dbVersion };
+    console.log(dbVersion);
+    state.dbVersion = dbVersion;
+
+    setBackup(data);
+
+    // localStorage.setItem('dbVersions', JSON.stringify(dbVersions));
 };
 
 const cardsSlice = createSlice({
@@ -48,7 +57,7 @@ const cardsSlice = createSlice({
         builder
             .addCase(restoreCards.fulfilled, (state, action) => {
                 console.timeLog('t', 'use restored');
-                console.log(action.payload);
+                // console.log(action.payload);
                 cardsAdapter.setAll(state, action.payload);
             })
             .addCase(fetchCards.fulfilled, updateData)
@@ -62,6 +71,8 @@ const cardsSlice = createSlice({
             .addCase(deleteCard.fulfilled, updateData);
     }
 });
+
+export const selectDbVersion = (state) => state.cards.dbVersion;
 
 export const {
     selectAll: selectAllCards,
