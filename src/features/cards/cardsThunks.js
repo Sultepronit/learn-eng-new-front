@@ -40,9 +40,9 @@ export const updateCard = createAsyncThunk(
 
 export const saveNewCard = createAsyncThunk(
     'cards/saveNewCard',
-    async ({ id, changes }) => {
+    async ({ id }) => {
         console.log('new card ', id);
-        return await updateWithQueue('/words', changes, 'POST');
+        return await updateWithQueue('/cards', id, 'POST');
     }
 );
 

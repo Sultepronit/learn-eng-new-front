@@ -19,7 +19,7 @@ function createNewCard(lastCard) {
     return {
         // id: lastCard.id + 1,
         number: lastCard.number + 1,
-        newCard: 'local',
+        // newCard: 'local',
         word: '',
         transcription: '',
         translation: '',
@@ -68,8 +68,21 @@ const cardsSlice = createSlice({
                 cardsAdapter.updateOne(state, action.meta.arg);
             })
             .addCase(saveNewCard.pending, (state, action) => {
-                cardsAdapter.updateOne(state, action.meta.arg);
+                console.log(action.meta.arg);
+                const data = action.meta.arg;
+                data.changes.dbid = -1;
+                cardsAdapter.updateOne(state, data);
                 cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
+            })
+            .addCase(saveNewCard.fulfilled, (state, action) => {
+                console.log(action.meta.arg);
+                console.log(action.payload);
+                // console.log(action);
+            })
+            .addCase(updateCard.fulfilled, (state, action) => {
+                console.log(action.meta.arg);
+                console.log(action.payload);
+                // console.log(action);
             })
             .addCase(deleteCard.fulfilled, updateData);
     }

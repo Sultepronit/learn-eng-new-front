@@ -19,16 +19,21 @@ export default function CardEditor() {
 
     function update({ name, value }) {
         const data = {
-            id: card.id,
+            // id: card.id,
+            id: card.number,
             changes: {
                 [name]: value
             }
         };
         console.log(data);
+        // const changes = {
+        //     [name]: value
+        // };
 
-        if (card?.newCard === 'local') {
-            data.changes.newCard = 'posting';
+        if (!('dbid' in card)) {
+            console.log('here we go!');
             dispatch(saveNewCard(data));
+            // dispatch(saveNewCard({ cardNumber: card.number, changes }));
         } else {
             if(card?.newCard === 'posting') {
                 console.log('Here we go!');
