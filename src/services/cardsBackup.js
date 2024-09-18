@@ -2,13 +2,16 @@ let db = null;
 
 function openLocalDb() {
     return new Promise((resolve, reject) => {
-        const openRequest = indexedDB.open('db', 2);
+        const openRequest = indexedDB.open('db', 5);
 
         openRequest.onupgradeneeded = () => {
             console.log('upgrading!');
             const newDb = openRequest.result;
             if(!newDb.objectStoreNames.contains('cards')) {
-                newDb.createObjectStore('cards', { keyPath: 'id' });
+                // newDb.createObjectStore('cards', { keyPath: 'id' });
+                newDb.createObjectStore('cards', { keyPath: 'number' });
+            } else {
+                newDb.createObjectStore('cards', { keyPath: 'number' }); // for some time...
             }
         };
 

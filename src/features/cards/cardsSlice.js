@@ -4,7 +4,9 @@ import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from ".
 import { setBackup } from "../../services/cardsBackup";
 // import { initIndexedDb } from "./indexedDbHandler";
 
-const cardsAdapter = createEntityAdapter();
+const cardsAdapter = createEntityAdapter({
+    selectId: (card) => card.number
+});
 const initialState = cardsAdapter.getInitialState({
     dbVersion: {
         articles: 14,
@@ -15,7 +17,7 @@ const initialState = cardsAdapter.getInitialState({
 
 function createNewCard(lastCard) {
     return {
-        id: lastCard.id + 1,
+        // id: lastCard.id + 1,
         number: lastCard.number + 1,
         newCard: 'local',
         word: '',
@@ -35,6 +37,7 @@ const updateData = (state, action) => {
     if(action.payload.totalUpdate) {
         const lastCard = data[data.length - 1];
         data = [...data, createNewCard(lastCard)];
+        console.log('about to set new list');
         cardsAdapter.setAll(state, data);
     } else {
         cardsAdapter.upsertMany(state, data);
@@ -77,8 +80,9 @@ export const selectDbVersion = (state) => state.cards.dbVersion;
 export const {
     selectAll: selectAllCards,
     // selectIds: selectCardIds,
-    selectById: selectCardById,
-    // selectTotal: selectCardsTotal
+    // selectById: selectCardById,
+    selectById: selectCardByNumber,
+    selectTotal: selectCardsTotal
 } = cardsAdapter.getSelectors(state => state.cards);
 
 

@@ -15,7 +15,7 @@ export default function ListView() {
     // console.log(dbVersion);
 
     useEffect(() => {
-        console.log('Here we go!');
+        // console.log('Here we go!');
         dispatch(fetchCards(dbVersion));
     // }, [dispatch, dbVersion]);
     }, [dispatch]);
@@ -29,16 +29,23 @@ export default function ListView() {
         setLastRow(checkIntLimits(value, rowNumber, preparedList.length));
     }
 
-    function setLastRowByCardId(cardId) {
-        const theCardIndex = preparedList.findIndex(listCardId => listCardId === Number(cardId));
-        if(theCardIndex < 0) return;
-        setLastRowWithCaution(theCardIndex + rowNumber);
+    // function setLastRowByCardId(cardId) {
+    //     const theCardIndex = preparedList.findIndex(listCardId => listCardId === Number(cardId));
+    //     if(theCardIndex < 0) return;
+    //     setLastRowWithCaution(theCardIndex + rowNumber);
+    // }
+
+    function setLastRowByCardNumber(inputNumber) {
+        const foundIndex = preparedList.findIndex(cardNumber => cardNumber === Number(inputNumber));
+        if(foundIndex < 0) return;
+        setLastRowWithCaution(foundIndex + rowNumber);
     }
 
     useEffect(() => {
         setLastRow(rowNumber);
     }, [preparedList, dispatch]);
 
+    // is't this slice member???
     const displayRange = useMemo(() => {
         const result = preparedList.slice(lastRow - rowNumber, lastRow);
         // console.log(result);
@@ -52,7 +59,8 @@ export default function ListView() {
                 refresh
             </button>
             <SearchBar
-                changeDisplayRange={setLastRowByCardId}
+                // changeDisplayRange={setLastRowByCardId}
+                changeDisplayRange={setLastRowByCardNumber}
             />
             <Table
                 displayRange={displayRange}
