@@ -25,7 +25,7 @@ const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
             // onClick={() => dispatch(setSelectedCardId(card.id))}
             onClick={() => dispatch(setSelectedCard(card))}
         >
-            <p className="cell text-right">{card.id}</p>
+            <p className="cell text-right">{card.number}</p>
 
             <p className="cell text-right">{card.tapStatus}</p>
             <p className="cell text-center">{card.tapFProgress}</p>

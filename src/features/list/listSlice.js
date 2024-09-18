@@ -4,7 +4,7 @@ import { selectAllCards } from "../cards/cardsSlice";
 import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
-    selectedCardId: 0,
+    // selectedCardId: 0,
     selectedCard: {},
     reverse: true
 };
@@ -15,10 +15,8 @@ const listSlice = createSlice({
     reducers: {
         setSelectedCard: (state, action) => {
             state.selectedCard = action.payload;
+            console.log(action.payload);
         },
-        // setSelectedCardId: (state, action) => {
-        //     state.selectedCardId = action.payload;
-        // },
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
         }
@@ -26,7 +24,11 @@ const listSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(restoreCards.fulfilled, (state, action) => {
-                state.selectedCard = action.payload[action.payload.length - 1];
+                if(action.payload.length) {
+                    // console.log(action.payload);
+                    // console.log(action.payload[action.payload.length - 1]);
+                    state.selectedCard = action.payload[action.payload.length - 1];
+                }
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
                 if(action.payload.totalUpdate) {
@@ -38,7 +40,7 @@ const listSlice = createSlice({
 });
 
 export const getSelectedCard = (state) => state.list.selectedCard;
-export const getSelectedCardId = (state) => state.list.selectedCardId;
+export const getSelectedCardId = (state) => state.list.selectedCard.id;
 export const getRerverseValue = (state) => state.list.reverse;
 
 export const {

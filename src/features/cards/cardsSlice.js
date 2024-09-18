@@ -7,7 +7,7 @@ import { setBackup } from "../../services/cardsBackup";
 const cardsAdapter = createEntityAdapter();
 const initialState = cardsAdapter.getInitialState({
     dbVersion: {
-        articles: 145,
+        articles: 14,
         tap: 12,
         write: 14
     }
@@ -17,7 +17,7 @@ function createNewCard(lastCard) {
     return {
         id: lastCard.id + 1,
         number: lastCard.number + 1,
-        isNew: true,
+        newCard: 'local',
         word: '',
         transcription: '',
         translation: '',

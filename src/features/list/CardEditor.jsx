@@ -8,10 +8,10 @@ import LazyTextInput from "../../components/LazyTextInput";
 
 export default function CardEditor() {
     const dispatch = useDispatch();
-    // const cardId = useSelector(getSelectedCardId);
-    // const card = useSelector(state => selectCardById(state, cardId));
-    const card = useSelector(getSelectedCard);
-    console.log(card);
+    const cardId = useSelector(getSelectedCardId);
+    const card = useSelector(state => selectCardById(state, cardId));
+    // const card = useSelector(getSelectedCard);
+    // console.log(card);
 
     function update({ name, value }) {
         const data = {
@@ -22,10 +22,13 @@ export default function CardEditor() {
         };
         console.log(data);
 
-        if (card.isNew) {
-            data.changes.isNew = false;
+        if (card?.newCard === 'local') {
+            data.changes.newCard = 'posting';
             dispatch(saveNewCard(data));
         } else {
+            if(card?.newCard === 'posting') {
+                console.log('Here we go!');
+            }
             dispatch(updateCard(data));
         }
     }

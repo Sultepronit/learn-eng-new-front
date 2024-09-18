@@ -16,7 +16,7 @@ export const restoreCards = createAsyncThunk(
 );
 
 export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion) => {
-    let path = '/words';
+    let path = '/cards';
 
     if(dbVersion) {
         const { articles, tap, write } = dbVersion;
@@ -50,6 +50,6 @@ export const deleteCard = createAsyncThunk(
     'cards/deleteCard',
     async (id) => {
         console.log('deleting card', id);
-        return await fetchWithFeatures(`/words/${id}`, 'DELETE', null, false);
+        return await fetchWithFeatures(`/cards/${id}`, 'DELETE', null, false);
     }
 );
