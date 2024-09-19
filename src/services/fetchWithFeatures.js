@@ -11,7 +11,10 @@ async function fetchWithFeatures(path, method, inputData, refetch = true) {
         
     const options = {
         method,
-        body: inputData ? JSON.stringify(inputData) : null
+        body: inputData ? JSON.stringify(inputData) : null,
+        headers: {
+            'Content-Type': 'application/json'
+        }
     };
 
     try {

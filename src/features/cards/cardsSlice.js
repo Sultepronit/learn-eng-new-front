@@ -3,6 +3,7 @@ import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
 import { setBackup } from "../../services/cardsBackup";
 import { useDispatch } from "react-redux";
+import removeNullFields from "../../helpers/removeNullFields";
 // import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter({
@@ -73,19 +74,15 @@ const cardsSlice = createSlice({
                 cardsAdapter.updateOne(state, action.meta.arg);
             })
             .addCase(saveNewCard.pending, (state, action) => {
-                // console.log(action.meta.arg);
-                // const update = action.meta.arg;
-                // // update.changes.dbid = -1;
-                // console.log(update);
-                // console.log(update.changes);
                 cardsAdapter.updateOne(state, action.meta.arg);
                 cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
             })
             .addCase(saveNewCard.fulfilled, (state, action) => {
                 const update = action.meta.arg;
-                update.changes = action.payload.card;
-                console.log(action.meta.arg.id, action.payload);
-                // console.log(update);
+                // update.changes = action.payload.card;
+                update.changes = removeNullFields(action.payload.card); // move to server!
+                // console.log(action.meta.arg.id, action.payload);
+                console.log(update);
                 cardsAdapter.updateOne(state, update);
             })
             .addCase(deleteCard.fulfilled, updateData);

@@ -55,8 +55,7 @@ export const saveNewCard = createAsyncThunk(
         console.log('new card ', cardNumber);
         
         // We are sending just card number to create new card on server.
-        // const dbCard = await fetchWithFeatures('/cards', 'POST', cardNumber);
-        const result = await fetchWithFeatures('/cards', 'POST', cardNumber);
+        const result = await fetchWithFeatures('/cards', 'POST', { cardNumber });
         console.log('dbCard', result.card);
 
         // Now, we can get the local card with all its changes that couldn't be updated without dbid.
