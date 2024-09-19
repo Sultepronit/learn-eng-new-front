@@ -47,19 +47,19 @@ const listSlice = createSlice({
     }
 });
 
-// export const getSelectedCard = (state) => state.list.selectedCard;
-// export const getSelectedCardId = (state) => state.list.selectedCard.id;
-// export const getSelectedCardId = (state) => state.list.selectedCard.number;
-// export const getSelectedCardNumber = (state) => state.list.selectedCard.number;
-export const getSelectedCardNumber = (state) => state.list.selectedCardNumber;
-export const getRerverseValue = (state) => state.list.reverse;
-
 export const {
     // setSelectedCard,
     // setSelectedCardId,
     setSelectedCardNumber,
     toggleReverse
 } = listSlice.actions;
+
+// export const getSelectedCard = (state) => state.list.selectedCard;
+// export const getSelectedCardId = (state) => state.list.selectedCard.id;
+// export const getSelectedCardId = (state) => state.list.selectedCard.number;
+// export const getSelectedCardNumber = (state) => state.list.selectedCard.number;
+export const getSelectedCardNumber = (state) => state.list.selectedCardNumber;
+export const getRerverseValue = (state) => state.list.reverse;
 
 export const selectPreparedList = createSelector(
     [selectAllCards, (state) => state.list.reverse],

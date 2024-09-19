@@ -2,6 +2,7 @@ import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolk
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
 import { setBackup } from "../../services/cardsBackup";
+import { useDispatch } from "react-redux";
 // import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter({
@@ -17,9 +18,8 @@ const initialState = cardsAdapter.getInitialState({
 
 function createNewCard(lastCard) {
     return {
-        // id: lastCard.id + 1,
+        dbid: -1,
         number: lastCard.number + 1,
-        // newCard: 'local',
         word: '',
         transcription: '',
         translation: '',
@@ -55,7 +55,14 @@ const updateData = (state, action) => {
 const cardsSlice = createSlice({
     name: 'cards',
     initialState,
-    reducers: {},
+    reducers: {
+        updateCardLocally: (state, action) => {
+            // console.log('Here we go?');
+            // console.log(action);
+            cardsAdapter.updateOne(state, action.payload);
+            // add IndexedDB part!
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(restoreCards.fulfilled, (state, action) => {
@@ -65,28 +72,32 @@ const cardsSlice = createSlice({
             })
             .addCase(fetchCards.fulfilled, updateData)
             .addCase(updateCard.pending, (state, action) => {
+                // console.log('updating', action.meta.arg.changes);
                 cardsAdapter.updateOne(state, action.meta.arg);
             })
             .addCase(saveNewCard.pending, (state, action) => {
-                console.log(action.meta.arg);
-                const data = action.meta.arg;
-                data.changes.dbid = -1;
-                cardsAdapter.updateOne(state, data);
+                // console.log(action.meta.arg);
+                // const update = action.meta.arg;
+                // // update.changes.dbid = -1;
+                // console.log(update);
+                // console.log(update.changes);
+                cardsAdapter.updateOne(state, action.meta.arg);
                 cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
             })
             .addCase(saveNewCard.fulfilled, (state, action) => {
-                console.log(action.meta.arg);
-                console.log(action.payload);
-                // console.log(action);
-            })
-            .addCase(updateCard.fulfilled, (state, action) => {
-                console.log(action.meta.arg);
-                console.log(action.payload);
-                // console.log(action);
+                const update = action.meta.arg;
+                update.changes = action.payload;
+                console.log(action.meta.arg.id, action.payload);
+                // console.log(update);
+                cardsAdapter.updateOne(state, update);
             })
             .addCase(deleteCard.fulfilled, updateData);
     }
 });
+
+export const {
+    updateCardLocally
+} = cardsSlice.actions;
 
 export const selectDbVersion = (state) => state.cards.dbVersion;
 

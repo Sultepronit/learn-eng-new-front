@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 import { getSelectedCardNumber } from "./listSlice";
-import { selectCardByNumber } from "../cards/cardsSlice";
+import { selectCardByNumber, updateCardLocally } from "../cards/cardsSlice";
 
 export default function CardEditor() {
     const dispatch = useDispatch();
@@ -21,25 +21,22 @@ export default function CardEditor() {
         const data = {
             // id: card.id,
             id: card.number,
+            dbid: card.dbid,
             changes: {
                 [name]: value
             }
         };
         console.log(data);
-        // const changes = {
-        //     [name]: value
-        // };
 
-        if (!('dbid' in card)) {
-            console.log('here we go!');
-            dispatch(saveNewCard(data));
-            // dispatch(saveNewCard({ cardNumber: card.number, changes }));
-        } else {
-            if(card?.newCard === 'posting') {
-                console.log('Here we go!');
-            }
+        if (card.dbid < 0) { // if card is absolutely new, we are trying to create it on server
+            data.changes.dbid = 0; 
+            dispatch(saveNewCard(data)); 
+        } else if(card.dbid === 0) { // saving changes locally, while waiting for card to be created on server
+            dispatch(updateCardLocally(data));
+        } else if(card.dbid > 0) { // existing card is normally updated
             dispatch(updateCard(data));
         }
+
     }
 
     function handleDelete() {

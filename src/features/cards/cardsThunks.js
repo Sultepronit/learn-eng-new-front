@@ -3,6 +3,7 @@ import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 // import { getCardsList, setCardsList } from "./indexedDbHandler";
 import { restoreBackup } from "../../services/cardsBackup";
+import { selectCardByNumber } from "./cardsSlice";
 
 export const restoreCards = createAsyncThunk(
     'cards/restoreCards',
@@ -32,17 +33,45 @@ export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion)
 
 export const updateCard = createAsyncThunk(
     'cards/updateCard',
-    async ({ id, changes }) => {
+    async ({ dbid, changes }) => {
         console.log('Saving...', JSON.stringify(changes));
-        return await updateWithQueue(`/words/${id}`, changes);
+        return await updateWithQueue(`/words/${dbid}`, changes);
     }
 );
 
+function filterChanges(card) {
+    let changes = {};
+    for(const field in card) {
+        if(field === 'dbid' || field === 'number') continue;
+        if(!card[field]) continue;
+        changes[field] = card[field];
+    }
+    return changes;
+}
+
 export const saveNewCard = createAsyncThunk(
     'cards/saveNewCard',
-    async ({ id }) => {
-        console.log('new card ', id);
-        return await updateWithQueue('/cards', id, 'POST');
+    async ({ id: cardNumber }, { dispatch, getState }) => {
+        console.log('new card ', cardNumber);
+        
+        // We are sending just card number to create new card on server.
+        const dbCard = await fetchWithFeatures('/cards', 'POST', cardNumber);
+        console.log('dbCard', dbCard);
+
+        // Now, we can get the local card with all its changes that couldn't be updated without dbid.
+        const localCard = selectCardByNumber(getState(), cardNumber);
+        console.log('localCard', localCard);
+
+        // The dbid would be set to the card inside the cardSlice just in a moment.
+        // That should allow all the next updates to be normally implemented.
+
+        // All the changes made till now, would be saved with next lines,
+        // and we'll wait for a little more time, for not to miss some.
+        setTimeout(() => {
+            dispatch(updateCard({ dbid: dbCard.dbid, changes: filterChanges(localCard) }));
+        }, 200);
+
+        return dbCard;
     }
 );
 

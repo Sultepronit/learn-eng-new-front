@@ -6,12 +6,14 @@ function openLocalDb() {
 
         openRequest.onupgradeneeded = () => {
             console.log('upgrading!');
-            const newDb = openRequest.result;
-            if(!newDb.objectStoreNames.contains('cards')) {
+            // const db = openRequest.result;
+            db = openRequest.result;
+            if(!db.objectStoreNames.contains('cards')) {
                 // newDb.createObjectStore('cards', { keyPath: 'id' });
-                newDb.createObjectStore('cards', { keyPath: 'number' });
+                db.createObjectStore('cards', { keyPath: 'number' });
             } else {
-                newDb.createObjectStore('cards', { keyPath: 'number' }); // for some time...
+                db.deleteObjectStore('cards');
+                db.createObjectStore('cards', { keyPath: 'number' }); // for some time...
             }
         };
 
