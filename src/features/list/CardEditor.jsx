@@ -42,7 +42,7 @@ export default function CardEditor() {
     function handleDelete() {
         if(!confirm('Delete this card?')) return;
 
-        dispatch(deleteCard(card.id));
+        dispatch(deleteCard(card.dbid));
     }
 
     return (

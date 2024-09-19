@@ -38,7 +38,7 @@ export async function restoreBackup() {
 
     return new Promise((resolve, reject) => {
         request.onsuccess = () => resolve(request.result);
-        request.onerror = () => resolve(request.error);
+        request.onerror = () => reject(request.error);
     });
 }
 

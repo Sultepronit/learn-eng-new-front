@@ -57,10 +57,7 @@ const cardsSlice = createSlice({
     initialState,
     reducers: {
         updateCardLocally: (state, action) => {
-            // console.log('Here we go?');
-            // console.log(action);
             cardsAdapter.updateOne(state, action.payload);
-            // add IndexedDB part!
         }
     },
     extraReducers: (builder) => {
@@ -86,7 +83,7 @@ const cardsSlice = createSlice({
             })
             .addCase(saveNewCard.fulfilled, (state, action) => {
                 const update = action.meta.arg;
-                update.changes = action.payload;
+                update.changes = action.payload.card;
                 console.log(action.meta.arg.id, action.payload);
                 // console.log(update);
                 cardsAdapter.updateOne(state, update);

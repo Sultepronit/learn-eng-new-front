@@ -55,8 +55,9 @@ export const saveNewCard = createAsyncThunk(
         console.log('new card ', cardNumber);
         
         // We are sending just card number to create new card on server.
-        const dbCard = await fetchWithFeatures('/cards', 'POST', cardNumber);
-        console.log('dbCard', dbCard);
+        // const dbCard = await fetchWithFeatures('/cards', 'POST', cardNumber);
+        const result = await fetchWithFeatures('/cards', 'POST', cardNumber);
+        console.log('dbCard', result.card);
 
         // Now, we can get the local card with all its changes that couldn't be updated without dbid.
         const localCard = selectCardByNumber(getState(), cardNumber);
@@ -68,10 +69,10 @@ export const saveNewCard = createAsyncThunk(
         // All the changes made till now, would be saved with next lines,
         // and we'll wait for a little more time, for not to miss some.
         setTimeout(() => {
-            dispatch(updateCard({ dbid: dbCard.dbid, changes: filterChanges(localCard) }));
+            dispatch(updateCard({ dbid: result.card.dbid, changes: filterChanges(localCard) }));
         }, 200);
 
-        return dbCard;
+        return result;
     }
 );
 
