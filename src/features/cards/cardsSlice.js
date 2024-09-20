@@ -1,20 +1,19 @@
-import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
 import { setBackup } from "../../services/cardsBackup";
-import { useDispatch } from "react-redux";
 import removeNullFields from "../../helpers/removeNullFields";
-// import { initIndexedDb } from "./indexedDbHandler";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
 });
+
+// const dbVersion = JSON.parse(localStorage.getItem('dbVersion')) || {};
+const dbVersion = JSON.parse(localStorage.getItem('dbVersion'));
+console.log('saved version:', dbVersion);
+
 const initialState = cardsAdapter.getInitialState({
-    dbVersion: {
-        articles: 14,
-        tap: 12,
-        write: 14
-    }
+    dbVersion
 });
 
 function createNewCard(lastCard) {
@@ -29,8 +28,8 @@ function createNewCard(lastCard) {
 }
 
 const updateData = (state, action) => {
-    console.log(action.payload);
-    if(!action.payload.dbVersion) return;
+    console.log('data:', action.payload);
+    if(!action.payload.version) return;
 
     // logProxy(state);
     let data = action.payload.data;
@@ -38,19 +37,17 @@ const updateData = (state, action) => {
     if(action.payload.totalUpdate) {
         const lastCard = data[data.length - 1];
         data = [...data, createNewCard(lastCard)];
-        console.log('about to set new list');
         cardsAdapter.setAll(state, data);
     } else {
         cardsAdapter.upsertMany(state, data);
     }
 
-    const dbVersion = { ...state.dbVersion, ...action.payload.dbVersion };
-    console.log(dbVersion);
+    const dbVersion = { ...state.dbVersion, ...action.payload.version };
     state.dbVersion = dbVersion;
+    console.log('new version:', dbVersion);
 
-    setBackup(data);
-
-    // localStorage.setItem('dbVersions', JSON.stringify(dbVersions));
+    console.log(data);
+    setBackup(data, dbVersion);
 };
 
 const cardsSlice = createSlice({
@@ -64,14 +61,19 @@ const cardsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(restoreCards.fulfilled, (state, action) => {
-                console.timeLog('t', 'use restored');
-                // console.log(action.payload);
+                if(state.ids.length) {
+                    console.log('It seems, that fetching was faster & resotred data is\'t in need');
+                    return;
+                }
                 cardsAdapter.setAll(state, action.payload);
+                console.log('resotred:', action.payload);
             })
             .addCase(fetchCards.fulfilled, updateData)
             .addCase(updateCard.pending, (state, action) => {
-                // console.log('updating', action.meta.arg.changes);
                 cardsAdapter.updateOne(state, action.meta.arg);
+            })
+            .addCase(updateCard.fulfilled, (state, action) => {
+                console.log(action.payload);
             })
             .addCase(saveNewCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);

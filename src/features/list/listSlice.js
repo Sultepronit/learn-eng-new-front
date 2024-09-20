@@ -28,7 +28,6 @@ const listSlice = createSlice({
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
                 if(action.payload.totalUpdate) {
-                    console.log('about to select new card');
                     state.selectedCardNumber = action.payload.data.length + 1;
                 }
             });

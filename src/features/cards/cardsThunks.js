@@ -26,7 +26,6 @@ export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion)
 
     console.timeLog('t', 'start fetching remote');
     const list = await fetchWithFeatures(path);
-    // setCardsList(list);
     console.timeLog('t', 'end fetching remote');
     return list;
 });

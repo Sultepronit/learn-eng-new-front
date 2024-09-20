@@ -17,9 +17,7 @@ import { restoreCards } from './features/cards/cardsThunks.js'
 
 
 console.time('t');
-console.timeLog('t', 'start');
 store.dispatch(restoreCards());
-console.timeLog('t', 'called restore');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>

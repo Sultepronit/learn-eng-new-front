@@ -6,14 +6,15 @@ const queue = [];
 // recursively fetch all the updates stored in the queue, chronologically
 async function emptyQueue() {
     const { path, data, method } = queue[0];
-    await fetchWithFeatures(path, method, data);
+    const result = await fetchWithFeatures(path, method, data);
     
     queue.shift();
     localStorage.setItem('updateQueue', JSON.stringify(queue));
 
     if(!queue.length) {
         localStorage.removeItem('updateQueue');
-        return 'Saved whole the queue!';
+        // return 'Saved whole the queue!';
+        return result;
     }
 
     return await emptyQueue();

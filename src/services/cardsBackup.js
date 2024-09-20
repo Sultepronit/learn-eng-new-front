@@ -5,8 +5,7 @@ function openLocalDb() {
         const openRequest = indexedDB.open('db', 5);
 
         openRequest.onupgradeneeded = () => {
-            console.log('upgrading!');
-            // const db = openRequest.result;
+            console.log('upgrading indexedDB!');
             db = openRequest.result;
             if(!db.objectStoreNames.contains('cards')) {
                 // newDb.createObjectStore('cards', { keyPath: 'id' });
@@ -24,7 +23,7 @@ function openLocalDb() {
 
         openRequest.onsuccess = () => {
             db = openRequest.result;
-            console.log(db)
+            console.log('opened indexedDB!');
             resolve('Success!');
         }
     });
@@ -42,21 +41,33 @@ export async function restoreBackup() {
     });
 }
 
-export function setBackup(list) {
+function initWriting() {
+    return new Promise((resolve, reject) => {
+        if(!db) {
+            setTimeout(() => initWriting(), 200);
+            return;
+        }
+        const transaction = db.transaction('cards', 'readwrite');
+        const cards = transaction.objectStore('cards');
+        resolve({ transaction, cards });
+    })
+}
+
+export async function setBackup(list, dbVersion) {
     console.timeLog('t', 'backupping...');
-    if(!db) {
-        setTimeout(() => setBackup(list), 200);
-        return;
-    }
-    const transaction = db.transaction('cards', 'readwrite');
-    const cards = transaction.objectStore('cards');
-    cards.clear();
+    const { transaction, cards } = await initWriting();
+
+    cards.clear(); // in case when some card were deleted
+
     for(const card of list) {
         const request = cards.put(card);
         request.onerror = () => console.warn(request.error);
     }
 
-    transaction.oncomplete = () => console.timeLog('t', 'backup updated!');
+    transaction.oncomplete = () => {
+        localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
+        console.timeLog('t', 'backup updated!');
+    }
     transaction.onerror = () => console.error(transaction.error);
 }
 
