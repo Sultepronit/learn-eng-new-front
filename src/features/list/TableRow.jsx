@@ -1,17 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { selectCardById } from "../cards/cardsSlice";
-// import { setSelectedCard } from "./listSlice";
 import { setSelectedCardNumber } from "./listSlice";
 import { selectCardByNumber } from "../cards/cardsSlice";
 
-// export default function TableRow({ card }) {
-// export default function TableRow({ cardId }) {
-// const TableRow = React.memo(function TableRow({ cardId, isSelected }) {
 const TableRow = React.memo(function TableRow({ cardNumber, isSelected }) {
     const dispatch = useDispatch();
 
-    // const card = useSelector(state => selectCardById(state, cardId));
     const card = useSelector(state => selectCardByNumber(state, cardNumber));
     // console.log(cardNumber);
     // console.log(card);
@@ -27,8 +21,6 @@ const TableRow = React.memo(function TableRow({ cardNumber, isSelected }) {
         <div
             className={classNames}
             style={columns}
-            // onClick={() => dispatch(setSelectedCardId(card.id))}
-            // onClick={() => dispatch(setSelectedCard(card))}
             onClick={() => dispatch(setSelectedCardNumber(card.number))}
         >
             <p className="cell text-right">{card.number}</p>

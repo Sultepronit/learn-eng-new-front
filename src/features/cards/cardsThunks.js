@@ -35,7 +35,7 @@ export const updateCard = createAsyncThunk(
     'cards/updateCard',
     async ({ dbid, changes }) => {
         console.log('Saving...', JSON.stringify(changes));
-        return await updateWithQueue(`/words/${dbid}`, changes);
+        return await updateWithQueue(`/cards/${dbid}`, changes);
     }
 );
 

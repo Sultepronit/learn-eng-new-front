@@ -1,25 +1,19 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { getSelectedCardId, selectCardById, updateCard, saveNewCard, deleteCard } from "./listSlice";
-// import { getSelectedCardId, selectCardById } from "./listSlice";
-// import { getSelectedCard, getSelectedCardId } from "./listSlice";
-// import { selectCardById } from "../cards/cardsSlice";
 import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 import { getSelectedCardNumber } from "./listSlice";
-import { selectCardByNumber, updateCardLocally } from "../cards/cardsSlice";
+import { selectCardByNumber, updateViewOnly } from "../cards/cardsSlice";
 
-export default function CardEditor() {
+// export default function CardEditor() {
+const CardEditor = React.memo(function CardEditor() {
     const dispatch = useDispatch();
-    // const cardId = useSelector(getSelectedCardId);
-    // const card = useSelector(state => selectCardById(state, cardId));
     const cardNumber = useSelector(getSelectedCardNumber);
     const card = useSelector(state => selectCardByNumber(state, cardNumber));
-    // const card = useSelector(getSelectedCard);
     console.log(card);
 
     function update({ name, value }) {
         const data = {
-            // id: card.id,
             id: card.number,
             dbid: card.dbid,
             changes: {
@@ -31,8 +25,8 @@ export default function CardEditor() {
         if (card.dbid < 0) { // if card is absolutely new, we are trying to create it on server
             data.changes.dbid = 0; 
             dispatch(saveNewCard(data)); 
-        } else if(card.dbid === 0) { // saving changes locally, while waiting for card to be created on server
-            dispatch(updateCardLocally(data));
+        } else if(card.dbid === 0) { // updating the state, while waiting for card to be created on server
+            dispatch(updateViewOnly(data));
         } else if(card.dbid > 0) { // existing card is normally updated
             dispatch(updateCard(data));
         }
@@ -81,5 +75,6 @@ export default function CardEditor() {
             />
         </section>
     );
-}
-    
+});
+
+export default CardEditor;

@@ -4,8 +4,6 @@ import { selectAllCards } from "../cards/cardsSlice";
 import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
-    // selectedCardId: 0,
-    // selectedCard: {},
     selectedCardNumber: 1,
     reverse: true
 };
@@ -14,12 +12,7 @@ const listSlice = createSlice({
     name: 'list',
     initialState,
     reducers: {
-        // setSelectedCard: (state, action) => {
-        //     state.selectedCard = action.payload;
-        //     console.log(action.payload);
-        // },
         setSelectedCardNumber: (state, action) => {
-            console.log(action.payload);
             state.selectedCardNumber = action.payload;
         },
         toggleReverse: (state) => {
@@ -30,16 +23,11 @@ const listSlice = createSlice({
         builder
             .addCase(restoreCards.fulfilled, (state, action) => {
                 if(action.payload.length) {
-                    // console.log(action.payload);
-                    // console.log(action.payload[action.payload.length - 1]);
-                    // state.selectedCard = action.payload[action.payload.length - 1];
                     state.selectedCardNumber = action.payload.length;
                 }
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
                 if(action.payload.totalUpdate) {
-                    // const data = action.payload.data;
-                    // state.selectedCard = data[data.length - 1];
                     console.log('about to select new card');
                     state.selectedCardNumber = action.payload.data.length + 1;
                 }
@@ -48,16 +36,10 @@ const listSlice = createSlice({
 });
 
 export const {
-    // setSelectedCard,
-    // setSelectedCardId,
     setSelectedCardNumber,
     toggleReverse
 } = listSlice.actions;
 
-// export const getSelectedCard = (state) => state.list.selectedCard;
-// export const getSelectedCardId = (state) => state.list.selectedCard.id;
-// export const getSelectedCardId = (state) => state.list.selectedCard.number;
-// export const getSelectedCardNumber = (state) => state.list.selectedCard.number;
 export const getSelectedCardNumber = (state) => state.list.selectedCardNumber;
 export const getRerverseValue = (state) => state.list.reverse;
 

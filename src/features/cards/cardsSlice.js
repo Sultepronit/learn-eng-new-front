@@ -57,7 +57,7 @@ const cardsSlice = createSlice({
     name: 'cards',
     initialState,
     reducers: {
-        updateCardLocally: (state, action) => {
+        updateViewOnly: (state, action) => {
             cardsAdapter.updateOne(state, action.payload);
         }
     },
@@ -90,7 +90,7 @@ const cardsSlice = createSlice({
 });
 
 export const {
-    updateCardLocally
+    updateViewOnly
 } = cardsSlice.actions;
 
 export const selectDbVersion = (state) => state.cards.dbVersion;
