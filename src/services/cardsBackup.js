@@ -71,4 +71,24 @@ export async function setBackup(list, dbVersion) {
     transaction.onerror = () => console.error(transaction.error);
 }
 
+export async function bakcupOneCard(cardNumber, changes, dbVersion) {
+    const { transaction, cards } = await initWriting();
+
+    const getRequest = cards.get(cardNumber);
+    getRequest.onsuccess = () => {
+        // console.log(request.result);
+        const updatedCard = { ...getRequest.result, ...changes };
+        // console.log(updatedCard);
+        const putRequest = cards.put(updatedCard);
+        putRequest.onerror = () => console.error(putRequest.error);
+        // putRequest.onsuccess = () => console.log(putRequest.result);
+        putRequest.onsuccess = () => {
+            if(dbVersion) {
+                localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
+            }
+        };
+    }
+
+}
+
 // https://learn.javascript.ru/indexeddb

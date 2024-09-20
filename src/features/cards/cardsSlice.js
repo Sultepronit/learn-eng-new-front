@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
-import { setBackup } from "../../services/cardsBackup";
+import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
 import removeNullFields from "../../helpers/removeNullFields";
 
 const cardsAdapter = createEntityAdapter({
@@ -27,6 +27,12 @@ function createNewCard(lastCard) {
     }
 }
 
+function updateVersionState(state, change) {
+    const dbVersion = { ...state.dbVersion, ...change };
+    state.dbVersion = dbVersion;
+    console.log('new version:', dbVersion);
+}
+
 const updateData = (state, action) => {
     console.log('data:', action.payload);
     if(!action.payload.version) return;
@@ -42,12 +48,14 @@ const updateData = (state, action) => {
         cardsAdapter.upsertMany(state, data);
     }
 
-    const dbVersion = { ...state.dbVersion, ...action.payload.version };
-    state.dbVersion = dbVersion;
-    console.log('new version:', dbVersion);
+    // const dbVersion = { ...state.dbVersion, ...action.payload.version };
+    // state.dbVersion = dbVersion;
+    // console.log('new version:', dbVersion);
+
+    updateVersionState(state, action.payload.version);
 
     console.log(data);
-    setBackup(data, dbVersion);
+    setBackup(data, state.dbVersion);
 };
 
 const cardsSlice = createSlice({
@@ -73,7 +81,16 @@ const cardsSlice = createSlice({
                 cardsAdapter.updateOne(state, action.meta.arg);
             })
             .addCase(updateCard.fulfilled, (state, action) => {
-                console.log(action.payload);
+                // console.log(action.payload);
+                // console.log(action.meta.arg);
+                const { id: cardNumber, changes } = action.meta.arg;
+
+                if(action.payload?.version) {
+                    updateVersionState(state, action.payload.version);
+                    bakcupOneCard(cardNumber, changes, state.dbVersion);
+                } else {
+                    bakcupOneCard(cardNumber, changes);
+                }
             })
             .addCase(saveNewCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);
