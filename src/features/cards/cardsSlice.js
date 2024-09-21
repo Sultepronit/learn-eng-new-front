@@ -1,14 +1,13 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
-import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
+import { backUpNewCard, bakcupOneCard, setBackup } from "../../services/cardsBackup";
 import removeNullFields from "../../helpers/removeNullFields";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
 });
 
-// const dbVersion = JSON.parse(localStorage.getItem('dbVersion')) || {};
 const dbVersion = JSON.parse(localStorage.getItem('dbVersion'));
 console.log('saved version:', dbVersion);
 
@@ -17,14 +16,18 @@ const initialState = cardsAdapter.getInitialState({
 });
 
 function createNewCard(lastCard) {
-    return {
+    const newCard = {
         dbid: -1,
         number: lastCard.number + 1,
         word: '',
         transcription: '',
         translation: '',
         example: ''
-    }
+    };
+
+    backUpNewCard(newCard);
+    
+    return newCard;
 }
 
 function updateVersionState(state, change) {
@@ -47,10 +50,6 @@ const updateData = (state, action) => {
     } else {
         cardsAdapter.upsertMany(state, data);
     }
-
-    // const dbVersion = { ...state.dbVersion, ...action.payload.version };
-    // state.dbVersion = dbVersion;
-    // console.log('new version:', dbVersion);
 
     updateVersionState(state, action.payload.version);
 
@@ -82,7 +81,7 @@ const cardsSlice = createSlice({
             })
             .addCase(updateCard.fulfilled, (state, action) => {
                 // console.log(action.payload);
-                // console.log(action.meta.arg);
+                console.log(action.meta.arg);
                 const { id: cardNumber, changes } = action.meta.arg;
 
                 if(action.payload?.version) {
@@ -94,7 +93,10 @@ const cardsSlice = createSlice({
             })
             .addCase(saveNewCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);
-                cardsAdapter.addOne(state, createNewCard(state.entities[action.meta.arg.id]));
+
+                const nextNewCard = createNewCard(state.entities[action.meta.arg.id]);
+                cardsAdapter.addOne(state, nextNewCard);
+                // backUpNewCard(nextNewCard); // moved to createNewCard()
             })
             .addCase(saveNewCard.fulfilled, (state, action) => {
                 const update = action.meta.arg;
@@ -103,6 +105,11 @@ const cardsSlice = createSlice({
                 // console.log(action.meta.arg.id, action.payload);
                 console.log(update);
                 cardsAdapter.updateOne(state, update);
+
+                updateVersionState(state, action.payload.version);
+                // backUpNewCard(update.changes, state.dbVersion);
+                const { id: cardNumber, changes } = action.meta.arg;
+                bakcupOneCard(cardNumber, changes, state.dbVersion);
             })
             .addCase(deleteCard.fulfilled, updateData);
     }

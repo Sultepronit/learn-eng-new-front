@@ -72,23 +72,30 @@ export async function setBackup(list, dbVersion) {
 }
 
 export async function bakcupOneCard(cardNumber, changes, dbVersion) {
-    const { transaction, cards } = await initWriting();
+    const { cards } = await initWriting();
 
     const getRequest = cards.get(cardNumber);
     getRequest.onsuccess = () => {
-        // console.log(request.result);
         const updatedCard = { ...getRequest.result, ...changes };
-        // console.log(updatedCard);
         const putRequest = cards.put(updatedCard);
         putRequest.onerror = () => console.error(putRequest.error);
-        // putRequest.onsuccess = () => console.log(putRequest.result);
         putRequest.onsuccess = () => {
             if(dbVersion) {
                 localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
             }
         };
     }
+}
 
+export async function backUpNewCard(card, dbVersion) {
+    const { cards } = await initWriting();
+
+    const request = cards.put(card);
+    request.onerror = () => console.error(request.error);
+    request.onsuccess = () => {
+        // localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
+        console.log('added new card to backup!');
+    }
 }
 
 // https://learn.javascript.ru/indexeddb

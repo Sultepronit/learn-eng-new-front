@@ -67,7 +67,11 @@ export const saveNewCard = createAsyncThunk(
         // All the changes made till now, would be saved with next lines,
         // and we'll wait for a little more time, for not to miss some.
         setTimeout(() => {
-            dispatch(updateCard({ dbid: result.card.dbid, changes: filterChanges(localCard) }));
+            dispatch(updateCard({
+                id: cardNumber,
+                dbid: result.card.dbid,
+                changes: filterChanges(localCard)
+            }));
         }, 200);
 
         return result;
