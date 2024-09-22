@@ -30,7 +30,6 @@ const CardEditor = React.memo(function CardEditor() {
         } else if(card.dbid > 0) { // existing card is normally updated
             dispatch(updateCard(data));
         }
-
     }
 
     function handleDelete() {
@@ -41,7 +40,37 @@ const CardEditor = React.memo(function CardEditor() {
 
     return (
         <section className="card-editor">
-            <button onClick={handleDelete}>delete</button>
+            <div className="top-row">
+                <p className="card-number">{card.number}</p>
+                {card.dbid > 0 && (<>
+                    <input
+                        type="number"
+                        name="repeatStatus"
+                        title="repeat status"
+                        className="digit-5"
+                        value={card.repeatStatus}
+                        onChange={e => update(e.target)}
+                    />
+                    <input
+                        type="number"
+                        name="tapFProgress"
+                        title="tap forward progress"
+                        className="digit-2"
+                        value={card.tapFProgress}
+                        onChange={e => update(e.target)}
+                    />
+                    <input
+                        type="number"
+                        name="tapBProgress"
+                        title="tap backward progress"
+                        className="digit-2"
+                        value={card.tapBProgress}
+                        onChange={e => update(e.target)}
+                    />
+                    <button onClick={handleDelete}>delete</button>
+                </>)}
+            </div>
+            
             <div className="word-fileds">
                 <LazyTextInput
                     name="word"

@@ -1,5 +1,26 @@
+.top-row {
+    height: 1.3em;
+    display: flex;
+    gap: 0.1em;
+    margin-bottom: 1px;
+}
+
 .card-editor {
     margin: 0 2px 2px;
+}
+
+.card-number {
+    width: 4em;
+    padding: 0.1em 0.3em;
+    font-weight: bold;
+}
+
+.digit-5 {
+    width: 4em;
+}
+
+.digit-2 {
+    width: 2.5em;
 }
 
 .edit-filed {
@@ -10,6 +31,11 @@
 .word-fileds {
     display: flex;
     gap: 3px;
+}
+
+.refresh-button {
+    margin-top: 0.1rem;
+    float: right;
 }
 
 .search-bar * {

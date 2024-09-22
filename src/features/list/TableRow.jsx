@@ -25,7 +25,7 @@ const TableRow = React.memo(function TableRow({ cardNumber, isSelected }) {
         >
             <p className="cell text-right">{card.number}</p>
 
-            <p className="cell text-right">{card.tapStatus}</p>
+            <p className="cell text-right">{card.repeatStatus}</p>
             <p className="cell text-center">{card.tapFProgress}</p>
             <p className="cell text-center">{card.tapBProgress}</p>
             <p className={`cell text-center ${card.tapFAutorepeat ? 'autorepeat' : ''}`}>

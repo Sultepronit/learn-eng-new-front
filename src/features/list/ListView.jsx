@@ -15,9 +15,7 @@ export default function ListView() {
     // console.log(dbVersion);
 
     useEffect(() => {
-        // console.log('Here we go!');
         dispatch(fetchCards(dbVersion));
-    // }, [dispatch, dbVersion]);
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);
@@ -28,12 +26,6 @@ export default function ListView() {
     function setLastRowWithCaution(value) {
         setLastRow(checkIntLimits(value, rowNumber, preparedList.length));
     }
-
-    // function setLastRowByCardId(cardId) {
-    //     const theCardIndex = preparedList.findIndex(listCardId => listCardId === Number(cardId));
-    //     if(theCardIndex < 0) return;
-    //     setLastRowWithCaution(theCardIndex + rowNumber);
-    // }
 
     function setLastRowByCardNumber(inputNumber) {
         const foundIndex = preparedList.findIndex(cardNumber => cardNumber === Number(inputNumber));
@@ -55,7 +47,10 @@ export default function ListView() {
     const template = (
         <section>
             <CardEditor />
-            <button onClick={() => dispatch(fetchCards(dbVersion))}>
+            <button
+                className="refresh-button"
+                onClick={() => dispatch(fetchCards(dbVersion))}
+            >
                 refresh
             </button>
             <SearchBar
