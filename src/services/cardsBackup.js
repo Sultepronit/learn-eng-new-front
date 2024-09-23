@@ -23,7 +23,6 @@ function openLocalDb() {
 
         openRequest.onsuccess = () => {
             db = openRequest.result;
-            console.log('opened indexedDB!');
             resolve('Success!');
         }
     });
@@ -87,15 +86,12 @@ export async function bakcupOneCard(cardNumber, changes, dbVersion) {
     }
 }
 
-export async function backUpNewCard(card, dbVersion) {
+export async function backUpNewCard(card) {
     const { cards } = await initWriting();
 
     const request = cards.put(card);
     request.onerror = () => console.error(request.error);
-    request.onsuccess = () => {
-        // localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
-        console.log('added new card to backup!');
-    }
+    request.onsuccess = () => console.log('added empty card to backup!');
 }
 
 // https://learn.javascript.ru/indexeddb

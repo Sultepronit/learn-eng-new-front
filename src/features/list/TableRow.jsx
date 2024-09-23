@@ -19,7 +19,7 @@ const TableRow = React.memo(function TableRow({ cardNumber, isSelected }) {
 
     return (
         <div
-            className={classNames}
+            className={'table-row' + (isSelected ? ' selected' : '') + (card.dbid < 1 ? ' empty-card' : '')}
             style={columns}
             onClick={() => dispatch(setSelectedCardNumber(card.number))}
         >

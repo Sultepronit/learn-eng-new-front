@@ -18,7 +18,7 @@ const statusSlice = createSlice({
                 state.requestCounter--;
             }
 
-            console.log('Pending requests:', state.requestCounter);
+            // console.log('Pending requests:', state.requestCounter);
 
             if(newStatus === 'pending' && state.status === 'idle') {
                 state.status = 'loading';

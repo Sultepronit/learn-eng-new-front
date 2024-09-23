@@ -19,8 +19,20 @@ async function fetchWithFeatures(path, method, inputData, refetch = true) {
 
     try {
         const response = await fetch(apiUrl + path, options);
+        // console.log(response);
+        if(response.status === 400) {
+            const message = (await response.json()).error;
+            console.log('Server responded with:', message);
+
+            if (confirm(`Server responded with:\n${message}\nTry again?`)) {
+                return fetchWithFeatures(path, method, inputData, refetch);
+            } else {
+                return null;
+            }
+        }
         return await response.json();
     } catch (error) {
+        // console.log(error)
         if(refetch) {
             return await retry(fetchWithFeatures, path, method, inputData, refetch);
         } else {

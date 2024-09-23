@@ -2,7 +2,6 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
 import { backUpNewCard, bakcupOneCard, setBackup } from "../../services/cardsBackup";
-import removeNullFields from "../../helpers/removeNullFields";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -19,10 +18,24 @@ function createNewCard(lastCard) {
     const newCard = {
         dbid: -1,
         number: lastCard.number + 1,
+        repeatStatus: -1,
         word: '',
         transcription: '',
         translation: '',
-        example: ''
+        example: '',
+        tapFProgress: 0,
+        tapFRecord: 0,
+        tapFAutorepeat: 0,
+        tapBProgress: 0,
+        tapBRecord: 0,
+        tapBAutorepeat: 0,
+        writeStatus: 0,
+        writeFProgress: 0,
+        writeFRecord: 0,
+        writeFAutorepeat: 0,
+        writeBProgress: 0,
+        writeBRecord: 0,
+        writeBAutorepeat: 0
     };
 
     backUpNewCard(newCard);
@@ -96,19 +109,16 @@ const cardsSlice = createSlice({
 
                 const nextNewCard = createNewCard(state.entities[action.meta.arg.id]);
                 cardsAdapter.addOne(state, nextNewCard);
-                // backUpNewCard(nextNewCard); // moved to createNewCard()
             })
             .addCase(saveNewCard.fulfilled, (state, action) => {
-                const update = action.meta.arg;
-                // update.changes = action.payload.card;
-                update.changes = removeNullFields(action.payload.card); // move to server!
-                // console.log(action.meta.arg.id, action.payload);
-                console.log(update);
-                cardsAdapter.updateOne(state, update);
+                const { id: cardNumber } = action.meta.arg;
+                const changes = { dbid: action.payload.dbid };
+
+                cardsAdapter.updateOne(state, { id: cardNumber, changes });
+
+                if (changes.dbid === -1) return; // Saving failed
 
                 updateVersionState(state, action.payload.version);
-                // backUpNewCard(update.changes, state.dbVersion);
-                const { id: cardNumber, changes } = action.meta.arg;
                 bakcupOneCard(cardNumber, changes, state.dbVersion);
             })
             .addCase(deleteCard.fulfilled, updateData);

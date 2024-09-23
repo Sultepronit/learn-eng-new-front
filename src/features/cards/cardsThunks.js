@@ -51,15 +51,22 @@ function filterChanges(card) {
 export const saveNewCard = createAsyncThunk(
     'cards/saveNewCard',
     async ({ id: cardNumber }, { dispatch, getState }) => {
-        console.log('new card ', cardNumber);
+        console.log('new card\'s number', cardNumber);
         
-        // We are sending just card number to create new card on server.
+        // We are sending just card number to create new card on the server.
         const result = await fetchWithFeatures('/cards', 'POST', { cardNumber });
-        console.log('dbCard', result.card);
+        // The result should contain dbid of the new card (and new db version).
+        // But in case of fail, we are turning card's status back to "empty" one.
+        if(!result?.dbid) {
+            return { dbid: -1 };
+        } else {
+            console.log('new card\'s dbid', result.dbid);
+        }
 
         // Now, we can get the local card with all its changes that couldn't be updated without dbid.
         const localCard = selectCardByNumber(getState(), cardNumber);
-        console.log('localCard', localCard);
+        const unsavedChanges = filterChanges(localCard);
+        console.log('unsaved changes', unsavedChanges);
 
         // The dbid would be set to the card inside the cardSlice just in a moment.
         // That should allow all the next updates to be normally implemented.
@@ -69,8 +76,8 @@ export const saveNewCard = createAsyncThunk(
         setTimeout(() => {
             dispatch(updateCard({
                 id: cardNumber,
-                dbid: result.card.dbid,
-                changes: filterChanges(localCard)
+                dbid: result.dbid,
+                changes: unsavedChanges
             }));
         }, 200);
 

@@ -42,32 +42,33 @@ const CardEditor = React.memo(function CardEditor() {
         <section className="card-editor">
             <div className="top-row">
                 <p className="card-number">{card.number}</p>
+                <input
+                    type="number"
+                    name="repeatStatus"
+                    title="repeat status"
+                    className="digit-5"
+                    value={card.repeatStatus}
+                    onChange={e => update(e.target)}
+                />
+                <input
+                    type="number"
+                    name="tapFProgress"
+                    title="tap forward progress"
+                    className="digit-2"
+                    value={card.tapFProgress}
+                    onChange={e => update(e.target)}
+                />
+                <input
+                    type="number"
+                    name="tapBProgress"
+                    title="tap backward progress"
+                    className="digit-2"
+                    value={card.tapBProgress}
+                    onChange={e => update(e.target)}
+                />
+                <button onClick={handleDelete} disabled={card.dbid < 1}>delete</button>
                 {card.dbid > 0 && (<>
-                    <input
-                        type="number"
-                        name="repeatStatus"
-                        title="repeat status"
-                        className="digit-5"
-                        value={card.repeatStatus}
-                        onChange={e => update(e.target)}
-                    />
-                    <input
-                        type="number"
-                        name="tapFProgress"
-                        title="tap forward progress"
-                        className="digit-2"
-                        value={card.tapFProgress}
-                        onChange={e => update(e.target)}
-                    />
-                    <input
-                        type="number"
-                        name="tapBProgress"
-                        title="tap backward progress"
-                        className="digit-2"
-                        value={card.tapBProgress}
-                        onChange={e => update(e.target)}
-                    />
-                    <button onClick={handleDelete}>delete</button>
+                    
                 </>)}
             </div>
             
