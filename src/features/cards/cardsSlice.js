@@ -1,7 +1,8 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
-import { backUpNewCard, bakcupOneCard, setBackup } from "../../services/cardsBackup";
+import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
+import createNewCard from "./createNewCard";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -13,35 +14,6 @@ console.log('saved version:', dbVersion);
 const initialState = cardsAdapter.getInitialState({
     dbVersion
 });
-
-function createNewCard(lastCard) {
-    const newCard = {
-        dbid: -1,
-        number: lastCard.number + 1,
-        repeatStatus: -1,
-        word: '',
-        transcription: '',
-        translation: '',
-        example: '',
-        tapFProgress: 0,
-        tapFRecord: 0,
-        tapFAutorepeat: 0,
-        tapBProgress: 0,
-        tapBRecord: 0,
-        tapBAutorepeat: 0,
-        writeStatus: 0,
-        writeFProgress: 0,
-        writeFRecord: 0,
-        writeFAutorepeat: 0,
-        writeBProgress: 0,
-        writeBRecord: 0,
-        writeBAutorepeat: 0
-    };
-
-    backUpNewCard(newCard);
-    
-    return newCard;
-}
 
 function updateVersionState(state, change) {
     const dbVersion = { ...state.dbVersion, ...change };
@@ -66,8 +38,10 @@ const updateData = (state, action) => {
 
     updateVersionState(state, action.payload.version);
 
-    console.log(data);
-    setBackup(data, state.dbVersion);
+    const toUpdate = Object.values(state.entities);
+    toUpdate.pop();
+    setBackup(toUpdate, state.dbVersion);
+    // console.log(toUpdate);
 };
 
 const cardsSlice = createSlice({

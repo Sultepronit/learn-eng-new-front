@@ -4,6 +4,8 @@ import { selectAllCards } from "../cards/cardsSlice";
 import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
+    rowNumber: 22,
+
     selectedCardNumber: 1,
     reverse: true
 };
@@ -12,6 +14,9 @@ const listSlice = createSlice({
     name: 'list',
     initialState,
     reducers: {
+        setRowNumber: (state, action) => {
+            state.rowNumber = action.payload;
+        },
         setSelectedCardNumber: (state, action) => {
             state.selectedCardNumber = action.payload;
         },

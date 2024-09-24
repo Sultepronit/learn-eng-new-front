@@ -56,7 +56,7 @@ export async function setBackup(list, dbVersion) {
     console.timeLog('t', 'backupping...');
     const { transaction, cards } = await initWriting();
 
-    cards.clear(); // in case when some card were deleted
+    // cards.clear(); // in case when some card were deleted
 
     for(const card of list) {
         const request = cards.put(card);
