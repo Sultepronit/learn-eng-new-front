@@ -90,7 +90,7 @@ const cardsSlice = createSlice({
 
                 cardsAdapter.updateOne(state, { id: cardNumber, changes });
 
-                if (changes.dbid === -1) return; // Saving failed
+                if (changes.dbid === -1) return; // Saving failed, simply
 
                 updateVersionState(state, action.payload.version);
                 bakcupOneCard(cardNumber, changes, state.dbVersion);

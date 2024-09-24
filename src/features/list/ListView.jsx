@@ -1,50 +1,43 @@
 import './listStyle.css';
-import { useState, useEffect, useMemo } from "react";
-import Table from "./Table.jsx";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import CardEditor from './CardEditor.jsx';
-import { selectPreparedList } from './listSlice.js';
+import { selectCardsTotal, selectDbVersion } from '../cards/cardsSlice.js';
+import {
+    selectFirstRow,
+    selectPreparedList,
+    selectRowNumber,
+    setFirstRow
+} from './listSlice.js';
 import { fetchCards } from '../cards/cardsThunks.js';
-import SearchBar from './SearchBar.jsx';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
-import { selectDbVersion } from '../cards/cardsSlice.js';
+import CardEditor from './CardEditor.jsx';
+import SearchBar from './SearchBar.jsx';
+import Table from "./Table.jsx";
 
 export default function ListView() {
     const dispatch = useDispatch();
     const dbVersion = useSelector(selectDbVersion);
-    // console.log(dbVersion);
 
     useEffect(() => {
         dispatch(fetchCards(dbVersion));
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);
+    const rowNumber = useSelector(selectRowNumber);
+    const firstRow = useSelector(selectFirstRow);
+    const cardsTotal = useSelector(selectCardsTotal);
 
-    const rowNumber = 21;
-    const [lastRow, setLastRow] = useState(0);
+    // useEffect(() => {
+    //     dispatch(setFirstRow(0));
+    // }, [dispatch, preparedList]);
 
-    function setLastRowWithCaution(value) {
-        setLastRow(checkIntLimits(value, rowNumber, preparedList.length));
+    function setFirstRowWithCaution(inputValue) {
+        const value = preparedList.length > rowNumber
+            ? checkIntLimits(inputValue, 0, preparedList.length - rowNumber) : 0;
+        dispatch(setFirstRow(value));
     }
 
-    function setLastRowByCardNumber(inputNumber) {
-        const foundIndex = preparedList.findIndex(cardNumber => cardNumber === Number(inputNumber));
-        if(foundIndex < 0) return;
-        setLastRowWithCaution(foundIndex + rowNumber);
-    }
-
-    useEffect(() => {
-        setLastRow(rowNumber);
-    }, [preparedList, dispatch]);
-
-    // is't this slice member???
-    const displayRange = useMemo(() => {
-        const result = preparedList.slice(lastRow - rowNumber, lastRow);
-        // console.log(result);
-        return result;
-    }, [preparedList, lastRow]);
-
-    const template = (
+    return (cardsTotal < 1) ? '' : (
         <section>
             <CardEditor />
             <button
@@ -54,18 +47,14 @@ export default function ListView() {
                 refresh
             </button>
             <SearchBar
-                // changeDisplayRange={setLastRowByCardId}
-                changeDisplayRange={setLastRowByCardNumber}
+                setFirstRowWithCaution={setFirstRowWithCaution}
             />
             <Table
-                displayRange={displayRange}
-                rowNumber={rowNumber}
-                lastRow={lastRow}
-                setLastRow={setLastRowWithCaution}
+                firstRow={firstRow}
+                setFirstRowWithCaution={setFirstRowWithCaution}
                 lastPossibleRow={preparedList.length}
+                rowNumber={rowNumber}
             />
         </section>
     );
-
-    return preparedList?.length ? template : '';
 }

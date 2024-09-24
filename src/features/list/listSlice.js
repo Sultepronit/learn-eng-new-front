@@ -5,8 +5,9 @@ import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
     rowNumber: 22,
-
+    firstRow: 0,
     selectedCardNumber: 1,
+    searchQuery: '',
     reverse: true
 };
 
@@ -14,14 +15,22 @@ const listSlice = createSlice({
     name: 'list',
     initialState,
     reducers: {
-        setRowNumber: (state, action) => {
-            state.rowNumber = action.payload;
+        setFirstRow: (state, action) => {
+            // console.log(action.payload);
+            state.firstRow = action.payload;
         },
         setSelectedCardNumber: (state, action) => {
             state.selectedCardNumber = action.payload;
         },
+        search: (state, action) => {
+            state.searchQuery = action.payload;
+            console.log(state.searchQuery);
+            state.firstRow = 0;
+        },
         toggleReverse: (state) => {
+            console.log('toggle!');
             state.reverse = !state.reverse;
+            state.firstRow = 0;
         }
     },
     extraReducers: (builder) => {
@@ -40,24 +49,51 @@ const listSlice = createSlice({
 });
 
 export const {
+    setFirstRow,
     setSelectedCardNumber,
+    search,
     toggleReverse
 } = listSlice.actions;
 
+export const selectRowNumber = (state) => state.list.rowNumber;
+export const selectFirstRow = (state) => state.list.firstRow;
 export const getSelectedCardNumber = (state) => state.list.selectedCardNumber;
-export const getRerverseValue = (state) => state.list.reverse;
+export const selectSeqrchQuery = (state) => state.list.searchQuery;
+export const selectRerverseValue = (state) => state.list.reverse;
 
 export const selectPreparedList = createSelector(
-    [selectAllCards, (state) => state.list.reverse],
-    (list, reverse) => {
-        // const ids = list.map(card => card.id);
-        const ids = list.map(card => card.number);
+    [
+        selectAllCards,
+        (state) => state.list.searchQuery,
+        (state) => state.list.reverse
+    ],
+    (list, searchQuery, reverse) => {
+        if (searchQuery) {
+            list = list.filter(card => {
+                return (card.word + card.translation + card.example).includes(searchQuery);
+            });
+        }
+        
+        const cardNumbers = list.map(card => card.number);
 
-        if(reverse) ids.reverse();
+        if(reverse) cardNumbers.reverse();
 
-        return ids;
+        return cardNumbers;
     }
 );
+
+export const selectDisplayedList = createSelector(
+    [
+        selectPreparedList,
+        (state) => state.list.rowNumber,
+        (state) => state.list.firstRow,
+    ],
+    (preparedList, rowNumber, firstRow) => {
+        const result = preparedList.slice(firstRow, firstRow + rowNumber);
+        // console.log(result);
+        return result;
+    }
+)
 
 export default listSlice.reducer;
 

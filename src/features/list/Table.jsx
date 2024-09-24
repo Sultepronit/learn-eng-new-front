@@ -1,37 +1,37 @@
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { selectDisplayedList } from "./listSlice";
+
 import TableScroller from "./TableScroller";
 import TableBody from "./TableBody";
 
-export default function Table({ displayRange, rowNumber, lastRow, setLastRow, lastPossibleRow }) {
-    // const dispatch = useDispatch();
-
+export default function Table({ firstRow, setFirstRowWithCaution, lastPossibleRow, rowNumber }) {
+    const displayedList = useSelector(selectDisplayedList);
     const tableRef = useRef(null);
 
     function handleScroll(e) {
-        setLastRow(lastRow + e.deltaY / 16)
+        setFirstRowWithCaution(firstRow + e.deltaY / 16)
     }
 
     function handleKeyUp(e) {
-        // console.log(e.key)
         switch(e.key) {
             case 'ArrowUp':
-                setLastRow(lastRow - 1);
+                setFirstRowWithCaution(firstRow - 1);
                 break;
             case 'ArrowDown':
-                setLastRow(lastRow + 1);
+                setFirstRowWithCaution(firstRow + 1);
                 break;
             case 'PageUp':
-                setLastRow(lastRow - 100);
+                setFirstRowWithCaution(firstRow - 100);
                 break;
             case 'PageDown':
-                setLastRow(lastRow + 100);
+                setFirstRowWithCaution(firstRow + 100);
                 break;
             case 'Home':
-                setLastRow(rowNumber);
+                setFirstRowWithCaution(0);
                 break;
             case 'End':
-                setLastRow(lastPossibleRow);
+                setFirstRowWithCaution(lastPossibleRow);
                 break;
         }
     }
@@ -47,13 +47,13 @@ export default function Table({ displayRange, rowNumber, lastRow, setLastRow, la
             onMouseLeave={() => tableRef.current.blur()}
         >
             <TableBody
-                displayRange={displayRange}
+                displayedList={displayedList}
             />
             <TableScroller
                 displayedRows={rowNumber}
                 allRows={lastPossibleRow}
-                value={lastRow}
-                setValue={setLastRow}
+                value={firstRow}
+                setValue={setFirstRowWithCaution}
             />
         </section>
     );

@@ -18,13 +18,13 @@ export default function TableScroller({displayedRows, allRows, value, setValue})
         }
     }, [displayedRows, allRows]);
 
-    return (
+    return (displayedRows >= allRows) ? '' : (
         <input
             type="range"
             className="scroller"
             name="scroller"
-            min={displayedRows}
-            max={allRows}
+            min="0"
+            max={allRows - displayedRows}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.preventDefault()}
