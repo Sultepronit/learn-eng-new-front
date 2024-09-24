@@ -4,6 +4,7 @@ import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 import { getSelectedCardNumber } from "./listSlice";
 import { selectCardByNumber, updateViewOnly } from "../cards/cardsSlice";
+import FindMatchesInput from "../../components/FindMatchesInput";
 
 // export default function CardEditor() {
 const CardEditor = React.memo(function CardEditor() {
@@ -67,19 +68,28 @@ const CardEditor = React.memo(function CardEditor() {
                     onChange={e => update(e.target)}
                 />
                 <button onClick={handleDelete} disabled={card.dbid < 1}>delete</button>
-                {card.dbid > 0 && (<>
-                    
-                </>)}
             </div>
             
             <div className="word-fileds">
-                <LazyTextInput
-                    name="word"
-                    value={card.word}
-                    placeholder="word"
-                    className="edit-filed"
-                    onChange={update}
-                />
+                {card.repeatStatus < 0 ? (
+                        <FindMatchesInput
+                            name="word"
+                            value={card.word}
+                            placeholder="word"
+                            className="edit-filed"
+                            onChange={update}
+                        />  
+                    ) : (
+                        <LazyTextInput
+                            name="word"
+                            value={card.word}
+                            placeholder="word"
+                            className="edit-filed"
+                            onChange={update}
+                        />  
+                    )
+                }
+                
                 <LazyTextInput
                     name="transcription"
                     value={card.transcription}

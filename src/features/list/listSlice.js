@@ -1,12 +1,14 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { selectAllCards } from "../cards/cardsSlice";
+import { selectAllCards, selectCardByNumber } from "../cards/cardsSlice";
 import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
     rowNumber: 22,
     firstRow: 0,
+    returnFirstRow: 0,
     selectedCardNumber: 1,
+    findMatchesQuery: '',
     searchQuery: '',
     reverse: true
 };
@@ -22,9 +24,18 @@ const listSlice = createSlice({
         setSelectedCardNumber: (state, action) => {
             state.selectedCardNumber = action.payload;
         },
+        findMatches: (state, action) => {
+            state.findMatchesQuery = action.payload;
+            if (action.payload !== '') {
+                state.returnFirstRow = state.firstRow;
+                state.firstRow = 0;
+            } else {
+                state.firstRow = state.returnFirstRow;
+            }
+        },
         search: (state, action) => {
             state.searchQuery = action.payload;
-            console.log(state.searchQuery);
+            console.log('search:', state.searchQuery);
             state.firstRow = 0;
         },
         toggleReverse: (state) => {
@@ -51,6 +62,7 @@ const listSlice = createSlice({
 export const {
     setFirstRow,
     setSelectedCardNumber,
+    findMatches,
     search,
     toggleReverse
 } = listSlice.actions;
@@ -64,11 +76,14 @@ export const selectRerverseValue = (state) => state.list.reverse;
 export const selectPreparedList = createSelector(
     [
         selectAllCards,
+        (state) => state.list.findMatchesQuery,
         (state) => state.list.searchQuery,
         (state) => state.list.reverse
     ],
-    (list, searchQuery, reverse) => {
-        if (searchQuery) {
+    (list, findMatchesQuery, searchQuery, reverse) => {
+        if (findMatchesQuery) {
+            list = list.filter(card => card.word.includes(findMatchesQuery));
+        } else if (searchQuery) {
             list = list.filter(card => {
                 return (card.word + card.translation + card.example).includes(searchQuery);
             });
@@ -76,7 +91,7 @@ export const selectPreparedList = createSelector(
         
         const cardNumbers = list.map(card => card.number);
 
-        if(reverse) cardNumbers.reverse();
+        if (reverse) cardNumbers.reverse();
 
         return cardNumbers;
     }

@@ -27,10 +27,6 @@ export default function ListView() {
     const firstRow = useSelector(selectFirstRow);
     const cardsTotal = useSelector(selectCardsTotal);
 
-    // useEffect(() => {
-    //     dispatch(setFirstRow(0));
-    // }, [dispatch, preparedList]);
-
     function setFirstRowWithCaution(inputValue) {
         const value = preparedList.length > rowNumber
             ? checkIntLimits(inputValue, 0, preparedList.length - rowNumber) : 0;
