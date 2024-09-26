@@ -27,9 +27,14 @@ function openLocalDb() {
         }
     });
 }
+// openLocalDb();
 
 export async function restoreBackup() {
     await openLocalDb();
+    // if(!db) {
+    //     setTimeout(() => restoreBackup(), 200);
+    //     return;
+    // }
     const transaction = db.transaction('cards');
     const cards = transaction.objectStore('cards');
     const request = cards.getAll();
@@ -56,11 +61,15 @@ export async function setBackup(list, dbVersion) {
     console.timeLog('t', 'backupping...');
     const { transaction, cards } = await initWriting();
 
-    // cards.clear(); // in case when some card were deleted
-
+    // console.log(list);
     for(const card of list) {
-        const request = cards.put(card);
-        request.onerror = () => console.warn(request.error);
+        try {
+            const request = cards.put(card);
+            request.onerror = () => console.warn(request.error);
+        } catch (error) { // for empty card proxy
+            console.warn(error);
+        }
+        
     }
 
     transaction.oncomplete = () => {

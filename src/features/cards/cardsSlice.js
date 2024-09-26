@@ -39,7 +39,7 @@ const updateData = (state, action) => {
     updateVersionState(state, action.payload.version);
 
     const toUpdate = Object.values(state.entities);
-    toUpdate.pop();
+    // toUpdate.pop();
     setBackup(toUpdate, state.dbVersion);
     // console.log(toUpdate);
 };
