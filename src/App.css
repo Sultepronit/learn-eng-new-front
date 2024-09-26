@@ -33,3 +33,22 @@
 .text-right {
   text-align: right;
 }
+
+.navigation {
+  margin-top: 3rem;
+}
+
+.view-link {
+  display: block;
+  width: 10em;
+  max-width: 100%;
+  margin: 1rem auto;
+  padding: 0.2rem;
+  box-shadow: 5px 4px 5px gray;
+  font-size: 3rem;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  background-color: aqua;
+  border-radius: 1rem;
+}

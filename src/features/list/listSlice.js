@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { selectAllCards, selectCardByNumber } from "../cards/cardsSlice";
+import { selectAllCards } from "../cards/cardsSlice";
 import { fetchCards, restoreCards } from "../cards/cardsThunks";
 
 const initialState = {
