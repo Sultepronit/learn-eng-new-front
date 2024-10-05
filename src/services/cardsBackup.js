@@ -1,7 +1,10 @@
+import setPause from "../helpers/setPause";
+
 let db = null;
 
-function openLocalDb() {
+export function openLocalDb() {
     return new Promise((resolve, reject) => {
+        console.timeLog('t', 'opening IndexedDB...');
         const openRequest = indexedDB.open('db', 5);
 
         openRequest.onupgradeneeded = () => {
@@ -22,19 +25,19 @@ function openLocalDb() {
         };
 
         openRequest.onsuccess = () => {
+            console.timeLog('t', 'opened IndexedDB...');
             db = openRequest.result;
             resolve('Success!');
         }
     });
 }
-// openLocalDb();
 
 export async function restoreBackup() {
-    await openLocalDb();
-    // if(!db) {
-    //     setTimeout(() => restoreBackup(), 200);
-    //     return;
-    // }
+    // await openLocalDb();
+    if(!db) {
+        setPause(200);
+        return restoreBackup();
+    }
     const transaction = db.transaction('cards');
     const cards = transaction.objectStore('cards');
     const request = cards.getAll();
@@ -43,6 +46,30 @@ export async function restoreBackup() {
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
+}
+
+async function restoreCard(id) { // we don't use it separately, do we?
+    const transaction = db.transaction('cards');
+    const cards = transaction.objectStore('cards');
+    const request = cards.get(id);
+
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+export async function restoreCards(ids) {
+    if(!db) {
+        setPause(200);
+        return restoreCards(ids)
+    }
+    try {
+        const promises = ids.map(id => restoreCard(id));
+        return await Promise.all(promises);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function initWriting() {

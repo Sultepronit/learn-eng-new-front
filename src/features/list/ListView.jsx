@@ -8,7 +8,7 @@ import {
     selectRowNumber,
     setFirstRow
 } from './listSlice.js';
-import { fetchCards } from '../cards/cardsThunks.js';
+import { fetchCards, restoreCards } from '../cards/cardsThunks.js';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';
@@ -19,6 +19,7 @@ export default function ListView() {
     const dbVersion = useSelector(selectDbVersion);
 
     useEffect(() => {
+        dispatch(restoreCards());
         dispatch(fetchCards(dbVersion));
     }, [dispatch]);
 

@@ -6,9 +6,11 @@ import App from './App.jsx'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
 import { restoreCards } from './features/cards/cardsThunks.js'
+import { openLocalDb } from './services/cardsBackup.js'
 
 console.time('t');
-store.dispatch(restoreCards());
+// store.dispatch(restoreCards());
+openLocalDb();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
