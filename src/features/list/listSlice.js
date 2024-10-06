@@ -108,7 +108,7 @@ export const selectDisplayedList = createSelector(
         // console.log(result);
         return result;
     }
-)
+);
 
 export default listSlice.reducer;
 

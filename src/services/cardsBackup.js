@@ -35,7 +35,7 @@ export function openLocalDb() {
 export async function restoreBackup() {
     // await openLocalDb();
     if(!db) {
-        setPause(200);
+        await setPause(200);
         return restoreBackup();
     }
     const transaction = db.transaction('cards');
@@ -61,7 +61,8 @@ async function restoreCard(id) { // we don't use it separately, do we?
 
 export async function restoreCards(ids) {
     if(!db) {
-        setPause(200);
+        await setPause(200);
+        console.log('Here we go!');
         return restoreCards(ids)
     }
     try {
