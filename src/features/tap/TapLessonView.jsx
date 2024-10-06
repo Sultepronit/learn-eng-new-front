@@ -1,9 +1,11 @@
+import './tapStyle.css';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./tapThunks";
 import { getVersion } from "../../services/versionHandlers";
 import { decrementSession, getNextCard, rearrangeSession, selectSession, selectStages } from "./tapSlice";
 import { directions } from "./statuses";
+import { pronounce } from '../../services/pronunciation';
 
 export default function TapLessonView() {
     const dispatch = useDispatch();
@@ -25,6 +27,7 @@ export default function TapLessonView() {
     }, [session]);
 
     function handleButton() {
+        pronounce(card.word);
         if (!questionMode) {
             dispatch(rearrangeSession())
         }
@@ -34,12 +37,12 @@ export default function TapLessonView() {
     console.log(card?.direction);
 
     return !stages ? '' : (
-        <>
-            <section>
+        <section className="tap-view">
+            <div>
                 <p>{stages.learn}</p>
-            </section>
+            </div>
 
-            <section className="card-view">
+            <div className="card-view">
                 <p className="word">{
                     questionMode && card.direction === directions.FORWARD ? '' : card.word
                 }</p>
@@ -48,11 +51,13 @@ export default function TapLessonView() {
                     questionMode && card?.direction === directions.BACKWARD ? '' : card.translation
                 }</p>
                 <p className="example">{questionMode ? '' : card.example}</p>
-            </section>
+            </div>
 
-            <button onClick={handleButton}>
-                Next!
-            </button>
-        </>
+            <div className="nav-buttons">
+                <button onClick={handleButton}>
+                    Next!
+                </button>
+            </div>
+        </section>
     )
 }

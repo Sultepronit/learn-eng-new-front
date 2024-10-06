@@ -1,0 +1,32 @@
+.tap-view {
+    display: grid;
+    height: calc(100dvh - 3px);
+    grid-template-rows: auto 1fr auto;
+    padding: 0.3rem;
+}
+
+.word {
+    text-align: center;
+}
+
+.transcription {
+    text-align: center;
+}
+
+.translation {
+    text-align: center;
+}
+
+.example {
+    text-align: center;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-buttons button {
+    height: 6rem;
+    flex-grow: 1;
+}
