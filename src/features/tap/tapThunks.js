@@ -42,18 +42,6 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
         backupSession(data.session);
     }
 
-    // data.cards = data.cards.map(card => ({
-    //     ...card,
-    //     get repeatStage() {
-    //         return card.repeatStatus === 0 ? stages.LEARN
-    //             : card.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
-    //     },
-    //     get direction() {
-    //         return card.tapFProgress > card.tapBProgress
-    //             ? directions.BACKWARD : directions.FORWARD;
-    //     }
-    // }));
-
     console.log(data);
 
     console.timeLog('t', 'prepared session');

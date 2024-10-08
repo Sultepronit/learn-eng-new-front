@@ -6,6 +6,8 @@ import { getVersion } from "../../services/versionHandlers";
 import { decrementSession, getNextCard, rearrangeSession, selectSession, selectStages } from "./tapSlice";
 import { directions } from "./statuses";
 import { pronounce } from '../../services/pronunciation';
+import CardView from './CardView';
+import NavButtons from './NavButtons';
 
 export default function TapLessonView() {
     const dispatch = useDispatch();
@@ -19,22 +21,14 @@ export default function TapLessonView() {
 
     const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
-    const toggleQuestionAnswer = () => setQuestionMode(!questionMode);
 
     useEffect(() => {
         setCard(dispatch(getNextCard()));
         console.log(session);
+        console.log(card);
     }, [session]);
 
-    function handleButton() {
-        pronounce(card.word);
-        if (!questionMode) {
-            dispatch(rearrangeSession())
-        }
-        toggleQuestionAnswer();
-    }
-
-    console.log(card?.direction);
+    // console.log(card);
 
     return !stages ? '' : (
         <section className="tap-view">
@@ -42,22 +36,16 @@ export default function TapLessonView() {
                 <p>{stages.learn}</p>
             </div>
 
-            <div className="card-view">
-                <p className="word">{
-                    questionMode && card.direction === directions.FORWARD ? '' : card.word
-                }</p>
-                <p className="transcription">{questionMode ? '' : card.transcription}</p>
-                <p className="translation">{
-                    questionMode && card?.direction === directions.BACKWARD ? '' : card.translation
-                }</p>
-                <p className="example">{questionMode ? '' : card.example}</p>
-            </div>
+            <CardView
+                card={card}
+                questionMode={questionMode}
+            />
 
-            <div className="nav-buttons">
-                <button onClick={handleButton}>
-                    Next!
-                </button>
-            </div>
+            <NavButtons
+                card={card}
+                questionMode={questionMode}
+                setQuestionMode={setQuestionMode}
+            />
         </section>
-    )
+    );
 }

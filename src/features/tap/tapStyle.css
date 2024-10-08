@@ -24,9 +24,35 @@
 .nav-buttons {
     display: flex;
     justify-content: center;
+    gap: 1rem;
 }
 
 .nav-buttons button {
+    display: none;
     height: 6rem;
     flex-grow: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+button.good {
+    display: block;
+    background-color: green;
+}
+
+button.neutral {
+    display: block;
+    background-color: gray;
+}
+
+button.retry {
+    display: block;
+    background-color: yellow;
+}
+
+button.bad {
+    display: block;
+    background-color: red;
 }

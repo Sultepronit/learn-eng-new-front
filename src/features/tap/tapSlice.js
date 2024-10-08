@@ -23,6 +23,12 @@ const tapSlice = createSlice({
         rearrangeSession: (state) => {
             state.session.unshift(state.session.pop());
         },
+        updateSession: (state, action) => {
+            state.session.pop();
+            if (action.payload) {
+                state.session.unshift(action.payload);
+            }
+        },
         toggleQuestionAnswer: (state) => {
             state.showAnswer = !state.showAnswer;
         }
@@ -42,7 +48,8 @@ const tapSlice = createSlice({
 export const {
     decrementSession,
     rearrangeSession,
-    toggleQuestionAnswer
+    toggleQuestionAnswer,
+    updateSession
 } = tapSlice.actions;
 
 export const selectSession = (state) => state.tap.session;
@@ -59,7 +66,7 @@ export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
     const rawCard = selectRawCard(getState(), nextCardNumber);
     // dispatch(setSelectedCard(card));
-    console.log(rawCard);  
+    // console.log(rawCard);  
     return {
         ...rawCard,
         get repeatStage() {

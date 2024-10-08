@@ -1,20 +1,18 @@
-const stages = {
+export const stages = {
     LEARN: 'L',
     CONFIRM: 'C',
     REPEAT: 'R',
     MEMORIZE: 'M'
 };
 
-const directions = {
-    FORWARD: 'f',
-    BACKWARD: 'b'
+export const directions = {
+    FORWARD: 'F',
+    BACKWARD: 'B'
 };
 
-const marks = {
+export const marks = {
     GOOD: 'G',
     BAD: 'B',
     PASS: 'P',
     RETRY: 'R'
 };
-
-export { stages, directions, marks };
