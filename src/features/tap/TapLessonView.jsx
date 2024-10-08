@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./tapThunks";
 import { getVersion } from "../../services/versionHandlers";
-import { decrementSession, getNextCard, rearrangeSession, selectSession, selectStages } from "./tapSlice";
-import { directions } from "./statuses";
-import { pronounce } from '../../services/pronunciation';
+import { getNextCard, selectSession, selectStages } from "./tapSlice";
 import CardView from './CardView';
 import NavButtons from './NavButtons';
 

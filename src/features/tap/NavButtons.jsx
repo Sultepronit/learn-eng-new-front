@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { rearrangeSession, updateSession } from "./tapSlice";
+import { updateCardState, updateSession } from "./tapSlice";
 import { useEffect, useState } from "react";
 import { directions, marks, stages } from "./statuses";
 import evaluate from "./evaluate";
@@ -23,11 +23,15 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     function evaluateSaveAsk(mark) {
         // evaluate
         console.log('mark:', mark);
-        
         const mutatedCard = { ...card, mark };
         const changes = evaluate(mutatedCard);
         console.log(changes);
         console.log(mutatedCard);
+
+        // save
+        if (mark === marks.RETRY) {
+            dispatch(updateCardState(mutatedCard));
+        }
 
         ask();
     }

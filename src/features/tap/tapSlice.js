@@ -10,18 +10,15 @@ const cardsAdapter = createEntityAdapter({
 const initialState = cardsAdapter.getInitialState({
     session: [],
     stages: null,
-    showAnswer: false
 });
 
 const tapSlice = createSlice({
     name: 'tap',
     initialState,
     reducers: {
-        decrementSession: (state) => {
-            state.session.pop();
-        },
-        rearrangeSession: (state) => {
-            state.session.unshift(state.session.pop());
+        updateCardState: (state, action) => {
+            cardsAdapter.upsertOne(state, action.payload);
+            console.log('updated the state');
         },
         updateSession: (state, action) => {
             state.session.pop();
@@ -29,9 +26,6 @@ const tapSlice = createSlice({
                 state.session.unshift(action.payload);
             }
         },
-        toggleQuestionAnswer: (state) => {
-            state.showAnswer = !state.showAnswer;
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -46,9 +40,7 @@ const tapSlice = createSlice({
 });
 
 export const {
-    decrementSession,
-    rearrangeSession,
-    toggleQuestionAnswer,
+    updateCardState,
     updateSession
 } = tapSlice.actions;
 
