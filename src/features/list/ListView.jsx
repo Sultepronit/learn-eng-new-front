@@ -1,14 +1,14 @@
 import './listStyle.css';
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCardsTotal, selectDbVersion } from '../cards/cardsSlice.js';
+import { selectCardsTotal } from '../cards/cardsSlice.js';
 import {
     selectFirstRow,
     selectPreparedList,
     selectRowNumber,
     setFirstRow
 } from './listSlice.js';
-import { restoreAndRefreshCards, restoreCards, updateLocalCards } from '../cards/cardsAsyncThunks.js';
+import { restoreAndRefreshCards, refreshCards } from '../cards/cardsAsyncThunks.js';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';
@@ -16,13 +16,8 @@ import Table from "./Table.jsx";
 
 export default function ListView() {
     const dispatch = useDispatch();
-    // const dbVersion = useSelector(selectDbVersion);
 
     useEffect(() => {
-        // dispatch(restoreCards());
-        // dispatch(fetchCards(dbVersion));
-        // dispatch(updateCards());
-        // dispatch(updateLocalCards());
         dispatch(restoreAndRefreshCards());
     }, [dispatch]);
 
@@ -42,8 +37,7 @@ export default function ListView() {
             <CardEditor />
             <button
                 className="refresh-button"
-                // onClick={() => dispatch(fetchCards(dbVersion))}
-                onClick={() => dispatch(updateLocalCards())}
+                onClick={() => dispatch(refreshCards())}
             >
                 refresh
             </button>

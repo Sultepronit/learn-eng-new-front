@@ -1,22 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
-// import { getCardsList, setCardsList } from "./indexedDbHandler";
 import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup";
-import { selectAllCards, selectCardByNumber, setAllCards, updateAllCardsState, updateCardState, upsertManyCards } from "./cardsSlice";
+import { selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
-
-export const restoreCards = createAsyncThunk(
-    'cards/restoreCards',
-    async () => {
-        console.timeLog('t', 'start restore');
-        // return await restoreBackup();
-        const cards = await restoreBackup();
-        console.timeLog('t', 'end restore');
-        return cards;
-    }
-);
 
 async function fetchCards() {
     let path = '/cards';
@@ -30,32 +18,8 @@ async function fetchCards() {
     return await fetchWithFeatures(path);
 }
 
-export const updateLocalCards = createAsyncThunk(
-    'cards/updateLocalCards',
-    async (_, { dispatch, getState }) => {
-        console.timeLog('t', 'start fetching remote');
-        const update = await fetchCards();
-        console.timeLog('t', 'end fetching remote');
-        console.log('update:', update);
-
-        if(!update.version) return;
-
-        dispatch(updateAllCardsState(update));
-
-        const backupResult = await setBackup(
-            selectAllCards(getState())
-        );
-
-        if (backupResult === 'success') {
-            updateVersion(update.version);
-        } else {
-            alert(backupResult);
-        }
-    }
-);
-
 const updateCardsLocally = (update) => async (dispatch, getState) => {
-    console.log('local update....');
+    console.log('refreshing cards....');
     if(!update.version) return;
 
     const { data, totalUpdate } = update;
@@ -80,7 +44,7 @@ const updateCardsLocally = (update) => async (dispatch, getState) => {
 
 export const restoreAndRefreshCards = createAsyncThunk(
     'cards/restoreAndRefreshCards',
-    async (_, { dispatch, getState }) => {
+    async (_, { dispatch }) => {
         console.timeLog('t', 'start restore & refresh');
 
         const restorePromise = restoreBackup();
@@ -117,6 +81,16 @@ export const restoreAndRefreshCards = createAsyncThunk(
 
         console.timeLog('t', 'refreshed the data!');
     } 
+);
+
+export const refreshCards = createAsyncThunk(
+    'cards/updateLocalCards',
+    async (_, { dispatch }) => {
+        const update = await fetchCards();
+        console.log('update:', update);
+
+        await dispatch(updateCardsLocally(update));
+    }
 );
 
 export const updateCard = createAsyncThunk(

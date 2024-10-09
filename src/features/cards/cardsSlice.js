@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsAsyncThunks";
+import { saveNewCard, deleteCard } from "./cardsAsyncThunks";
 import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
 import createNewCard from "./createNewCard";
 
@@ -35,21 +35,6 @@ const cardsSlice = createSlice({
     name: 'cards',
     initialState,
     reducers: {
-        updateAllCardsState: (state, action) => {       
-            // logProxy(state);
-            const { data, totalUpdate } = action.payload;
-        
-            if(totalUpdate) {
-                cardsAdapter.setAll(
-                    state,
-                    [...data, createNewCard(data[data.length - 1])]
-                );
-            } else {
-                cardsAdapter.upsertMany(state, data);
-            }
-            
-            console.log('updated the state!');
-        },
         setAllCards: cardsAdapter.setAll,
         upsertManyCards: cardsAdapter.upsertMany,
         updateCardState: cardsAdapter.updateOne,
@@ -60,14 +45,6 @@ const cardsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // .addCase(restoreCards.fulfilled, (state, action) => {
-            //     if(state.ids.length) {
-            //         console.log('It seems, that fetching was faster & resotred data is\'t in need');
-            //         return;
-            //     }
-            //     cardsAdapter.setAll(state, action.payload);
-            //     console.log('resotred:', action.payload);
-            // })
             .addCase(saveNewCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);
 
@@ -90,7 +67,6 @@ const cardsSlice = createSlice({
 });
 
 export const {
-    updateAllCardsState,
     setAllCards,
     upsertManyCards,
     updateCardState,
@@ -102,10 +78,8 @@ export const selectDbVersion = (state) => state.cards.dbVersion;
 export const {
     selectAll: selectAllCards,
     // selectIds: selectCardIds,
-    // selectById: selectCardById,
     selectById: selectCardByNumber,
     selectTotal: selectCardsTotal
 } = cardsAdapter.getSelectors(state => state.cards);
-
 
 export default cardsSlice.reducer;
