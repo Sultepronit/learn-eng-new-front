@@ -23,6 +23,7 @@ const CardEditor = React.memo(function CardEditor() {
         };
         console.log(data);
 
+        // reorder, starting from most actual case!!!!
         if (card.dbid < 0) { // if card is absolutely new, we are trying to create it on server
             data.changes.dbid = 0; 
             dispatch(saveNewCard(data)); 

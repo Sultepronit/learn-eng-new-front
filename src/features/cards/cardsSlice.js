@@ -38,6 +38,7 @@ const cardsSlice = createSlice({
         setAllCards: cardsAdapter.setAll,
         upsertManyCards: cardsAdapter.upsertMany,
         updateCardState: cardsAdapter.updateOne,
+        addOneCard: cardsAdapter.addOne,
 
         updateViewOnly: (state, action) => {
             cardsAdapter.updateOne(state, action.payload);
@@ -45,23 +46,23 @@ const cardsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(saveNewCard.pending, (state, action) => {
-                cardsAdapter.updateOne(state, action.meta.arg);
+            // .addCase(saveNewCard.pending, (state, action) => {
+            //     cardsAdapter.updateOne(state, action.meta.arg);
 
-                const nextNewCard = createNewCard(state.entities[action.meta.arg.id]);
-                cardsAdapter.addOne(state, nextNewCard);
-            })
-            .addCase(saveNewCard.fulfilled, (state, action) => {
-                const { id: cardNumber } = action.meta.arg;
-                const changes = { dbid: action.payload.dbid };
+            //     const nextNewCard = createNewCard(state.entities[action.meta.arg.id]);
+            //     cardsAdapter.addOne(state, nextNewCard);
+            // })
+            // .addCase(saveNewCard.fulfilled, (state, action) => {
+            //     const { id: cardNumber } = action.meta.arg;
+            //     const changes = { dbid: action.payload.dbid };
 
-                cardsAdapter.updateOne(state, { id: cardNumber, changes });
+            //     cardsAdapter.updateOne(state, { id: cardNumber, changes });
 
-                if (changes.dbid === -1) return; // Saving failed, simply
+            //     if (changes.dbid === -1) return; // Saving failed, simply
 
-                // updateVersionState(state, action.payload.version);
-                bakcupOneCard(cardNumber, changes, state.dbVersion);
-            })
+            //     // updateVersionState(state, action.payload.version);
+            //     bakcupOneCard(cardNumber, changes, state.dbVersion);
+            // })
             .addCase(deleteCard.fulfilled, updateData);
     }
 });
@@ -70,6 +71,7 @@ export const {
     setAllCards,
     upsertManyCards,
     updateCardState,
+    addOneCard,
     updateViewOnly
 } = cardsSlice.actions;
 

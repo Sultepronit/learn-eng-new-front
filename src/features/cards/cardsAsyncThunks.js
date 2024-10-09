@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup";
-import { selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
+import { addOneCard, selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
 
@@ -25,7 +25,7 @@ const updateCardsLocally = (update) => async (dispatch, getState) => {
     const { data, totalUpdate } = update;
 
     if(totalUpdate) {
-        const dataPlus = [...data, createNewCard(data[data.length - 1])];
+        const dataPlus = [...data, createNewCard(data.length)];
         dispatch(setAllCards(dataPlus));
     } else {
         dispatch(upsertManyCards(data));
@@ -48,7 +48,7 @@ export const restoreAndRefreshCards = createAsyncThunk(
         console.timeLog('t', 'start restore & refresh');
 
         const restorePromise = restoreBackup();
-        const fetchPromise = await fetchCards();
+        const fetchPromise = fetchCards();
         
         const firstResult = await Promise.any([restorePromise, fetchPromise]);
 
@@ -125,38 +125,42 @@ function filterChanges(card) {
 
 export const saveNewCard = createAsyncThunk(
     'cards/saveNewCard',
-    async ({ id: cardNumber }, { dispatch, getState }) => {
-        console.log('new card\'s number', cardNumber);
+    async ({ number, changes }, { dispatch, getState }) => {
+        console.log('new card\'s number', number);
+
+        dispatch(updateCardState({ id: number, changes }));
+
+        const nextNewCard = createNewCard(number);
+        dispatch(addOneCard(nextNewCard));
         
         // We are sending just card number to create new card on the server.
-        const result = await fetchWithFeatures('/cards', 'POST', { cardNumber });
+        const result = await fetchWithFeatures('/cards', 'POST', { cardNumber: number });
         // The result should contain dbid of the new card (and new db version).
         // But in case of fail, we are turning card's status back to "empty" one.
         if(!result?.dbid) {
-            return { dbid: -1 };
-        } else {
-            console.log('new card\'s dbid', result.dbid);
+            console.warn('card was not created:', result);
+            dispatch(updateCardState({ id: number, changes: { dbid: -1 } }));
+            return;
         }
+        console.log('new card\'s dbid', result.dbid);
 
-        // Now, we can get the local card with all its changes that couldn't be updated without dbid.
-        const localCard = selectCardByNumber(getState(), cardNumber);
+        // Now, we can get the local card with all its changes
+        // that couldn't be updated without dbid, and do update!
+        const localCard = selectCardByNumber(getState(), number);
         const unsavedChanges = filterChanges(localCard);
         console.log('unsaved changes', unsavedChanges);
 
-        // The dbid would be set to the card inside the cardSlice just in a moment.
-        // That should allow all the next updates to be normally implemented.
+        // // All the changes made till now, would be saved with next lines,
+        // // and we'll wait for a little more time, for not to miss some.
+        // setTimeout(() => {
+        //     dispatch(updateCard({
+        //         id: cardNumber,
+        //         dbid: result.dbid,
+        //         changes: unsavedChanges
+        //     }));
+        // }, 200);
 
-        // All the changes made till now, would be saved with next lines,
-        // and we'll wait for a little more time, for not to miss some.
-        setTimeout(() => {
-            dispatch(updateCard({
-                id: cardNumber,
-                dbid: result.dbid,
-                changes: unsavedChanges
-            }));
-        }, 200);
-
-        return result;
+        // return result;
     }
 );
 

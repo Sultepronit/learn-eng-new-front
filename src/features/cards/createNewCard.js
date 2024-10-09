@@ -1,9 +1,7 @@
-import { backUpNewCard } from "../../services/cardsBackup";
-
-export default function createNewCard(lastCard) {
-    const newCard = {
+export default function createNewCard(lastCardNumber) {
+    return {
         dbid: -1,
-        number: lastCard.number + 1,
+        number: lastCardNumber + 1,
         repeatStatus: -1,
         word: '',
         transcription: '',
@@ -23,8 +21,4 @@ export default function createNewCard(lastCard) {
         writeBRecord: 0,
         writeBAutorepeat: 0
     };
-
-    // backUpNewCard(newCard);
-    
-    return newCard;
 }
