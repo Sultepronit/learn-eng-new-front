@@ -26,7 +26,7 @@ export default function TapLessonView() {
         console.log(card);
     }, [session]);
 
-    // console.log(card);
+    console.log(card);
 
     return !stages ? '' : (
         <section className="tap-view">

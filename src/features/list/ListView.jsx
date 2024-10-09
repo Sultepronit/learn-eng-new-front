@@ -8,7 +8,7 @@ import {
     selectRowNumber,
     setFirstRow
 } from './listSlice.js';
-import { fetchCards, restoreCards } from '../cards/cardsThunks.js';
+import { fetchCards, restoreCards, updateLocalCards } from '../cards/cardsAsyncThunks.js';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';
@@ -16,11 +16,13 @@ import Table from "./Table.jsx";
 
 export default function ListView() {
     const dispatch = useDispatch();
-    const dbVersion = useSelector(selectDbVersion);
+    // const dbVersion = useSelector(selectDbVersion);
 
     useEffect(() => {
         dispatch(restoreCards());
-        dispatch(fetchCards(dbVersion));
+        // dispatch(fetchCards(dbVersion));
+        // dispatch(updateCards());
+        dispatch(updateLocalCards());
     }, [dispatch]);
 
     const preparedList = useSelector(selectPreparedList);

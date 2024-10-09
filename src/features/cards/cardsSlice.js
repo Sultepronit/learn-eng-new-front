@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
+import { fetchCards, updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsAsyncThunks";
 import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
 import createNewCard from "./createNewCard";
 
@@ -8,18 +8,18 @@ const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
 });
 
-const dbVersion = JSON.parse(localStorage.getItem('dbVersion'));
-console.log('saved version:', dbVersion);
+// const dbVersion = JSON.parse(localStorage.getItem('dbVersion'));
+// console.log('saved version:', dbVersion);
 
 const initialState = cardsAdapter.getInitialState({
-    dbVersion
+    // dbVersion
 });
 
-function updateVersionState(state, change) {
-    const dbVersion = { ...state.dbVersion, ...change };
-    state.dbVersion = dbVersion;
-    console.log('new version:', dbVersion);
-}
+// function updateVersionState(state, change) {
+//     const dbVersion = { ...state.dbVersion, ...change };
+//     state.dbVersion = dbVersion;
+//     console.log('new version:', dbVersion);
+// }
 
 const updateData = (state, action) => {
     console.log('data:', action.payload);
@@ -36,18 +36,31 @@ const updateData = (state, action) => {
         cardsAdapter.upsertMany(state, data);
     }
 
-    updateVersionState(state, action.payload.version);
+    // updateVersionState(state, action.payload.version);
 
     const toUpdate = Object.values(state.entities);
-    // toUpdate.pop();
     setBackup(toUpdate, state.dbVersion);
-    // console.log(toUpdate);
 };
 
 const cardsSlice = createSlice({
     name: 'cards',
     initialState,
     reducers: {
+        updateCardsState: (state, action) => {       
+            // logProxy(state);
+            const { data, totalUpdate } = action.payload;
+        
+            if(totalUpdate) {
+                cardsAdapter.setAll(
+                    state,
+                    [...data, createNewCard(data[data.length - 1])]
+                );
+            } else {
+                cardsAdapter.upsertMany(state, data);
+            }
+            
+            console.log('updated the state!');
+        },
         updateViewOnly: (state, action) => {
             cardsAdapter.updateOne(state, action.payload);
         }
@@ -62,7 +75,7 @@ const cardsSlice = createSlice({
                 cardsAdapter.setAll(state, action.payload);
                 console.log('resotred:', action.payload);
             })
-            .addCase(fetchCards.fulfilled, updateData)
+            // .addCase(fetchCards.fulfilled, updateData)
             .addCase(updateCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);
             })
@@ -72,7 +85,7 @@ const cardsSlice = createSlice({
                 const { id: cardNumber, changes } = action.meta.arg;
 
                 if(action.payload?.version) {
-                    updateVersionState(state, action.payload.version);
+                    // updateVersionState(state, action.payload.version);
                     bakcupOneCard(cardNumber, changes, state.dbVersion);
                 } else {
                     bakcupOneCard(cardNumber, changes);
@@ -92,7 +105,7 @@ const cardsSlice = createSlice({
 
                 if (changes.dbid === -1) return; // Saving failed, simply
 
-                updateVersionState(state, action.payload.version);
+                // updateVersionState(state, action.payload.version);
                 bakcupOneCard(cardNumber, changes, state.dbVersion);
             })
             .addCase(deleteCard.fulfilled, updateData);
@@ -100,6 +113,7 @@ const cardsSlice = createSlice({
 });
 
 export const {
+    updateCardsState,
     updateViewOnly
 } = cardsSlice.actions;
 

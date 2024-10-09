@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
-import { fetchCards, restoreCards } from "../cards/cardsThunks";
+import { fetchCards, restoreCards } from "../cards/cardsAsyncThunks";
 
 const initialState = {
     rowNumber: 22,

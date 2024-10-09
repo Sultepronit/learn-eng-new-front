@@ -24,7 +24,7 @@ export default function createNewCard(lastCard) {
         writeBAutorepeat: 0
     };
 
-    backUpNewCard(newCard);
+    // backUpNewCard(newCard);
     
     return newCard;
 }

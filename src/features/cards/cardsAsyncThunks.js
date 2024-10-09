@@ -2,8 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 // import { getCardsList, setCardsList } from "./indexedDbHandler";
-import { restoreBackup } from "../../services/cardsBackup";
-import { selectCardByNumber } from "./cardsSlice";
+import { restoreBackup, setBackup } from "../../services/cardsBackup";
+import { selectAllCards, selectCardByNumber, updateCardsState } from "./cardsSlice";
+import { updateVersion } from "../../services/versionHandlers";
 
 export const restoreCards = createAsyncThunk(
     'cards/restoreCards',
@@ -29,6 +30,39 @@ export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion)
     console.timeLog('t', 'end fetching remote');
     return list;
 });
+
+export const updateLocalCards = createAsyncThunk(
+    'cards/updateLocalCards',
+    async (dbVersion, { dispatch, getState }) => {
+        let path = '/cards';
+
+        if(dbVersion) {
+            const { articles, tap, write } = dbVersion;
+            path += `?articles=${articles}&tap=${tap}&write=${write}`;
+        }
+
+        console.timeLog('t', 'start fetching remote');
+        const update = await fetchWithFeatures(path);
+        console.timeLog('t', 'end fetching remote');
+        console.log('update:', update);
+
+        if(!update.version) return;
+
+        dispatch(updateCardsState(update));
+
+        const actualCards = selectAllCards(getState());
+        // console.log(actualCards);
+
+        const backupResult = await setBackup(actualCards);
+        // console.log(backupResult);
+
+        if (backupResult === 'success') {
+            updateVersion(update.version);
+        } else {
+            alert(backupResult);
+        }
+    }
+);
 
 export const updateCard = createAsyncThunk(
     'cards/updateCard',

@@ -7,5 +7,6 @@ export function getVersion() {
 
 export function updateVersion(update) {
     version = { ...version, ...update };
+    console.log('new version:', version);
     localStorage.setItem('dbVersion', JSON.stringify(version));
 }

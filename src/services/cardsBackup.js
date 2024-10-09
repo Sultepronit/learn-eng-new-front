@@ -85,26 +85,21 @@ function initWriting() {
     })
 }
 
-export async function setBackup(list, dbVersion) {
+export async function setBackup(list) {
     console.timeLog('t', 'backupping...');
     const { transaction, cards } = await initWriting();
 
     // console.log(list);
     for(const card of list) {
-        try {
-            const request = cards.put(card);
-            request.onerror = () => console.warn(request.error);
-        } catch (error) { // for empty card proxy
-            console.warn(error);
-        }
-        
+        const request = cards.put(card);
+        request.onerror = () => console.warn(request.error);
     }
 
-    transaction.oncomplete = () => {
-        localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
-        console.timeLog('t', 'backup updated!');
-    }
-    transaction.onerror = () => console.error(transaction.error);
+    return new Promise((resolve, reject) => {
+        transaction.oncomplete = () => resolve('success');
+        transaction.onerror = () => reject(transaction.error);
+        console.timeLog('t', 'end backup...');
+    });
 }
 
 export async function bakcupOneCard(cardNumber, changes, dbVersion) {
