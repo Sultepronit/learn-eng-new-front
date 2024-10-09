@@ -2,8 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 // import { getCardsList, setCardsList } from "./indexedDbHandler";
-import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup";
-import { selectAllCards, selectCardByNumber, updateAllCardsState, updateCardState } from "./cardsSlice";
+import { restoreBackup, setBackup } from "../../services/cardsBackup";
+import { selectAllCards, selectCardByNumber, updateAllCardsState } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 
 export const restoreCards = createAsyncThunk(
@@ -17,23 +17,33 @@ export const restoreCards = createAsyncThunk(
     }
 );
 
-async function fetchCards() {
-    let path = '/cards';
+// export const fetchCards = createAsyncThunk('cards/fetchCards', async (dbVersion) => {
+//     let path = '/cards';
 
-    const version = getVersion();
-    if (version) {
-        const { articles, tap, write } = version;
-        path += `?articles=${articles}&tap=${tap}&write=${write}`;
-    }
+//     if(dbVersion) {
+//         const { articles, tap, write } = dbVersion;
+//         path += `?articles=${articles}&tap=${tap}&write=${write}`;
+//     }
 
-    return await fetchWithFeatures(path);
-}
+//     console.timeLog('t', 'start fetching remote');
+//     const list = await fetchWithFeatures(path);
+//     console.timeLog('t', 'end fetching remote');
+//     return list;
+// });
 
 export const updateLocalCards = createAsyncThunk(
     'cards/updateLocalCards',
     async (_, { dispatch, getState }) => {
+        let path = '/cards';
+
+        const version = getVersion();
+        if(version) {
+            const { articles, tap, write } = version;
+            path += `?articles=${articles}&tap=${tap}&write=${write}`;
+        }
+
         console.timeLog('t', 'start fetching remote');
-        const update = await fetchCards();
+        const update = await fetchWithFeatures(path);
         console.timeLog('t', 'end fetching remote');
         console.log('update:', update);
 
@@ -41,9 +51,11 @@ export const updateLocalCards = createAsyncThunk(
 
         dispatch(updateAllCardsState(update));
 
-        const backupResult = await setBackup(
-            selectAllCards(getState())
-        );
+        const actualCards = selectAllCards(getState());
+        // console.log(actualCards);
+
+        const backupResult = await setBackup(actualCards);
+        // console.log(backupResult);
 
         if (backupResult === 'success') {
             updateVersion(update.version);
@@ -53,34 +65,11 @@ export const updateLocalCards = createAsyncThunk(
     }
 );
 
-export const restoreAndRefreshCards = createAsyncThunk(
-    'cards/restoreCards',
-    async () => {
-        console.timeLog('t', 'start restore');
-        // return await restoreBackup();
-        const cards = await restoreBackup();
-        console.timeLog('t', 'end restore');
-        return cards;
-    }
-);
-
 export const updateCard = createAsyncThunk(
     'cards/updateCard',
-    async ({ number, dbid, changes }, { dispatch, getState }) => {
-        console.log('Saving...', changes);
-
-        dispatch(updateCardState({ id: number, changes }));
-
-        const [backupResult, fetchResult] = await Promise.all([
-            backupCard(selectCardByNumber(getState(), number)),
-            updateWithQueue(`/cards/${dbid}`, changes)
-        ]);
-
-        if (backupResult === 'success') {
-            if (fetchResult?.version) updateVersion(fetchResult.version);
-        } else {
-            alert(backupResult);
-        }
+    async ({ dbid, changes }) => {
+        console.log('Saving...', JSON.stringify(changes));
+        return await updateWithQueue(`/cards/${dbid}`, changes);
     }
 );
 

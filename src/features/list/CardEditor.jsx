@@ -15,7 +15,7 @@ const CardEditor = React.memo(function CardEditor() {
 
     function update({ name, value }) {
         const data = {
-            id: card.number,
+            number: card.number,
             dbid: card.dbid,
             changes: {
                 [name]: value

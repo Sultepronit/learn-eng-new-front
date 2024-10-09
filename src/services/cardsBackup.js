@@ -102,6 +102,18 @@ export async function setBackup(list) {
     });
 }
 
+export async function backupCard(card) {
+    const { cards } = await initWriting();
+
+    const request = cards.put(card);
+
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve('success');
+        request.onerror = () => reject(request.error);
+    });
+}
+
+
 export async function bakcupOneCard(cardNumber, changes, dbVersion) {
     const { cards } = await initWriting();
 

@@ -8,7 +8,7 @@ import {
     selectRowNumber,
     setFirstRow
 } from './listSlice.js';
-import { fetchCards, restoreCards, updateLocalCards } from '../cards/cardsAsyncThunks.js';
+import { restoreCards, updateLocalCards } from '../cards/cardsAsyncThunks.js';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';
@@ -41,7 +41,8 @@ export default function ListView() {
             <CardEditor />
             <button
                 className="refresh-button"
-                onClick={() => dispatch(fetchCards(dbVersion))}
+                // onClick={() => dispatch(fetchCards(dbVersion))}
+                onClick={() => dispatch(updateLocalCards())}
             >
                 refresh
             </button>

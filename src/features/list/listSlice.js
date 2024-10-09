@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
-import { fetchCards, restoreCards } from "../cards/cardsAsyncThunks";
+import { updateLocalCards, restoreCards } from "../cards/cardsAsyncThunks";
 
 const initialState = {
     rowNumber: 22,
@@ -51,11 +51,11 @@ const listSlice = createSlice({
                     state.selectedCardNumber = action.payload.length;
                 }
             })
-            .addCase(fetchCards.fulfilled, (state, action) => {
-                if(action.payload.totalUpdate) {
-                    state.selectedCardNumber = action.payload.data.length + 1;
-                }
-            });
+            // .addCase(updateLocalCards.fulfilled, (state, action) => {
+            //     if(action.payload.totalUpdate) {
+            //         state.selectedCardNumber = action.payload.data.length + 1;
+            //     }
+            // });
     }
 });
 

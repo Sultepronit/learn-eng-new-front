@@ -8,7 +8,18 @@ const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
 });
 
-const initialState = cardsAdapter.getInitialState({});
+// const dbVersion = JSON.parse(localStorage.getItem('dbVersion'));
+// console.log('saved version:', dbVersion);
+
+const initialState = cardsAdapter.getInitialState({
+    // dbVersion
+});
+
+// function updateVersionState(state, change) {
+//     const dbVersion = { ...state.dbVersion, ...change };
+//     state.dbVersion = dbVersion;
+//     console.log('new version:', dbVersion);
+// }
 
 const updateData = (state, action) => {
     console.log('data:', action.payload);
@@ -66,6 +77,22 @@ const cardsSlice = createSlice({
                 cardsAdapter.setAll(state, action.payload);
                 console.log('resotred:', action.payload);
             })
+            // .addCase(fetchCards.fulfilled, updateData)
+            // .addCase(updateCard.pending, (state, action) => {
+            //     cardsAdapter.updateOne(state, action.meta.arg);
+            // })
+            .addCase(updateCard.fulfilled, (state, action) => {
+                // console.log(action.payload);
+                console.log(action.meta.arg);
+                const { id: cardNumber, changes } = action.meta.arg;
+
+                if(action.payload?.version) {
+                    // updateVersionState(state, action.payload.version);
+                    bakcupOneCard(cardNumber, changes, state.dbVersion);
+                } else {
+                    bakcupOneCard(cardNumber, changes);
+                }
+            })
             .addCase(saveNewCard.pending, (state, action) => {
                 cardsAdapter.updateOne(state, action.meta.arg);
 
@@ -88,7 +115,7 @@ const cardsSlice = createSlice({
 });
 
 export const {
-    updateAllCardsState,
+    updateAllCardsState,,
     updateCardState,
     updateViewOnly
 } = cardsSlice.actions;
