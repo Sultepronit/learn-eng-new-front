@@ -3,8 +3,9 @@ import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 // import { getCardsList, setCardsList } from "./indexedDbHandler";
 import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup";
-import { selectAllCards, selectCardByNumber, updateAllCardsState, updateCardState } from "./cardsSlice";
+import { selectAllCards, selectCardByNumber, setAllCards, updateAllCardsState, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
+import createNewCard from "./createNewCard";
 
 export const restoreCards = createAsyncThunk(
     'cards/restoreCards',
@@ -53,15 +54,69 @@ export const updateLocalCards = createAsyncThunk(
     }
 );
 
-export const restoreAndRefreshCards = createAsyncThunk(
-    'cards/restoreCards',
-    async () => {
-        console.timeLog('t', 'start restore');
-        // return await restoreBackup();
-        const cards = await restoreBackup();
-        console.timeLog('t', 'end restore');
-        return cards;
+const updateCardsLocally = (update) => async (dispatch, getState) => {
+    console.log('local update....');
+    if(!update.version) return;
+
+    const { data, totalUpdate } = update;
+
+    if(totalUpdate) {
+        const dataPlus = [...data, createNewCard(data[data.length - 1])];
+        dispatch(setAllCards(dataPlus));
+    } else {
+        dispatch(upsertManyCards(data));
     }
+
+    const backupResult = await setBackup(
+        selectAllCards(getState())
+    );
+
+    if (backupResult === 'success') {
+        updateVersion(update.version);
+    } else {
+        alert(backupResult);
+    }
+}
+
+export const restoreAndRefreshCards = createAsyncThunk(
+    'cards/restoreAndRefreshCards',
+    async (_, { dispatch, getState }) => {
+        console.timeLog('t', 'start restore & refresh');
+
+        const restorePromise = restoreBackup();
+        const fetchPromise = await fetchCards();
+        
+        const firstResult = await Promise.any([restorePromise, fetchPromise]);
+
+        let update = null;
+        if (Array.isArray(firstResult)) { // backup is first
+            console.timeLog('t', 'restored:');
+            console.log(firstResult);
+            
+            dispatch(setAllCards(firstResult));
+
+            update = await fetchPromise;
+            console.timeLog('t', 'fetched remote:');
+            console.log(update);
+        } else { // fetch is first
+            console.timeLog('t', 'fetched remote first!');
+            console.log(firstResult);
+
+            update = firstResult;
+            
+            if (!update.totalUpdate) {
+                const restoredData = await restorePromise;
+                dispatch(setAllCards(restoredData));
+
+                console.timeLog('t', 'just now restored:');
+                console.log(restoredData);
+            }
+        }
+
+        await dispatch(updateCardsLocally(update));
+
+        console.timeLog('t', 'refreshed the data!');
+    } 
 );
 
 export const updateCard = createAsyncThunk(
