@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateCard, saveNewCard, deleteCard } from "../cards/cardsAsyncThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 import { getSelectedCardNumber } from "./listSlice";
-import { selectCardByNumber, updateViewOnly } from "../cards/cardsSlice";
+import { selectCardByNumber, updateCardState } from "../cards/cardsSlice";
 import FindMatchesInput from "../../components/FindMatchesInput";
 
 // export default function CardEditor() {
@@ -21,16 +21,15 @@ const CardEditor = React.memo(function CardEditor() {
                 [name]: value
             }
         };
-        console.log(data);
+        // console.log(data);
 
-        // reorder, starting from most actual case!!!!
-        if (card.dbid < 0) { // if card is absolutely new, we are trying to create it on server
-            data.changes.dbid = 0; 
-            dispatch(saveNewCard(data)); 
-        } else if(card.dbid === 0) { // updating the state, while waiting for card to be created on server
-            dispatch(updateViewOnly(data));
-        } else if(card.dbid > 0) { // existing card is normally updated
+        if(card.dbid > 0) { // existing card is normally updated
             dispatch(updateCard(data));
+        } else if (card.dbid < 0) { // absolutely new card, is going to be created on the server
+            data.changes.dbid = 0; // next changes would not lead here
+            dispatch(saveNewCard(data)); 
+        } else { // new card, wating for server response, updates are going only to the state
+            dispatch(updateCardState({ id: data.number, changes: data.changes }));            
         }
     }
 

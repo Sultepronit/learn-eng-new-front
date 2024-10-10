@@ -84,7 +84,7 @@ export const restoreAndRefreshCards = createAsyncThunk(
 );
 
 export const refreshCards = createAsyncThunk(
-    'cards/updateLocalCards',
+    'cards/refreshCards',
     async (_, { dispatch }) => {
         const update = await fetchCards();
         console.log('update:', update);
@@ -105,19 +105,22 @@ export const updateCard = createAsyncThunk(
             updateWithQueue(`/cards/${dbid}`, changes)
         ]);
 
-        if (backupResult === 'success') {
-            if (fetchResult?.version) updateVersion(fetchResult.version);
-        } else {
-            alert(backupResult);
+        if (backupResult === 'success' && fetchResult?.version) {
+            updateVersion(fetchResult.version);
         }
     }
 );
 
+async function backupNewCard(card, version) {
+    const result = await backupCard(card);
+    if (result === 'success') updateVersion(version);
+}
+
 function filterChanges(card) {
     let changes = {};
     for(const field in card) {
-        if(field === 'dbid' || field === 'number') continue;
-        if(!card[field]) continue;
+        if (field === 'dbid' || field === 'number' || field === 'repeatStatus') continue;
+        if (!card[field]) continue;
         changes[field] = card[field];
     }
     return changes;
@@ -130,19 +133,26 @@ export const saveNewCard = createAsyncThunk(
 
         dispatch(updateCardState({ id: number, changes }));
 
+        // adding next new card to the state & bakcup
         const nextNewCard = createNewCard(number);
         dispatch(addOneCard(nextNewCard));
+        backupCard(nextNewCard);
         
-        // We are sending just card number to create new card on the server.
+        // try and create new card on the server
         const result = await fetchWithFeatures('/cards', 'POST', { cardNumber: number });
-        // The result should contain dbid of the new card (and new db version).
-        // But in case of fail, we are turning card's status back to "empty" one.
+        
         if(!result?.dbid) {
             console.warn('card was not created:', result);
             dispatch(updateCardState({ id: number, changes: { dbid: -1 } }));
             return;
         }
-        console.log('new card\'s dbid', result.dbid);
+
+        // now that we get the dbid & version we are saving them to the state & backup
+        const { dbid, version } = result;
+        console.log('new card\'s dbid', dbid);
+
+        dispatch(updateCardState({ id: number, changes: { dbid } }));
+        backupNewCard(selectCardByNumber(getState(), number), version);
 
         // Now, we can get the local card with all its changes
         // that couldn't be updated without dbid, and do update!
@@ -150,17 +160,7 @@ export const saveNewCard = createAsyncThunk(
         const unsavedChanges = filterChanges(localCard);
         console.log('unsaved changes', unsavedChanges);
 
-        // // All the changes made till now, would be saved with next lines,
-        // // and we'll wait for a little more time, for not to miss some.
-        // setTimeout(() => {
-        //     dispatch(updateCard({
-        //         id: cardNumber,
-        //         dbid: result.dbid,
-        //         changes: unsavedChanges
-        //     }));
-        // }, 200);
-
-        // return result;
+        dispatch(updateCard({ number, dbid, changes: unsavedChanges }));
     }
 );
 

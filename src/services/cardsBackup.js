@@ -109,7 +109,10 @@ export async function backupCard(card) {
 
     return new Promise((resolve, reject) => {
         request.onsuccess = () => resolve('success');
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+            alert(request.error);
+            reject(request.error);
+        }
     });
 }
 
