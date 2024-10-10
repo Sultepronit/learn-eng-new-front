@@ -1,17 +1,18 @@
 import { marks } from "./statuses";
 
-function commonEvaluation(card) {
-    if (card.mark === marks.GOOD) {
+function commonEvaluation(card, mark) {
+    if (mark === marks.GOOD) {
         card[`tap${card.direction}Progress`] = 1;
     } else {
         card[`tap${card.direction}Progress`]--;
     }
 }
 
-export default function evaluate(card) {
-    const freezed = { ...card };
+export default function evaluate(inputCard, mark) {
+    const card = { ...inputCard };
+    const freezed = { ...inputCard };
 
-    commonEvaluation(card); 
+    commonEvaluation(card, mark); 
 
     const changes = {};
     for (const key in card) {

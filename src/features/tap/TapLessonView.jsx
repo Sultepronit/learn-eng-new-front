@@ -21,12 +21,14 @@ export default function TapLessonView() {
     const [questionMode, setQuestionMode] = useState(true);
 
     useEffect(() => {
-        setCard(dispatch(getNextCard()));
+        const nextCard = dispatch(getNextCard());
+        // setCard(dispatch(getNextCard()));
+        setCard(nextCard);
         console.log(session);
-        console.log(card);
+        console.log(nextCard);
     }, [session]);
 
-    console.log(card);
+    // console.log(card);
 
     return !stages ? '' : (
         <section className="tap-view">

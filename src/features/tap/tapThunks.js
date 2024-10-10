@@ -1,8 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
-import { restoreCards } from "../../services/cardsBackup";
-import { directions, stages } from "./statuses";
+import { backupCard, restoreCards } from "../../services/cardsBackup";
 import { restoreSession, backupSession, bakcupStages } from "./sessionBackup";
+import { selectCardByNumber, updateCardState } from "./tapSlice";
+import updateWithQueue from "../../services/updateQueue";
+import { updateVersion } from "../../services/versionHandlers";
 
 async function fetchSession(dbVersion) {
     let path = '/tap-session';
@@ -48,3 +50,34 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
 
     return data;
 });
+
+export const updateCard = createAsyncThunk(
+    'tap/updateCard',
+    async ({ number, dbid, changes, retry }, { dispatch, getState }) => {
+        console.log('saving:', number, changes);
+
+        if (retry) {
+            dispatch(updateCardState({ id: number, changes }));
+        }
+        
+        const fetchPromise = updateWithQueue(`/cards/${dbid}`, changes);
+
+        const updatable = false; // add actual value!!!
+
+        if (updatable) {
+            const [backupResult, fetchResult] = await Promise.all([
+                backupCard(selectCardByNumber(getState(), number)),
+                fetchPromise
+            ]);
+    
+            if (fetchResult?.version && backupResult === 'success') {
+                updateVersion(fetchResult.version);
+            }
+        } else if (retry) {
+            await backupCard(selectCardByNumber(getState(), number));
+        }
+        
+        await fetchPromise;
+        console.log('saved:', number);
+    }
+);

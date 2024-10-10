@@ -17,7 +17,7 @@ const tapSlice = createSlice({
     initialState,
     reducers: {
         updateCardState: (state, action) => {
-            cardsAdapter.upsertOne(state, action.payload);
+            cardsAdapter.updateOne(state, action.payload);
             console.log('updated the state');
         },
         updateSession: (state, action) => {
@@ -48,15 +48,15 @@ export const selectSession = (state) => state.tap.session;
 export const selectStages = (state) => state.tap.stages;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
 
-const {
-    selectById: selectRawCard,
-    selectAll: selectAllCards
+export const {
+    selectById: selectCardByNumber,
+    // selectAll: selectAllCards
 } = cardsAdapter.getSelectors(state => state.tap);
 
 // thunk, is what this thing called
 export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
-    const rawCard = selectRawCard(getState(), nextCardNumber);
+    const rawCard = selectCardByNumber(getState(), nextCardNumber);
     // dispatch(setSelectedCard(card));
     // console.log(rawCard);  
     return {

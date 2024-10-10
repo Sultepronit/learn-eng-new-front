@@ -3,6 +3,7 @@ import { updateCardState, updateSession } from "./tapSlice";
 import { useEffect, useState } from "react";
 import { directions, marks, stages } from "./statuses";
 import evaluate from "./evaluate";
+import { updateCard } from "./tapThunks";
 
 export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const dispatch = useDispatch();
@@ -23,24 +24,18 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     function evaluateSaveAsk(mark) {
         // evaluate
         console.log('mark:', mark);
-        const mutatedCard = { ...card, mark };
-        const changes = evaluate(mutatedCard);
-        console.log(changes);
-        console.log(mutatedCard);
+        const changes = evaluate(card, mark);
+
+        const retry = mark === marks.RETRY;
 
         // save
-        if (mark === marks.RETRY) {
-            dispatch(updateCardState(mutatedCard));
-        }
+        dispatch(updateCard({ number: card.number, dbid: card.dbid, changes, retry }));
 
-        ask();
-    }
-
-    function ask(returnedCard) {
+        // ask
         console.log('next!');
         setButtons({ neutral });
-        // dispatch(rearrangeSession());
-        dispatch(updateSession(returnedCard));
+
+        dispatch(updateSession(retry && card.number));
     }
 
     function act(mark) {
