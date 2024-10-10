@@ -8,7 +8,7 @@ import {
     selectRowNumber,
     setFirstRow
 } from './listSlice.js';
-import { restoreAndRefreshCards, refreshCards } from '../cards/cardsAsyncThunks.js';
+import { restoreAndRefreshCards, refreshCards } from '../cards/cardsThunks.js';
 import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';

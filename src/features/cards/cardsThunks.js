@@ -5,6 +5,7 @@ import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup
 import { addOneCard, selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
+import { setSelectedCardNumber } from "../list/listSlice";
 
 async function fetchCards() {
     let path = '/cards';
@@ -31,9 +32,9 @@ const updateCardsLocally = (update) => async (dispatch, getState) => {
         dispatch(upsertManyCards(data));
     }
 
-    const backupResult = await setBackup(
-        selectAllCards(getState())
-    );
+    dispatch(setSelectedCardNumber(data.length)); // selecting last* card
+
+    const backupResult = await setBackup(selectAllCards(getState()));
 
     if (backupResult === 'success') {
         updateVersion(update.version);
@@ -54,10 +55,12 @@ export const restoreAndRefreshCards = createAsyncThunk(
 
         let update = null;
         if (Array.isArray(firstResult)) { // backup is first
+            const restored = firstResult;
             console.timeLog('t', 'restored:');
-            console.log(firstResult);
+            console.log(restored);
             
-            dispatch(setAllCards(firstResult));
+            dispatch(setAllCards(restored));
+            dispatch(setSelectedCardNumber(restored.length)); // selecting last card
 
             update = await fetchPromise;
             console.timeLog('t', 'fetched remote:');
@@ -71,6 +74,7 @@ export const restoreAndRefreshCards = createAsyncThunk(
             if (!update.totalUpdate) {
                 const restoredData = await restorePromise;
                 dispatch(setAllCards(restoredData));
+                dispatch(setSelectedCardNumber(restoredData.length)); // selecting last card
 
                 console.timeLog('t', 'just now restored:');
                 console.log(restoredData);
@@ -166,8 +170,12 @@ export const saveNewCard = createAsyncThunk(
 
 export const deleteCard = createAsyncThunk(
     'cards/deleteCard',
-    async (id) => {
+    async (id, { dispatch }) => {
         console.log('deleting card', id);
-        return await fetchWithFeatures(`/cards/${id}`, 'DELETE', null, false);
+
+        const newList = await fetchWithFeatures(`/cards/${id}`, 'DELETE', null, false);
+        console.log('new list:', newList)
+
+        await dispatch(updateCardsLocally(newList));
     }
 );

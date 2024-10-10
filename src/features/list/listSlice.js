@@ -1,12 +1,11 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
-// import { updateLocalCards, restoreCards } from "../cards/cardsAsyncThunks";
 
 const initialState = {
     rowNumber: 22,
     firstRow: 0,
-    returnFirstRow: 0,
+    backupFirstRow: 0,
     selectedCardNumber: 1,
     findMatchesQuery: '',
     searchQuery: '',
@@ -18,7 +17,6 @@ const listSlice = createSlice({
     initialState,
     reducers: {
         setFirstRow: (state, action) => {
-            // console.log(action.payload);
             state.firstRow = action.payload;
         },
         setSelectedCardNumber: (state, action) => {
@@ -27,10 +25,10 @@ const listSlice = createSlice({
         findMatches: (state, action) => {
             state.findMatchesQuery = action.payload;
             if (action.payload !== '') {
-                state.returnFirstRow = state.firstRow;
+                state.backupFirstRow = state.firstRow;
                 state.firstRow = 0;
             } else {
-                state.firstRow = state.returnFirstRow;
+                state.firstRow = state.backupFirstRow;
             }
         },
         search: (state, action) => {
@@ -39,24 +37,10 @@ const listSlice = createSlice({
             state.firstRow = 0;
         },
         toggleReverse: (state) => {
-            console.log('toggle!');
             state.reverse = !state.reverse;
             state.firstRow = 0;
         }
-    },
-    // extraReducers: (builder) => {
-    //     builder
-    //         .addCase(restoreCards.fulfilled, (state, action) => {
-    //             if(action.payload.length) {
-    //                 state.selectedCardNumber = action.payload.length;
-    //             }
-    //         })
-    //         .addCase(updateLocalCards.fulfilled, (state, action) => {
-    //             if(action.payload.totalUpdate) {
-    //                 state.selectedCardNumber = action.payload.data.length + 1;
-    //             }
-    //         });
-    // }
+    }
 });
 
 export const {

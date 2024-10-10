@@ -33,7 +33,6 @@ export function openLocalDb() {
 }
 
 export async function restoreBackup() {
-    // await openLocalDb();
     if(!db) {
         await setPause(200);
         return restoreBackup();
@@ -62,7 +61,6 @@ async function restoreCard(id) { // we don't use it separately, do we?
 export async function restoreCards(ids) {
     if(!db) {
         await setPause(200);
-        console.log('Here we go!');
         return restoreCards(ids)
     }
     try {
@@ -74,7 +72,7 @@ export async function restoreCards(ids) {
 }
 
 function initWriting() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if(!db) {
             setTimeout(() => initWriting(), 200);
             return;
@@ -86,10 +84,9 @@ function initWriting() {
 }
 
 export async function setBackup(list) {
-    console.timeLog('t', 'backupping...');
     const { transaction, cards } = await initWriting();
 
-    // console.log(list);
+    console.log(list);
     for(const card of list) {
         const request = cards.put(card);
         request.onerror = () => console.warn(request.error);
@@ -98,7 +95,6 @@ export async function setBackup(list) {
     return new Promise((resolve, reject) => {
         transaction.oncomplete = () => resolve('success');
         transaction.onerror = () => reject(transaction.error);
-        console.timeLog('t', 'end backup...');
     });
 }
 
@@ -114,31 +110,6 @@ export async function backupCard(card) {
             reject(request.error);
         }
     });
-}
-
-
-export async function bakcupOneCard(cardNumber, changes, dbVersion) {
-    const { cards } = await initWriting();
-
-    const getRequest = cards.get(cardNumber);
-    getRequest.onsuccess = () => {
-        const updatedCard = { ...getRequest.result, ...changes };
-        const putRequest = cards.put(updatedCard);
-        putRequest.onerror = () => console.error(putRequest.error);
-        putRequest.onsuccess = () => {
-            if(dbVersion) {
-                localStorage.setItem('dbVersion', JSON.stringify(dbVersion));
-            }
-        };
-    }
-}
-
-export async function backUpNewCard(card) {
-    const { cards } = await initWriting();
-
-    const request = cards.put(card);
-    request.onerror = () => console.error(request.error);
-    request.onsuccess = () => console.log('added empty card to backup!');
 }
 
 // https://learn.javascript.ru/indexeddb

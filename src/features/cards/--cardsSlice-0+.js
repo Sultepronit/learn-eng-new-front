@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
-import { updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsAsyncThunks";
+import { updateCard, saveNewCard, deleteCard, restoreCards } from "./cardsThunks";
 import { bakcupOneCard, setBackup } from "../../services/cardsBackup";
 import createNewCard from "./createNewCard";
 

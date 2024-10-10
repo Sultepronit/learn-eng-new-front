@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCard, saveNewCard, deleteCard } from "../cards/cardsAsyncThunks";
+import { updateCard, saveNewCard, deleteCard } from "../cards/cardsThunks";
 import LazyTextInput from "../../components/LazyTextInput";
 import { getSelectedCardNumber } from "./listSlice";
 import { selectCardByNumber, updateCardState } from "../cards/cardsSlice";
