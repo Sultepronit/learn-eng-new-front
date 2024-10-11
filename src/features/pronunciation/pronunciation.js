@@ -73,6 +73,5 @@ export async function speak() {
             console.log(result);
             if (result === 'ended') break;
         }
-        
     }
 }

@@ -5,6 +5,7 @@ import { directions, marks, stages } from "./statuses";
 import evaluate from "./evaluate";
 import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
+import { startLearningPronunciation } from "../pronunciation/pronunciationSlice";
 
 export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const dispatch = useDispatch();
@@ -12,8 +13,11 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const [good, neutral, retry, bad] = ['good', 'neutral', 'retry', 'bad'];
     const [buttons, setButtons] = useState({ neutral });
 
-    function prepareEvaluation() {
-        speak();
+    const [learningPronunciation, setLearningPronunciation] = useState(false);
+
+    function pronounceAndPrepareEvaluation() {
+        setLearningPronunciation(true);
+        speak().then(() => setLearningPronunciation(false));
 
         if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, neutral, bad });
@@ -42,7 +46,7 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     }
 
     function act(mark) {
-        questionMode ? prepareEvaluation() : evaluateSaveAsk(mark);
+        questionMode ? pronounceAndPrepareEvaluation() : evaluateSaveAsk(mark);
 
         setQuestionMode(!questionMode);
     }
@@ -61,12 +65,14 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     return (
         <>
         <button onClick={() => speak()}>play</button>
-        <div className="nav-buttons">
-            <button className={buttons.good} onClick={() => act(marks.GOOD)} />
-            <button className={buttons.neutral} onClick={() => act(marks.PASS)} />
-            <button className={buttons.retry} onClick={() => act(marks.RETRY)} />
-            <button className={buttons.bad} onClick={() => act(marks.BAD)} />
-        </div>
+        {learningPronunciation ? '' :
+            (<div className="nav-buttons">
+                <button className={buttons.good} onClick={() => act(marks.GOOD)} />
+                <button className={buttons.neutral} onClick={() => act(marks.PASS)} />
+                <button className={buttons.retry} onClick={() => act(marks.RETRY)} />
+                <button className={buttons.bad} onClick={() => act(marks.BAD)} />
+            </div>)
+        }
         </>
     );
 }
