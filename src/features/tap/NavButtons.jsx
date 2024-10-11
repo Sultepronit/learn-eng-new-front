@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { directions, marks, stages } from "./statuses";
 import evaluate from "./evaluate";
 import { updateCard } from "./tapThunks";
+import { speak } from "../pronunciation/pronunciation";
 
 export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const dispatch = useDispatch();
@@ -12,6 +13,8 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const [buttons, setButtons] = useState({ neutral });
 
     function prepareEvaluation() {
+        speak();
+
         if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, neutral, bad });
         } if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
@@ -45,12 +48,25 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     }
 
 
+    // return (
+    //     <div className="nav-buttons">
+    //         <button onClick={() => playRecords(card.word)}>play</button>
+    //         <button className={buttons.good} onClick={() => act(marks.GOOD)} />
+    //         <button className={buttons.neutral} onClick={() => act(marks.PASS)} />
+    //         <button className={buttons.retry} onClick={() => act(marks.RETRY)} />
+    //         <button className={buttons.bad} onClick={() => act(marks.BAD)} />
+    //     </div>
+    // );
+
     return (
+        <>
+        <button onClick={() => speak()}>play</button>
         <div className="nav-buttons">
             <button className={buttons.good} onClick={() => act(marks.GOOD)} />
             <button className={buttons.neutral} onClick={() => act(marks.PASS)} />
             <button className={buttons.retry} onClick={() => act(marks.RETRY)} />
             <button className={buttons.bad} onClick={() => act(marks.BAD)} />
         </div>
+        </>
     );
 }

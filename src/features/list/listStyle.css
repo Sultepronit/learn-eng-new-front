@@ -47,7 +47,9 @@
 }
 
 .table {
-    display: flex;
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
 .table:focus {

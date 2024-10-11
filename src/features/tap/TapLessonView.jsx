@@ -6,6 +6,8 @@ import { getVersion } from "../../services/versionHandlers";
 import { getNextCard, selectSession, selectStages } from "./tapSlice";
 import CardView from './CardView';
 import NavButtons from './NavButtons';
+import { getRecords } from '../pronunciation/audioSources';
+import { prepareSpeech } from '../pronunciation/pronunciation';
 
 export default function TapLessonView() {
     const dispatch = useDispatch();
@@ -21,16 +23,21 @@ export default function TapLessonView() {
     const [questionMode, setQuestionMode] = useState(true);
 
     useEffect(() => {
+        if (!stages) return;
         const nextCard = dispatch(getNextCard());
-        // setCard(dispatch(getNextCard()));
-        setCard(nextCard);
-        console.log(session);
         console.log(nextCard);
+
+        // getRecords(nextCard.word);
+        prepareSpeech([nextCard.word]);
+
+        setCard(nextCard);
+
+        console.log(session);
     }, [session]);
 
     // console.log(card);
 
-    return !stages ? '' : (
+    return !stages || !card ? '' : (
         <section className="tap-view">
             <div>
                 <p>{stages.learn}</p>
