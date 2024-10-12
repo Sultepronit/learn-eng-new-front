@@ -42,7 +42,6 @@ class ChattyExpression {
 let currentSpeech = [];
 
 export async function prepareSpeech(variants) {
-    variants.push('apple');
     
     // receiving
     const urlsForVariants = await Promise.all(

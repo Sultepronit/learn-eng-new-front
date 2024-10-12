@@ -5,6 +5,10 @@
     padding: 0.3rem;
 }
 
+.card-view {
+    /* background-color: yellow; */
+}
+
 .word {
     text-align: center;
 }
@@ -21,7 +25,26 @@
     text-align: center;
 }
 
+.reset {
+    background: none;
+    border: none;
+    width: fit-content;
+    font-size: 3rem;
+    /* font-weight: bold; */
+    color: red;
+}
+
+.speaker {
+    margin: auto;
+    margin-bottom: 1rem;
+    background: none;
+    border: none;
+    width: fit-content;
+    font-size: 2rem;
+}
+
 .nav-buttons {
+    height: 6rem;
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -29,7 +52,7 @@
 
 .nav-buttons button {
     display: none;
-    height: 6rem;
+    /* height: 6rem; */
     flex-grow: 1;
 }
 

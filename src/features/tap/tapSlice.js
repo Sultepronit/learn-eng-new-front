@@ -1,4 +1,4 @@
-import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { getSession } from "./tapThunks";
 import logProxy from "../../dev-helpers/logProxy";
 import { directions, stages } from "./statuses";
@@ -49,16 +49,14 @@ export const selectStages = (state) => state.tap.stages;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
 
 export const {
-    selectById: selectCardByNumber,
-    // selectAll: selectAllCards
+    selectById: selectCardByNumber
 } = cardsAdapter.getSelectors(state => state.tap);
 
 // thunk, is what this thing called
 export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
     const rawCard = selectCardByNumber(getState(), nextCardNumber);
-    // dispatch(setSelectedCard(card));
-    // console.log(rawCard);  
+
     return {
         ...rawCard,
         get repeatStage() {
@@ -71,23 +69,5 @@ export const getNextCard = () => (dispatch, getState) => {
         }
     }
 }
-
-// export const selectNextCard = createSelector(
-//     [selectRawCard, (state) => state.tap.session],
-//     (rawCard, session) => {
-//         const lastCardNumber = session[session.length - 1];
-//         console.log(lastCardNumber);
-
-//     }
-// );
-
-// export const selectNextCard = createSelector(
-//     [selectAllCards, (state) => state.tap.session],
-//     (cards, session) => {
-//         const lastCardNumber = session[session.length - 1];
-//         console.log(lastCardNumber);
-//         console.log(cards);
-//     }
-// );
 
 export default tapSlice.reducer;

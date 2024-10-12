@@ -48,6 +48,8 @@ export default function TapLessonView() {
                 questionMode={questionMode}
             />
 
+            <button className="reset">↻</button>
+
             <NavButtons
                 card={card}
                 questionMode={questionMode}
