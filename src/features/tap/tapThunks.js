@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import { backupCard, restoreCards } from "../../services/cardsBackup";
-import { restoreSession, backupSession, bakcupStages } from "./sessionBackup";
+import { restoreSession, bakcupStages } from "./sessionBackup";
 import { selectCardByNumber, updateCardState } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
 import { updateVersion } from "../../services/versionHandlers";
@@ -39,10 +39,7 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
         data.cards = updatedCards;
     }
 
-    if (!data.backup) {
-        bakcupStages(data.stages);
-        // backupSession(data.session);
-    }
+    if (!data.backup) bakcupStages(data.stages);
 
     console.log(data);
 
