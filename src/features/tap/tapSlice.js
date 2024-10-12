@@ -10,12 +10,16 @@ const cardsAdapter = createEntityAdapter({
 const initialState = cardsAdapter.getInitialState({
     session: [],
     stages: null,
+    resetIsActual: false
 });
 
 const tapSlice = createSlice({
     name: 'tap',
     initialState,
     reducers: {
+        removeReset: (state) => {
+            state.resetIsActual = false;
+        },
         updateCardState: (state, action) => {
             cardsAdapter.updateOne(state, action.payload);
             console.log('updated the state');
@@ -30,22 +34,26 @@ const tapSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getSession.fulfilled, (state, action) => {
-                const { cards, session, stages } = action.payload;
+                const { cards, session, stages, backup } = action.payload;
                 cardsAdapter.setAll(state, cards);
                 state.session = session;
                 state.stages = stages;
+
+                state.resetIsActual = !!backup;
                 logProxy(state);
             });
     }
 });
 
 export const {
+    removeReset,
     updateCardState,
     updateSession
 } = tapSlice.actions;
 
 export const selectSession = (state) => state.tap.session;
 export const selectStages = (state) => state.tap.stages;
+export const selectResetIsActual = (state) => state.tap.resetIsActual;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
 
 export const {

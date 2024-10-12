@@ -13,3 +13,7 @@ export function restoreSession() {
 
     return { stages, session: session.content, backup: true };
 }
+
+export function removeSessionBackup() {
+    localStorage.removeItem('tapSession');
+}

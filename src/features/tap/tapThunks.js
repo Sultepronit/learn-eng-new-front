@@ -41,7 +41,7 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
 
     if (!data.backup) {
         bakcupStages(data.stages);
-        backupSession(data.session);
+        // backupSession(data.session);
     }
 
     console.log(data);
