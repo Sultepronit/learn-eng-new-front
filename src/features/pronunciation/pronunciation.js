@@ -8,11 +8,14 @@ async function asyncPlayback(url) {
             console.log('playing', url);
             audio.src = url;
             audio.onended = () => resolve('ended');
-            audio.onerror = () => reject('error playing...');
+            audio.onerror = () => reject('error playing');
+            // audio.oncanplay = () => audio.play();   
             audio.play();   
+
+            setTimeout(() => resolve('too long'), 9000);
         } catch (error) {
             console.warn(error);
-            reject('error playing...');
+            reject('error!');
         }
     });
 }
@@ -54,13 +57,13 @@ export async function prepareSpeech(variants) {
 
     // preloading
     const allUrls = urlsForVariants.flat();
-    console.log('preloading', allUrls);
+    // console.log('preloading', allUrls);
     for (const url of allUrls) {
         new Audio(url);
     }
 
     // preparing for speaking
-    console.log('variants', urlsForVariants);
+    // console.log('variants', urlsForVariants);
     currentSpeech = urlsForVariants.map(urls => new ChattyExpression(urls));
     console.log(currentSpeech);
 }

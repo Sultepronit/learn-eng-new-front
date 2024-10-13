@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import { backupCard, restoreCards } from "../../services/cardsBackup";
 import { restoreSession, bakcupStages } from "./sessionBackup";
-import { selectCardByNumber, updateCardState } from "./tapSlice";
+import { selectCardByNumber, updateCardState, updateProgress } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
 import { updateVersion } from "../../services/versionHandlers";
 
@@ -51,14 +51,24 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
 export const updateCard = createAsyncThunk(
     'tap/updateCard',
     async ({ number, dbid, changes, retry }, { dispatch, getState }) => {
-        console.log('saving:', number, changes);
+        const { cardChanges, progressChanges } = changes;
+        console.log(changes);
+        if (!Object.keys(cardChanges).length) return; // is it actual?..
 
+        dispatch(updateProgress(progressChanges));
+
+
+        console.log('saving:', number, cardChanges);
+
+        // update sate
         if (retry) {
-            dispatch(updateCardState({ id: number, changes }));
+            dispatch(updateCardState({ id: number, cardChanges }));
         }
         
-        const fetchPromise = updateWithQueue(`/cards/${dbid}`, changes);
+        // update db
+        const fetchPromise = updateWithQueue(`/cards/${dbid}`, cardChanges);
 
+        // backup
         const updatable = false; // add actual value!!!
 
         if (updatable) {

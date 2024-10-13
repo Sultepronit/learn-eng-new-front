@@ -10,6 +10,14 @@ const cardsAdapter = createEntityAdapter({
 const initialState = cardsAdapter.getInitialState({
     session: [],
     stages: null,
+    progress: {
+        tries: 0,
+        initialCardsNumber: 35,
+        cardsPassed: 0,
+        learn: { good: 0, retry: 0, upgrade: 0 },
+        confirm: { good: 0, retry: 0, upgrade: 0, degrade: 0 },
+        repeat: { good: 0, retry: 0, upgrade: 0, degrade: 0 }
+    },
     resetIsActual: false
 });
 
@@ -30,6 +38,17 @@ const tapSlice = createSlice({
                 state.session.unshift(action.payload);
             }
         },
+        updateProgress: (state, action) => {
+            console.log(action.payload);
+            const { stage, updates } = action.payload;
+            state.progress.tries++;
+            state.progress.cardsPassed = state.progress.initialCardsNumber - state.session.length;
+            for (const field of updates) {
+                state.progress[stage][field]++;
+            }
+            // console.log(state.progress);
+            logProxy(state.progress);
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -48,7 +67,8 @@ const tapSlice = createSlice({
 export const {
     removeReset,
     updateCardState,
-    updateSession
+    updateSession,
+    updateProgress
 } = tapSlice.actions;
 
 export const selectSession = (state) => state.tap.session;

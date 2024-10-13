@@ -14,7 +14,7 @@ const urlKeys = {
 };
 
 async function getRealRecords(expression) {
-    console.log(urlListPromise);
+    // console.log(urlListPromise);
     const urlList = await urlListPromise;
 
     const compactUrls = urlList[expression];

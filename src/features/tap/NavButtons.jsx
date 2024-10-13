@@ -1,10 +1,11 @@
 import { useDispatch } from "react-redux";
-import { updateCardState, updateSession } from "./tapSlice";
-import { useEffect, useState } from "react";
+import { updateSession } from "./tapSlice";
+import { useState } from "react";
 import { directions, marks, stages } from "./statuses";
-import evaluate from "./evaluate";
+import evaluate from "./evaluation";
 import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
+import setPause from "../../helpers/setPause";
 
 export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const dispatch = useDispatch();
@@ -16,7 +17,11 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
 
     function pronounceAndPrepareEvaluation() {
         setLearningPronunciation(true);
-        speak().then(() => setLearningPronunciation(false));
+        // speak().then(() => setLearningPronunciation(false));
+        Promise.any([
+            speak(),
+            setPause(2000)
+        ]).then(() => setLearningPronunciation(false));
 
         if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, neutral, bad });
@@ -30,6 +35,7 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     function evaluateSaveAsk(mark) {
         // evaluate
         console.log('mark:', mark);
+        // const 
         const changes = evaluate(card, mark);
 
         const retry = mark === marks.RETRY;

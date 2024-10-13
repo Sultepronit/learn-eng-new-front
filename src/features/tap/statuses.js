@@ -1,8 +1,8 @@
 export const stages = {
-    LEARN: 'L',
-    CONFIRM: 'C',
-    REPEAT: 'R',
-    MEMORIZE: 'M'
+    LEARN: 'learn',
+    CONFIRM: 'confirm',
+    REPEAT: 'repeat',
+    // MEMORIZE: 'M'
 };
 
 export const directions = {
