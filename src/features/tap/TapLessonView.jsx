@@ -13,7 +13,7 @@ import { backupSession } from './sessionBackup';
 export default function TapLessonView() {
     const dispatch = useDispatch();
     
-    const stages = useSelector(selectStages);
+    const stages = useSelector(selectStages); // maybe not in here...
     const session = useSelector(selectSession);
     const resetIsActual = useSelector(selectResetIsActual);
     const card = useSelector(selectCurrentCard);
@@ -44,6 +44,7 @@ export default function TapLessonView() {
 
     useEffect(() => {
         console.log(card);
+        if (!card) return;
         prepareSpeech([card.word]);
     }, [card]);
 
@@ -51,7 +52,8 @@ export default function TapLessonView() {
 
     const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 
-    return !stages || !card ? '' : (
+    // return !stages || !card ? '' : (
+    return !card ? '' : (
         <section className="tap-view" onClick={handleGlobalClick}>
             <div>
                 <p>{stages.learn}</p>

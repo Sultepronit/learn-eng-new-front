@@ -10,21 +10,22 @@ import setPause from "../../helpers/setPause";
 export default function NavButtons({ card, questionMode, setQuestionMode }) {
     const dispatch = useDispatch();
 
-    const [good, neutral, retry, bad] = ['good', 'neutral', 'retry', 'bad'];
-    const [buttons, setButtons] = useState({ neutral });
+    const [good, pass, retry, bad] = ['good', 'pass', 'retry', 'bad'];
+    const [buttons, setButtons] = useState({ pass });
 
     const [learningPronunciation, setLearningPronunciation] = useState(false);
 
+    console.log(questionMode);
+
     function pronounceAndPrepareEvaluation() {
-        setLearningPronunciation(true);
-        // speak().then(() => setLearningPronunciation(false));
+        if (card.direction === directions.FORWARD) setLearningPronunciation(true);
         Promise.any([
             speak(),
             setPause(2000)
         ]).then(() => setLearningPronunciation(false));
 
         if (card.repeatStage === stages.CONFIRM) {
-            setButtons({ good, neutral, bad });
+            setButtons({ good, pass, bad });
         } if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
             setButtons({ good, retry });
         } else {
@@ -44,7 +45,7 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
 
         // ask
         console.log('next!');
-        setButtons({ neutral });
+        setButtons({ pass });
 
         dispatch(updateSession(retry && card.number));
     }
@@ -52,8 +53,11 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     function act(mark) {
         questionMode ? pronounceAndPrepareEvaluation() : evaluateSaveAsk(mark);
 
-        setQuestionMode(!questionMode);
+        setQuestionMode(!questionMode); // change question mode to answer and back
     }
+
+    console.log(learningPronunciation);
+    console.log(buttons);
 
     return (
         <>
@@ -61,7 +65,7 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
         <div className="nav-buttons">
             {learningPronunciation ? '' : (<>
                 <button className={buttons.good} onClick={() => act(marks.GOOD)} />
-                <button className={buttons.neutral} onClick={() => act(marks.PASS)} />
+                <button className={buttons.pass} onClick={() => act(marks.PASS)} />
                 <button className={buttons.retry} onClick={() => act(marks.RETRY)} />
                 <button className={buttons.bad} onClick={() => act(marks.BAD)} />
             </>)}

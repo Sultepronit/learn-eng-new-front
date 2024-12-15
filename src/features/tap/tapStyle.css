@@ -65,7 +65,7 @@ button.good {
     background-color: green;
 }
 
-button.neutral {
+button.pass {
     display: block;
     background-color: gray;
 }

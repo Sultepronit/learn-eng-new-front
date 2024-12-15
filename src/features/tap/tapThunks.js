@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
-import { backupCard, restoreCards } from "../../services/cardsBackup";
+import { backupCard, restoreCards, setBackup } from "../../services/cardsBackup";
 import { restoreSession, bakcupStages } from "./sessionBackup";
 import { selectCardByNumber, updateCardState, updateProgress } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
@@ -31,12 +31,17 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
         data.session = data.cards.map(card => card.number);
 
         const storedCards = await restoreCards(data.session);
+        console.log(storedCards);
 
-        const updatedCards = [];
-        for (let i = 1; i < storedCards.length; i++) {
-            updatedCards.push({ ...storedCards[i], ...data.cards[i] });
-        }
-        data.cards = updatedCards;
+        // const updatedCards = [];
+        // for (let i = 0; i < storedCards.length; i++) {
+        //     updatedCards.push({ ...storedCards[i], ...data.cards[i] });
+        // }
+        // data.cards = updatedCards;
+        
+        data.cards = storedCards.map((storedCard, index) => ({ ...storedCard, ...data.cards[index]}));
+
+        setBackup(data.cards);
     }
 
     if (!data.backup) bakcupStages(data.stages);
