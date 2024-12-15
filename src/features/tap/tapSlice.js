@@ -61,6 +61,7 @@ const tapSlice = createSlice({
                 cardsAdapter.setAll(state, cards);
                 state.session = session;
                 state.stages = stages;
+                state.progress.initialCardsNumber = session.length;
 
                 state.resetIsActual = !!backup;
                 logProxy(state);
@@ -77,10 +78,11 @@ export const {
 } = tapSlice.actions;
 
 export const selectSession = (state) => state.tap.session;
-export const selectStages = (state) => state.tap.stages;
 export const selectResetIsActual = (state) => state.tap.resetIsActual;
-export const selectCurrentCard = (state) => state.tap.currentCard;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
+export const selectCurrentCard = (state) => state.tap.currentCard;
+export const selectStages = (state) => state.tap.stages;
+export const selectProgress = (state) => state.tap.progress;
 
 export const {
     selectById: selectCardByNumber

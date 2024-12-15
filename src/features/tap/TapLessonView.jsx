@@ -3,20 +3,22 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./tapThunks";
 import { getVersion } from "../../services/versionHandlers";
-import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectStages } from "./tapSlice";
+import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectProgress, selectStages } from "./tapSlice";
 import CardView from './CardView';
 import NavButtons from './NavButtons';
 import { prepareSpeech } from '../pronunciation/pronunciation';
 import ResetButton from './ResetButton';
 import { backupSession } from './sessionBackup';
+import StatsView from './StatsView';
 
 export default function TapLessonView() {
     const dispatch = useDispatch();
     
-    const stages = useSelector(selectStages); // maybe not in here...
     const session = useSelector(selectSession);
     const resetIsActual = useSelector(selectResetIsActual);
     const card = useSelector(selectCurrentCard);
+    const progress = useSelector(selectProgress);
+    const stages = useSelector(selectStages); // maybe not in here...
 
     // const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
@@ -26,20 +28,12 @@ export default function TapLessonView() {
     }, [dispatch]);
 
     useEffect(() => {
+        console.log(session);
         if (!session) return;
 
         backupSession(session);
 
-        // const nextCard = dispatch(getNextCard());
-        // console.log(nextCard);
-        // prepareSpeech([nextCard.word]);
-        // setCard(nextCard);
-
         dispatch(getNextCard());
-        // console.log(card);
-        // prepareSpeech([card.word]);
-
-        console.log(session);
     }, [dispatch, session]);
 
     useEffect(() => {
@@ -48,16 +42,18 @@ export default function TapLessonView() {
         prepareSpeech([card.word]);
     }, [card]);
 
-    // console.log(card);
-
     const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 
     // return !stages || !card ? '' : (
     return !card ? '' : (
         <section className="tap-view" onClick={handleGlobalClick}>
-            <div>
+            {/* <div>
                 <p>{stages.learn}</p>
-            </div>
+            </div> */}
+            <StatsView
+                progress={progress}
+                stages={stages}
+            />
 
             <CardView
                 card={card}

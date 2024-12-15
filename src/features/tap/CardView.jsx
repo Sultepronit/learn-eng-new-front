@@ -8,12 +8,22 @@ export default function CardView({ card, questionMode }) {
             ? '' : card.translation
     };
 
+    console.log(card);
+
     return (
-        <div className="card-view">
-            <p className="word">{word}</p>
-            <p className="transcription">{questionMode ? '' : card.transcription}</p>
-            <p className="translation" dangerouslySetInnerHTML={translation} />
-            <p className="example">{questionMode ? '' : card.example}</p>
-        </div>
+        <section>
+            <div>
+                <p>
+                    {card.number} [{card.repeatStatus}] {card.tapFProgress} {card.tapBProgress} | 
+                    <span className="spaced">{card.tapFRecord} {card.tapBRecord}</span>
+                </p>
+            </div>
+            <div className="card-view">
+                <p className="word">{word}</p>
+                <p className="transcription">{questionMode ? '' : card.transcription}</p>
+                <p className="translation" dangerouslySetInnerHTML={translation} />
+                <p className="example">{questionMode ? '' : card.example}</p>
+            </div>
+        </section>
     );
 }

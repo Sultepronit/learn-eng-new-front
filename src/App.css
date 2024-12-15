@@ -52,3 +52,27 @@
   background-color: aqua;
   border-radius: 1rem;
 }
+
+.spaced {
+  margin-left: 0.3em;
+}
+
+.b {
+  font-weight: bold;
+}
+
+.i {
+  font-style: italic;
+}
+
+.u {
+  text-decoration: underline;
+}
+
+.green {
+  color: green;
+}
+
+.blue {
+  color: blue;
+}
