@@ -35,7 +35,6 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
     function evaluateSaveAsk(mark) {
         // evaluate
         console.log('mark:', mark);
-        // const 
         const changes = evaluate(card, mark);
 
         const retry = mark === marks.RETRY;

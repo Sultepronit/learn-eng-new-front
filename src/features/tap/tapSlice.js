@@ -90,6 +90,7 @@ export const {
 export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
     const rawCard = selectCardByNumber(getState(), nextCardNumber);
+    // console.log(nextCardNumber, rawCard);
 
     const parsedCard = {
         ...rawCard,
@@ -104,6 +105,8 @@ export const getNextCard = () => (dispatch, getState) => {
     };
 
     dispatch(setCurrentCard(parsedCard));
+
+    // console.log(parsedCard);
 
     // return parsedCard;
 }

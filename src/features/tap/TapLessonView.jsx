@@ -12,10 +12,6 @@ import { backupSession } from './sessionBackup';
 
 export default function TapLessonView() {
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getSession(getVersion()));
-    }, [dispatch]);
     
     const stages = useSelector(selectStages);
     const session = useSelector(selectSession);
@@ -24,6 +20,10 @@ export default function TapLessonView() {
 
     // const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
+
+    useEffect(() => {
+        dispatch(getSession(getVersion()));
+    }, [dispatch]);
 
     useEffect(() => {
         if (!session) return;
@@ -36,11 +36,16 @@ export default function TapLessonView() {
         // setCard(nextCard);
 
         dispatch(getNextCard());
-        console.log(card);
-        prepareSpeech([card.word]);
+        // console.log(card);
+        // prepareSpeech([card.word]);
 
         console.log(session);
     }, [dispatch, session]);
+
+    useEffect(() => {
+        console.log(card);
+        prepareSpeech([card.word]);
+    }, [card]);
 
     // console.log(card);
 
