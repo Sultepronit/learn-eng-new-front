@@ -34,13 +34,13 @@ export default function evaluate(inputCard, mark) {
     const card = { ...inputCard };
     const freezed = { ...inputCard };
 
-    const progressUpdate = [];
+    const progressUpdates = [];
 
     if (mark === marks.BAD) {
-        tryAndDegrade(card, progressUpdate);
+        tryAndDegrade(card, progressUpdates);
     } else {
-        updateProgress(card, mark, progressUpdate); 
-        tryAndUpgrade(card, progressUpdate);
+        updateProgress(card, mark, progressUpdates); 
+        tryAndUpgrade(card, progressUpdates);
     }
 
     const changes = {};
@@ -48,12 +48,10 @@ export default function evaluate(inputCard, mark) {
         if (card[key] !== freezed[key]) changes[key] = card[key];
     }
 
-    console.log(progressUpdate);
+    console.log(progressUpdates);
 
-    // return changes;
     return {
         cardChanges: changes,
-        // progressChanges: { [card.repeatStage]: progressUpdate }
-        progressChanges: { stage: card.repeatStage, updates: progressUpdate }
+        progressChanges: { stage: card.repeatStage, updates: progressUpdates }
     };
 }

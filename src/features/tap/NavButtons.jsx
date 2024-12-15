@@ -15,8 +15,6 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
 
     const [learningPronunciation, setLearningPronunciation] = useState(false);
 
-    console.log(questionMode);
-
     function pronounceAndPrepareEvaluation() {
         if (card.direction === directions.FORWARD) setLearningPronunciation(true);
         Promise.any([
@@ -55,9 +53,6 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
 
         setQuestionMode(!questionMode); // change question mode to answer and back
     }
-
-    console.log(learningPronunciation);
-    console.log(buttons);
 
     return (
         <>

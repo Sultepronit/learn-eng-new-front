@@ -1,5 +1,5 @@
-export function bakcupStages(stages) {
-    localStorage.setItem('tapStages', JSON.stringify(stages));
+export function bakcupSessionConsts({ stages, updatable }) {
+    localStorage.setItem('tapSessionConsts', JSON.stringify({ stages, updatable: !!updatable }));
 }
 
 export function backupSession(session) {
@@ -9,9 +9,10 @@ export function backupSession(session) {
 export function restoreSession() {
     const session = JSON.parse(localStorage.getItem('tapSession'));
     if (!session?.content.length) return null;
-    const stages = JSON.parse(localStorage.getItem('tapStages'));
+    // const stages = JSON.parse(localStorage.getItem('tapStages'));
+    const consts = JSON.parse(localStorage.getItem('tapSessionConsts'));
 
-    return { stages, session: session.content, backup: true };
+    return { session: session.content, ...consts, backup: true };
 }
 
 export function removeSessionBackup() {

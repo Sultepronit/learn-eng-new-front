@@ -8,9 +8,6 @@ export default function CardView({ card, questionMode }) {
             ? '' : card.translation
     };
 
-    console.log(questionMode, card.direction);
-    console.log(card.direction === directions.FORWARD);
-
     return (
         <div className="card-view">
             <p className="word">{word}</p>
