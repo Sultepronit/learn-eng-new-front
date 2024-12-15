@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./tapThunks";
 import { getVersion } from "../../services/versionHandlers";
-import { getNextCard, removeReset, selectResetIsActual, selectSession, selectStages } from "./tapSlice";
+import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectStages } from "./tapSlice";
 import CardView from './CardView';
 import NavButtons from './NavButtons';
 import { prepareSpeech } from '../pronunciation/pronunciation';
@@ -20,24 +20,27 @@ export default function TapLessonView() {
     const stages = useSelector(selectStages);
     const session = useSelector(selectSession);
     const resetIsActual = useSelector(selectResetIsActual);
+    const card = useSelector(selectCurrentCard);
 
-    const [card, setCard] = useState();
+    // const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
 
     useEffect(() => {
-        if (!stages) return;
+        if (!session) return;
 
         backupSession(session);
 
-        const nextCard = dispatch(getNextCard());
-        console.log(nextCard);
+        // const nextCard = dispatch(getNextCard());
+        // console.log(nextCard);
+        // prepareSpeech([nextCard.word]);
+        // setCard(nextCard);
 
-        prepareSpeech([nextCard.word]);
-
-        setCard(nextCard);
+        dispatch(getNextCard());
+        console.log(card);
+        prepareSpeech([card.word]);
 
         console.log(session);
-    }, [session]);
+    }, [dispatch, session]);
 
     // console.log(card);
 

@@ -8,8 +8,8 @@ const cardsAdapter = createEntityAdapter({
 });
 
 const initialState = cardsAdapter.getInitialState({
-    session: [],
-    stages: null,
+    session: null, // null in the beggining, [] in the end
+    stages: [],
     progress: {
         tries: 0,
         initialCardsNumber: 35,
@@ -18,13 +18,17 @@ const initialState = cardsAdapter.getInitialState({
         confirm: { good: 0, retry: 0, upgrade: 0, degrade: 0 },
         repeat: { good: 0, retry: 0, upgrade: 0, degrade: 0 }
     },
-    resetIsActual: false
+    resetIsActual: false,
+    currentCard: null
 });
 
 const tapSlice = createSlice({
     name: 'tap',
     initialState,
     reducers: {
+        setCurrentCard: (state, action) => {
+            state.currentCard = action.payload;
+        },
         removeReset: (state) => {
             state.resetIsActual = false;
         },
@@ -65,6 +69,7 @@ const tapSlice = createSlice({
 });
 
 export const {
+    setCurrentCard,
     removeReset,
     updateCardState,
     updateSession,
@@ -74,6 +79,7 @@ export const {
 export const selectSession = (state) => state.tap.session;
 export const selectStages = (state) => state.tap.stages;
 export const selectResetIsActual = (state) => state.tap.resetIsActual;
+export const selectCurrentCard = (state) => state.tap.currentCard;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
 
 export const {
@@ -85,7 +91,7 @@ export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
     const rawCard = selectCardByNumber(getState(), nextCardNumber);
 
-    return {
+    const parsedCard = {
         ...rawCard,
         get repeatStage() {
             return this.repeatStatus === 0 ? stages.LEARN
@@ -95,7 +101,11 @@ export const getNextCard = () => (dispatch, getState) => {
             return this.tapFProgress > this.tapBProgress
                 ? directions.BACKWARD : directions.FORWARD;
         }
-    }
+    };
+
+    dispatch(setCurrentCard(parsedCard));
+
+    // return parsedCard;
 }
 
 export default tapSlice.reducer;

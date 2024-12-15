@@ -57,7 +57,6 @@ export const updateCard = createAsyncThunk(
 
         dispatch(updateProgress(progressChanges));
 
-
         console.log('saving:', number, cardChanges);
 
         // update sate
