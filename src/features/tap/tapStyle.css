@@ -1,28 +1,35 @@
 .tap-view {
     display: grid;
     height: calc(100dvh - 3px);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr auto auto;
     padding: 0.3rem;
 }
 
 .card-view {
+    margin-top: 0.5rem;
     /* background-color: yellow; */
 }
 
 .word {
     text-align: center;
+    font-size: 2.2rem;
 }
 
 .transcription {
     text-align: center;
+    font-size: 1.3rem;
 }
 
 .translation {
     text-align: center;
+    font-size: 1.4rem;
 }
 
 .example {
+    margin-top: 0.5rem;
     text-align: center;
+    font-size: 1.4rem;
+    font-style: italic;
 }
 
 .reset {
@@ -44,16 +51,20 @@
 }
 
 .nav-buttons {
-    height: 6rem;
+    height: 5rem;
     display: flex;
     justify-content: center;
     gap: 1rem;
+    /* margin-bottom: 0.9rem; */
+    margin: 0 0.4rem 0.9rem;
 }
 
 .nav-buttons button {
     display: none;
-    /* height: 6rem; */
     flex-grow: 1;
+    border: none;
+    border-radius: 0.8rem;
+    /* box-shadow: 5px 4px 5px gray; */
 }
 
 .hidden {

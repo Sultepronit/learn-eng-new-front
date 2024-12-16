@@ -12,7 +12,7 @@ const initialState = cardsAdapter.getInitialState({
     stages: [],
     progress: {
         tries: 0,
-        initialCardsNumber: 35,
+        initialCardsNumber: 0,
         cardsPassed: 0,
         learn: { good: 0, retry: 0, upgrade: 0 },
         confirm: { good: 0, retry: 0, upgrade: 0, degrade: 0 },

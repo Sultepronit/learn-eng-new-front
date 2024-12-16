@@ -11,7 +11,7 @@ export default function CardView({ card, questionMode }) {
     console.log(card);
 
     return (
-        <section>
+        <section className="card-view">
             <div>
                 <p>
                     {card.number} [{card.repeatStatus}] {card.tapFProgress} {card.tapBProgress} | 
