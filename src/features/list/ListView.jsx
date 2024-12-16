@@ -33,7 +33,7 @@ export default function ListView() {
     }
 
     return (cardsTotal < 1) ? '' : (
-        <section>
+        <section className="list-view">
             <CardEditor />
             <button
                 className="refresh-button"

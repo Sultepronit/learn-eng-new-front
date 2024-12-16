@@ -69,7 +69,7 @@ export const selectPreparedList = createSelector(
             list = list.filter(card => card.word.includes(findMatchesQuery));
         } else if (searchQuery) {
             list = list.filter(card => {
-                return (card.word + card.translation + card.example).includes(searchQuery);
+                return (String(card.word) + card.translation + card.example).includes(searchQuery);
             });
         }
         

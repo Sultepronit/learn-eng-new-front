@@ -12,6 +12,14 @@ const CardEditor = React.memo(function CardEditor() {
     const cardNumber = useSelector(getSelectedCardNumber);
     const card = useSelector(state => selectCardByNumber(state, cardNumber));
     console.log(card);
+    const parts = card.word.split('/');
+    if (parts.length > 1) {
+        console.log(parts);
+        for (let i = 1; i * 2 < parts.length; i++) {
+            // console.log(i, i + (parts.length - 1) / 2)
+            console.log(parts[i], parts[i + (parts.length - 1) / 2]);
+        }
+    }
 
     function update({ name, value }) {
         const data = {
