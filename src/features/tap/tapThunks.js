@@ -42,8 +42,9 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
         setBackup(data.cards);
     }
 
-    // if (!data.backup) bakcupSessionConsts(data.stages);
-    if (!data.backup) bakcupSessionConsts(data);
+    if (!data.backup) data.sessionLength = data.session.length;
+
+    if (!data.backup) bakcupSessionConsts(data, updatable);
 
     console.log('updatable:', updatable);
     console.log(data);
@@ -63,18 +64,15 @@ export const updateCard = createAsyncThunk(
         dispatch(updateProgress(progressChanges));
 
         console.log('saving:', number, cardChanges);
-
-        // update sate
-        if (retry) {
-            dispatch(updateCardState({ id: number, cardChanges }));
-        }
         
         // update db
         const fetchPromise = updateWithQueue(`/cards/${dbid}`, cardChanges);
 
-        // backup
-        // const updatable = false; // add actual value!!!
         if (updatable || retry) {
+            // update sate
+            dispatch(updateCardState({ id: number, changes: cardChanges }));
+
+            // backup
             const backupResult = await backupCard(selectCardByNumber(getState(), number));
             if (backupResult !== 'success') prompt('Backup failed!');
 
@@ -88,19 +86,6 @@ export const updateCard = createAsyncThunk(
                 }
             }
         }
-
-        // if (updatable) {
-        //     const [backupResult, fetchResult] = await Promise.all([
-        //         backupCard(selectCardByNumber(getState(), number)),
-        //         fetchPromise
-        //     ]);
-    
-        //     if (fetchResult?.version && backupResult === 'success') {
-        //         updateVersion(fetchResult.version);
-        //     }
-        // } else if (retry) {
-        //     await backupCard(selectCardByNumber(getState(), number));
-        // }
         
         await fetchPromise;
         console.log('saved:', number);

@@ -1,4 +1,6 @@
 import { marks, stages } from "./statuses";
+import { selectNextRepeated } from "./tapSlice";
+import { store } from "../../app/store";
 
 function tryAndDegrade(card, progressUpdate) {
     card.repeatStatus = 0;
@@ -19,12 +21,16 @@ function updateProgress(card, mark, progressUpdate) {
 }
 
 function tryAndUpgrade(card, progressUpdate) {
+    // const nextRepeated = selectNextRepeated(store.getState());
+    // console.log(nextRepeated);
     if (card.tapFProgress > 0 && card.tapBProgress > 0) {
         card.tapFProgress = 0;
         card.tapBProgress = 0;
 
-        card.repeatStatus = card.repeatStage === stages.LEARN ? 1 
-            : card.repeatStage === stages.CONFIRM ? 2 : 8888;
+        card.repeatStatus =
+            card.repeatStage === stages.LEARN ? 1 
+            : card.repeatStage === stages.CONFIRM ? 2
+            : selectNextRepeated(store.getState());
 
         progressUpdate.push('upgrade');
     }

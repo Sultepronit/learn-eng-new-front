@@ -12,13 +12,26 @@ const CardEditor = React.memo(function CardEditor() {
     const cardNumber = useSelector(getSelectedCardNumber);
     const card = useSelector(state => selectCardByNumber(state, cardNumber));
     console.log(card);
-    const parts = card.word.split('/');
-    if (parts.length > 1) {
-        console.log(parts);
+    // const parts = card.word.split('/');
+    // if (parts.length > 1) {
+    if (card.word[0] === '/') {
+        const parts = card.word.split('/');
+        // console.log(parts);
+        const wordVariants = [];
         for (let i = 1; i * 2 < parts.length; i++) {
             // console.log(i, i + (parts.length - 1) / 2)
             console.log(parts[i], parts[i + (parts.length - 1) / 2]);
+            const commentDetails = parts[i][0] !== '*' ? { comment: parts[i] }
+                : { comment: parts[i].substring(1), canonicComment: true };
+            wordVariants.push({
+                variant: parts[i + (parts.length - 1) / 2],
+                // comment: parts[i]
+                ...commentDetails
+            });
         }
+        // console.log(wordVariants);
+        console.table(wordVariants);
+        console.log(JSON.stringify(wordVariants));
     }
 
     function update({ name, value }) {

@@ -11,15 +11,16 @@ const initialState = cardsAdapter.getInitialState({
     session: null, // null in the beggining, [] in the end
     stages: [],
     progress: {
+        sessionLength: 0,
         tries: 0,
-        initialCardsNumber: 0,
         cardsPassed: 0,
         learn: { good: 0, retry: 0, upgrade: 0 },
         confirm: { good: 0, retry: 0, upgrade: 0, degrade: 0 },
         repeat: { good: 0, retry: 0, upgrade: 0, degrade: 0 }
     },
     resetIsActual: false,
-    currentCard: null
+    currentCard: null,
+    nextRepeated: 0
 });
 
 const tapSlice = createSlice({
@@ -33,8 +34,10 @@ const tapSlice = createSlice({
             state.resetIsActual = false;
         },
         updateCardState: (state, action) => {
+            // console.log(action.payload);
             cardsAdapter.updateOne(state, action.payload);
             console.log('updated the state');
+            // logProxy(state);
         },
         updateSession: (state, action) => {
             state.session.pop();
@@ -46,7 +49,7 @@ const tapSlice = createSlice({
             console.log(action.payload);
             const { stage, updates } = action.payload;
             state.progress.tries++;
-            state.progress.cardsPassed = state.progress.initialCardsNumber - state.session.length;
+            state.progress.cardsPassed = state.progress.sessionLength - state.session.length;
             for (const field of updates) {
                 state.progress[stage][field]++;
             }
@@ -57,13 +60,32 @@ const tapSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getSession.fulfilled, (state, action) => {
-                const { cards, session, stages, backup } = action.payload;
+                const {
+                    cards,
+                    session,
+                    progress,
+                    sessionLength,
+                    stages,
+                    nextRepeated,
+                    backup
+                } = action.payload;
                 cardsAdapter.setAll(state, cards);
                 state.session = session;
                 state.stages = stages;
-                state.progress.initialCardsNumber = session.length;
 
-                state.resetIsActual = !!backup;
+                state.nextRepeated = nextRepeated;
+
+                if (backup) {
+                    state.resetIsActual = true;
+
+                    state.progress = progress;
+                } else {
+                    state.progress.sessionLength = sessionLength;
+                }
+
+                // state.progress.sessionLength = sessionLength;
+
+                // state.resetIsActual = !!backup;
                 logProxy(state);
             });
     }
@@ -78,10 +100,11 @@ export const {
 } = tapSlice.actions;
 
 export const selectSession = (state) => state.tap.session;
+export const selectStages = (state) => state.tap.stages;
+export const selectNextRepeated = (state) => state.tap.nextRepeated;
 export const selectResetIsActual = (state) => state.tap.resetIsActual;
 const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
 export const selectCurrentCard = (state) => state.tap.currentCard;
-export const selectStages = (state) => state.tap.stages;
 export const selectProgress = (state) => state.tap.progress;
 
 export const {

@@ -7,7 +7,7 @@ import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
 import setPause from "../../helpers/setPause";
 
-export default function NavButtons({ card, questionMode, setQuestionMode }) {
+export default function NavButtons({ card, questionMode, setQuestionMode, retryMode }) {
     const dispatch = useDispatch();
 
     const [good, pass, retry, bad] = ['good', 'pass', 'retry', 'bad'];
@@ -22,13 +22,18 @@ export default function NavButtons({ card, questionMode, setQuestionMode }) {
             setPause(2000)
         ]).then(() => setLearningPronunciation(false));
 
+        const notBadButtons = retryMode ? { pass, retry } : { good, retry };
         if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, pass, bad });
-        } if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
-            setButtons({ good, retry });
+        } else if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
+            // setButtons({ good, ...notBadButtons });
+            setButtons({ ...notBadButtons });
         } else {
-            setButtons({ good, retry, bad });
+            // setButtons({ good, ...notBadButtons, bad });
+            setButtons({ ...notBadButtons, bad });
         }
+
+        // setButtons({ ...buttons)
     }
 
     function evaluateSaveAsk(mark) {

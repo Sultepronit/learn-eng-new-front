@@ -1,8 +1,8 @@
-export default function StatsView({ progress, stages }) {
+export default function StatsView({ progress, stages, cardsPassed }) {
     return (
         <section>
             <p>
-                {progress.initialCardsNumber} | 
+                {progress.tries}|{cardsPassed}/{progress.sessionLength} | 
                 <span className="green">
                     <span className="spaced b u">{stages.learn}</span>
                     <span className="spaced i">{progress.learn.retry}</span>
@@ -19,7 +19,7 @@ export default function StatsView({ progress, stages }) {
                     <span className="spaced b u">{stages.repeat}</span>
                     <span className="spaced i">{progress.repeat.retry}</span>
                     <span className="spaced">{progress.repeat.good}</span>
-                    <span className="spaced b">{progress.repeat.upgrade}-{progress.confirm.degrade}</span>
+                    <span className="spaced b">{progress.repeat.upgrade}-{progress.repeat.degrade}</span>
                 </span>
             </p>
         </section>

@@ -23,6 +23,8 @@ export default function TapLessonView() {
     // const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
 
+    const [cardsPassed, setCardsPassed] = useState(0);
+
     useEffect(() => {
         dispatch(getSession(getVersion()));
     }, [dispatch]);
@@ -31,7 +33,10 @@ export default function TapLessonView() {
         console.log(session);
         if (!session) return;
 
-        backupSession(session);
+        // console.log(progress.sessionLength - session.length);
+        setCardsPassed(progress.sessionLength - session.length);
+
+        backupSession(session, progress);
 
         dispatch(getNextCard());
     }, [dispatch, session]);
@@ -44,15 +49,13 @@ export default function TapLessonView() {
 
     const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 
-    // return !stages || !card ? '' : (
     return !card ? '' : (
+    // return !session ? '<h1>Loading...</h1>' : (
         <section className="tap-view" onClick={handleGlobalClick}>
-            {/* <div>
-                <p>{stages.learn}</p>
-            </div> */}
             <StatsView
                 progress={progress}
                 stages={stages}
+                cardsPassed={cardsPassed}
             />
 
             <CardView
@@ -66,6 +69,7 @@ export default function TapLessonView() {
                 card={card}
                 questionMode={questionMode}
                 setQuestionMode={setQuestionMode}
+                retryMode={progress.tries >= progress.sessionLength}
             />
         </section>
     );

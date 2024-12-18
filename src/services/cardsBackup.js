@@ -5,17 +5,16 @@ let db = null;
 export function openLocalDb() {
     return new Promise((resolve, reject) => {
         console.timeLog('t', 'opening IndexedDB...');
-        const openRequest = indexedDB.open('db', 5);
+        const openRequest = indexedDB.open('db', 7);
 
         openRequest.onupgradeneeded = () => {
             console.log('upgrading indexedDB!');
             db = openRequest.result;
             if(!db.objectStoreNames.contains('cards')) {
-                // newDb.createObjectStore('cards', { keyPath: 'id' });
                 db.createObjectStore('cards', { keyPath: 'number' });
             } else {
                 db.deleteObjectStore('cards');
-                db.createObjectStore('cards', { keyPath: 'number' }); // for some time...
+                db.createObjectStore('cards', { keyPath: 'number' }); 
             }
         };
 
@@ -100,6 +99,8 @@ export async function setBackup(list) {
 
 export async function backupCard(card) {
     const { cards } = await initWriting();
+
+    // console.log('backupping:', card);
 
     const request = cards.put(card);
 
