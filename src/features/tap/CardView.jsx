@@ -13,8 +13,6 @@ export default function CardView({ card, questionMode }) {
             ? '' : card.translation
     };
 
-    console.log(card);
-
     return (
         <section className="card-view">
             <div>

@@ -120,7 +120,7 @@ export const getNextCard = () => (dispatch, getState) => {
 
     const parsedCard = {
         ...rawCard,
-        word: parseWord(rawCard.word),
+        word: parseWord(rawCard?.word),
         get repeatStage() {
             return this.repeatStatus === 0 ? stages.LEARN
                 : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
