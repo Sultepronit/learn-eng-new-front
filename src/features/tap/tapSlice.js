@@ -2,6 +2,7 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { getSession } from "./tapThunks";
 import logProxy from "../../dev-helpers/logProxy";
 import { directions, stages } from "./statuses";
+import parseWord from "../../services/wordParser";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -119,6 +120,7 @@ export const getNextCard = () => (dispatch, getState) => {
 
     const parsedCard = {
         ...rawCard,
+        word: parseWord(rawCard.word),
         get repeatStage() {
             return this.repeatStatus === 0 ? stages.LEARN
                 : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
@@ -130,10 +132,6 @@ export const getNextCard = () => (dispatch, getState) => {
     };
 
     dispatch(setCurrentCard(parsedCard));
-
-    // console.log(parsedCard);
-
-    // return parsedCard;
 }
 
 export default tapSlice.reducer;

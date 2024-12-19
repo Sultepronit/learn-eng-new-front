@@ -33,7 +33,6 @@ export default function TapLessonView() {
         console.log(session);
         if (!session) return;
 
-        // console.log(progress.sessionLength - session.length);
         setCardsPassed(progress.sessionLength - session.length);
 
         backupSession(session, progress);
@@ -44,13 +43,13 @@ export default function TapLessonView() {
     useEffect(() => {
         console.log(card);
         if (!card) return;
-        prepareSpeech([card.word]);
+        prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
     }, [card]);
 
     const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 
-    return !card ? '' : (
-    // return !session ? '<h1>Loading...</h1>' : (
+    // return !card ? '' : (
+    return !card ? (<h1>Loading...</h1>) : (
         <section className="tap-view" onClick={handleGlobalClick}>
             <StatsView
                 progress={progress}
@@ -58,19 +57,23 @@ export default function TapLessonView() {
                 cardsPassed={cardsPassed}
             />
 
-            <CardView
-                card={card}
-                questionMode={questionMode}
-            />
+            {session.length < 1 ? (<h1>Happy End!</h1>) : (
+                <>
+                    <CardView
+                        card={card}
+                        questionMode={questionMode}
+                    />
 
-            <ResetButton resetIsActual={resetIsActual} />
+                    <ResetButton resetIsActual={resetIsActual} />
 
-            <NavButtons
-                card={card}
-                questionMode={questionMode}
-                setQuestionMode={setQuestionMode}
-                retryMode={progress.tries >= progress.sessionLength}
-            />
+                    <NavButtons
+                        card={card}
+                        questionMode={questionMode}
+                        setQuestionMode={setQuestionMode}
+                        retryMode={progress.tries >= progress.sessionLength}
+                    />
+                </>
+            )}
         </section>
     );
 }

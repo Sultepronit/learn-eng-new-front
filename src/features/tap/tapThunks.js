@@ -28,6 +28,8 @@ export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) =
     const data = restoreSession() || await fetchSession(dbVersion);
 
     if (data.session) {
+        // data.session[data.session.length - 1] = 624;
+        // data.session[data.session.length - 1] = 382;
         data.cards = await restoreCards(data.session);
 
         updatable = data.backup ? data.updatable : true;
