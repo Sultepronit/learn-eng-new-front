@@ -27,4 +27,4 @@ export function removeSessionBackup() {
     localStorage.removeItem('tapSession');
 }
 
-removeSessionBackup();
+// removeSessionBackup();
