@@ -54,7 +54,7 @@ export default function evaluate(inputCard, mark) {
         if (card[key] !== freezed[key]) changes[key] = card[key];
     }
 
-    console.log(progressUpdates);
+    // console.log(progressUpdates);
 
     return {
         cardChanges: changes,

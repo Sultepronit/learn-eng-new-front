@@ -35,10 +35,7 @@ const tapSlice = createSlice({
             state.resetIsActual = false;
         },
         updateCardState: (state, action) => {
-            // console.log(action.payload);
             cardsAdapter.updateOne(state, action.payload);
-            console.log('updated the state');
-            // logProxy(state);
         },
         updateSession: (state, action) => {
             state.session.pop();
@@ -47,15 +44,14 @@ const tapSlice = createSlice({
             }
         },
         updateProgress: (state, action) => {
-            console.log(action.payload);
+            // console.log(action.payload);
             const { stage, updates } = action.payload;
             state.progress.tries++;
             state.progress.cardsPassed = state.progress.sessionLength - state.session.length;
             for (const field of updates) {
                 state.progress[stage][field]++;
             }
-            // console.log(state.progress);
-            logProxy(state.progress);
+            // logProxy(state.progress);
         }
     },
     extraReducers: (builder) => {

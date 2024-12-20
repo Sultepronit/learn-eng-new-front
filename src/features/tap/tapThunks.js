@@ -80,7 +80,7 @@ export const updateCard = createAsyncThunk(
 
             if (updatable) {
                 const fetchResult = await fetchPromise;
-
+    
                 if (fetchResult?.version && backupResult === 'success') {
                     updateVersion(fetchResult.version);
                 } else {

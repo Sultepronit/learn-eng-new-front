@@ -20,10 +20,9 @@ export default function TapLessonView() {
     const progress = useSelector(selectProgress);
     const stages = useSelector(selectStages); // maybe not in here...
 
-    // const [card, setCard] = useState();
     const [questionMode, setQuestionMode] = useState(true);
 
-    const [cardsPassed, setCardsPassed] = useState(0);
+    // const [cardsPassed, setCardsPassed] = useState(0);
 
     useEffect(() => {
         dispatch(getSession(getVersion()));
@@ -31,9 +30,9 @@ export default function TapLessonView() {
 
     useEffect(() => {
         console.log(session);
-        if (!session) return;
+        if (!session || session.length < 1) return;
 
-        setCardsPassed(progress.sessionLength - session.length);
+        // setCardsPassed(progress.sessionLength - session.length);
 
         backupSession(session, progress);
 
@@ -54,7 +53,7 @@ export default function TapLessonView() {
             <StatsView
                 progress={progress}
                 stages={stages}
-                cardsPassed={cardsPassed}
+                cardsPassed={progress.sessionLength - session.length}
             />
 
             {session.length < 1 ? (<h1>Happy End!</h1>) : (
