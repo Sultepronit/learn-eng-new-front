@@ -9,7 +9,8 @@ const initialState = {
     selectedCardNumber: 1,
     findMatchesQuery: '',
     searchQuery: '',
-    reverse: true
+    reverse: true,
+    sortColumn: ''
 };
 
 const listSlice = createSlice({
@@ -39,6 +40,9 @@ const listSlice = createSlice({
         toggleReverse: (state) => {
             state.reverse = !state.reverse;
             state.firstRow = 0;
+        },
+        sort: (state, action) => {
+            state.sortColumn = action.payload;
         }
     }
 });
@@ -48,7 +52,8 @@ export const {
     setSelectedCardNumber,
     findMatches,
     search,
-    toggleReverse
+    toggleReverse,
+    sort
 } = listSlice.actions;
 
 export const selectRowNumber = (state) => state.list.rowNumber;
@@ -62,15 +67,20 @@ export const selectPreparedList = createSelector(
         selectAllCards,
         (state) => state.list.findMatchesQuery,
         (state) => state.list.searchQuery,
-        (state) => state.list.reverse
+        (state) => state.list.reverse,
+        (state) => state.list.sortColumn
     ],
-    (list, findMatchesQuery, searchQuery, reverse) => {
+    (list, findMatchesQuery, searchQuery, reverse, sortColumn) => {
         if (findMatchesQuery) {
             list = list.filter(card => card.word.includes(findMatchesQuery));
         } else if (searchQuery) {
             list = list.filter(card => {
                 return (String(card.word) + card.translation + card.example).includes(searchQuery);
             });
+        }
+
+        if (sortColumn) {
+            list.sort((a, b) => a[sortColumn] - b[sortColumn]);
         }
         
         const cardNumbers = list.map(card => card.number);

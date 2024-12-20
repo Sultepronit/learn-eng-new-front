@@ -1,5 +1,6 @@
 .list-view {
     font-size: 1.3rem;
+    min-width: 40em;
 }
 
 .top-row {

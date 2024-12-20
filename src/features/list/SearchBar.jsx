@@ -7,7 +7,8 @@ import {
     setSelectedCardNumber,
     selectSeqrchQuery,
     search,
-    selectPreparedList
+    selectPreparedList,
+    sort
 } from "./listSlice";
 import checkIntLimits from "../../helpers/chekIntLimits";
 
@@ -32,6 +33,12 @@ export default function SearchBar({ setFirstRowWithCaution }) {
         changeDisplayRange(cardNumber);
     }
 
+    const sortOptions = [
+        { value: 'number', label: 'number' },
+        { value: 'repeatStatus', label: 'repeat status' },
+        { value: 'writeStatus', label: 'write status' },
+    ];
+
     return (
         <section className="search-bar">
             <input
@@ -54,6 +61,17 @@ export default function SearchBar({ setFirstRowWithCaution }) {
             >
                 {reverseValue ? '↑' : '↓'}
             </button>
+
+            <select
+                name="sort-column"
+                onChange={(e) => dispatch(sort(e.target.value))}
+            >
+                {sortOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
         </section>
     )
 }
