@@ -76,15 +76,13 @@ export const updateCard = createAsyncThunk(
 
             // backup
             const backupResult = await backupCard(selectCardByNumber(getState(), number));
-            if (backupResult !== 'success') prompt('Backup failed!');
+            if (backupResult !== 'success') alert('Backup failed!');
 
             if (updatable) {
                 const fetchResult = await fetchPromise;
     
                 if (fetchResult?.version && backupResult === 'success') {
                     updateVersion(fetchResult.version);
-                } else {
-                    prompt('Saving to the db failed!')
                 }
             }
         }
