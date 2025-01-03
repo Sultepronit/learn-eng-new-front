@@ -46,9 +46,10 @@ export const implementResotredUpdates = createAsyncThunk(
         if (!queue.length) return;
         // return;
 
-        const promise = new Promise(res => queue[queue.length - 1].resolve = res);
+        const lastUpdate = queue[queue.length - 1];
+        const promise = new Promise(res => lastUpdate.resolve = res);
 
-        console.log(queue[queue.length - 1]);
+        console.log(lastUpdate);
 
         emptyQueue();
 
