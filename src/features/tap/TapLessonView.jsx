@@ -30,11 +30,11 @@ export default function TapLessonView() {
 
     useEffect(() => {
         console.log(session);
-        if (!session || session.length < 1) return;
-
-        // setCardsPassed(progress.sessionLength - session.length);
+        if (!session) return;
 
         backupSession(session, progress);
+
+        if (session.length < 1) return;
 
         dispatch(getNextCard());
     }, [dispatch, session]);
