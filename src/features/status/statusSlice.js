@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import logProxy from "../../dev-helpers/logProxy";
 
 const statusSlice = createSlice({
     name: 'status',
     initialState: {
         status: 'idle',
         error: '',
-        requestCounter: 0
+        requestCounter: 0,
+        implementingResotredUpdates: true
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -28,6 +30,17 @@ const statusSlice = createSlice({
                 state.status = 'error';
                 console.log(action);
             }
+
+            if (action.type?.split('/')[1] === 'implementResotredUpdates') {
+                if (newStatus === 'pending') {
+                    state.implementingResotredUpdates = true;
+                } else if (newStatus === 'fulfilled') {
+                    state.implementingResotredUpdates = false;
+                    // console.log(state);
+                    // logProxy(state);
+                    // console.log('implemented!');
+                }
+            }
         })
         // .addMatcher(action => true, (state, action) => {
         //     console.log(action);
@@ -36,5 +49,6 @@ const statusSlice = createSlice({
 });
 
 export const getStatus = (state) => state.status.status;
+export const selectImplementingResotredUpdates = (state) => state.status.implementingResotredUpdates;
 
 export default statusSlice.reducer;

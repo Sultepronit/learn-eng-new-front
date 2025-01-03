@@ -4,8 +4,18 @@ import StatusBar from "./features/status/StatusBar.jsx";
 import ListView from "./features/list/ListView.jsx";
 import Home from './components/Home.jsx';
 import TapLessonView from './features/tap/TapLessonView.jsx';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { implementResotredUpdates } from './services/updateQueue.js';
 
 function App() {
+  console.timeLog('t', 'inside the App');
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(implementResotredUpdates());
+  }, [dispatch])
+
   return (
     <>
       <header>

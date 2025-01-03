@@ -5,6 +5,8 @@ import { restoreSession, bakcupSessionConsts } from "./sessionBackup";
 import { selectCardByNumber, updateCardState, updateProgress } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
 import { updateVersion } from "../../services/versionHandlers";
+import { selectImplementingResotredUpdates } from "../status/statusSlice";
+import setPause from "../../helpers/setPause";
 
 async function fetchSession(dbVersion) {
     let path = '/tap-session';
@@ -24,37 +26,57 @@ async function fetchSession(dbVersion) {
 
 let updatable = false;
 
-export const getSession = createAsyncThunk('tap/getSession', async (dbVersion) => {
-    const data = restoreSession() || await fetchSession(dbVersion);
+export const getSession = createAsyncThunk(
+    'tap/getSession',
+    async (dbVersion, { _, getState }) => {   
+        // const data = restoreSession() || await fetchSession(dbVersion);
+        let data = restoreSession();
 
-    if (data.session) {
-        // data.session[data.session.length - 1] = 624;
-        // data.session[data.session.length - 1] = 382;
-        data.cards = await restoreCards(data.session);
+        if (!data) {
+            // const state = getState();
+            // const implementingResotredUpdates = selectImplementingResotredUpdates(getState());
+            // console.log(implementingResotredUpdates);
+            
+            for (let i = 0; i < 1000; i++) {
+                await setPause(300);
+                console.log(i);
+                const implementingResotredUpdates = selectImplementingResotredUpdates(getState());
+                if (!implementingResotredUpdates) break;
+                console.log(implementingResotredUpdates);
+            }
 
-        updatable = data.backup ? data.updatable : true;
-    } else {
-        data.session = data.cards.map(card => card.number);
+            data = await fetchSession(dbVersion);
+        }
 
-        const storedCards = await restoreCards(data.session);
-        console.log(storedCards);
-        
-        data.cards = storedCards.map((storedCard, index) => ({ ...storedCard, ...data.cards[index]}));
+        if (data.session) {
+            // data.session[data.session.length - 1] = 624;
+            // data.session[data.session.length - 1] = 382;
+            data.cards = await restoreCards(data.session);
 
-        setBackup(data.cards);
+            updatable = data.backup ? data.updatable : true;
+        } else {
+            data.session = data.cards.map(card => card.number);
+
+            const storedCards = await restoreCards(data.session);
+            console.log(storedCards);
+            
+            data.cards = storedCards.map((storedCard, index) => ({ ...storedCard, ...data.cards[index]}));
+
+            setBackup(data.cards);
+        }
+
+        if (!data.backup) data.sessionLength = data.session.length;
+
+        if (!data.backup) bakcupSessionConsts(data, updatable);
+
+        console.log('updatable:', updatable);
+        console.log(data);
+
+        console.timeLog('t', 'prepared session');
+
+        return data;
     }
-
-    if (!data.backup) data.sessionLength = data.session.length;
-
-    if (!data.backup) bakcupSessionConsts(data, updatable);
-
-    console.log('updatable:', updatable);
-    console.log(data);
-
-    console.timeLog('t', 'prepared session');
-
-    return data;
-});
+);
 
 export const updateCard = createAsyncThunk(
     'tap/updateCard',
