@@ -4,7 +4,7 @@ import { backupCard, restoreCards, backupCards } from "../../services/cardsBacku
 import { restoreSession, bakcupSessionConsts } from "./sessionBackup";
 import { selectCardByNumber, updateCardState, updateProgress } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
-import { updateVersion } from "../../services/versionHandlers";
+import { incrementVersion, updateVersion } from "../../services/versionHandlers";
 import { selectImplementingResotredUpdates } from "../status/statusSlice";
 import setPause from "../../helpers/setPause";
 
@@ -23,8 +23,6 @@ async function fetchSession(dbVersion) {
 
     return data;
 }
-
-let updatable = false;
 
 export const getSession = createAsyncThunk(
     'tap/getSession',
@@ -52,8 +50,6 @@ export const getSession = createAsyncThunk(
             // data.session[data.session.length - 1] = 624;
             // data.session[data.session.length - 1] = 382;
             data.cards = await restoreCards(data.session);
-
-            updatable = data.backup ? data.updatable : true;
         } else {
             data.session = data.cards.map(card => card.number);
 
@@ -66,10 +62,8 @@ export const getSession = createAsyncThunk(
         }
 
         if (!data.backup) data.sessionLength = data.session.length;
+        if (!data.backup) bakcupSessionConsts(data);
 
-        if (!data.backup) bakcupSessionConsts(data, updatable);
-
-        console.log('updatable:', updatable);
         console.log(data);
 
         console.timeLog('t', 'prepared session');
@@ -78,6 +72,7 @@ export const getSession = createAsyncThunk(
     }
 );
 
+let upToDate = true;
 export const updateCard = createAsyncThunk(
     'tap/updateCard',
     async ({ number, dbid, changes, retry }, { dispatch, getState }) => {
@@ -92,7 +87,7 @@ export const updateCard = createAsyncThunk(
         // update db
         const fetchPromise = updateWithQueue(`/cards/${dbid}`, cardChanges);
 
-        if (updatable || retry) {
+        if (upToDate || retry) {
             // update sate
             dispatch(updateCardState({ id: number, changes: cardChanges }));
 
@@ -100,11 +95,12 @@ export const updateCard = createAsyncThunk(
             const backupResult = await backupCard(selectCardByNumber(getState(), number));
             if (backupResult !== 'success') alert('Backup failed!');
 
-            if (updatable) {
+            if (upToDate) {
                 const fetchResult = await fetchPromise;
     
                 if (fetchResult?.version && backupResult === 'success') {
-                    updateVersion(fetchResult.version);
+                    // updateVersion(fetchResult.version);
+                    if (incrementVersion(fetchResult.version, 1, 'write') !== 'success') upToDate = false;
                 }
             }
         }

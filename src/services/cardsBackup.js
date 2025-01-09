@@ -35,7 +35,6 @@ export function openLocalDb() {
 }
 
 const dbPromise = openLocalDb();
-console.log(dbPromise);
 
 export async function restoreAllCards() {
     // console.log(db);

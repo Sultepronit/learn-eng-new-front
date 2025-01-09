@@ -3,7 +3,7 @@ import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
 import { backupCard, restoreAllCards, backupCards } from "../../services/cardsBackup";
 import { addOneCard, selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
-import { getVersion, updateVersion } from "../../services/versionHandlers";
+import { getVersion, incrementVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
 import { setSelectedCardNumber } from "../list/listSlice";
 
@@ -97,6 +97,7 @@ export const refreshCards = createAsyncThunk(
     }
 );
 
+
 export const updateCard = createAsyncThunk(
     'cards/updateCard',
     async ({ number, dbid, changes }, { dispatch, getState }) => {
@@ -110,14 +111,17 @@ export const updateCard = createAsyncThunk(
         ]);
 
         if (backupResult === 'success' && fetchResult?.version) {
-            updateVersion(fetchResult.version);
+            if (incrementVersion(fetchResult.version) !== 'success') dispatch(refreshCards());
         }
     }
 );
 
-async function backupNewCard(card, version) {
+async function backupNewCard(card, version, dispatch) {
     const result = await backupCard(card);
-    if (result === 'success') updateVersion(version);
+    // if (result === 'success') updateVersion(version);
+    if (result === 'success') {
+        if (incrementVersion(version, 3) !== 'success') dispatch(refreshCards());
+    }
 }
 
 function filterChanges(card) {
@@ -156,7 +160,7 @@ export const saveNewCard = createAsyncThunk(
         console.log('new card\'s dbid', dbid);
 
         dispatch(updateCardState({ id: number, changes: { dbid } }));
-        backupNewCard(selectCardByNumber(getState(), number), version);
+        backupNewCard(selectCardByNumber(getState(), number), version, dispatch);
 
         // Now, we can get the local card with all its changes
         // that couldn't be updated without dbid, and do update!

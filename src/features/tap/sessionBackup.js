@@ -1,7 +1,6 @@
-// export function bakcupSessionConsts(stages, updatable) {
-export function bakcupSessionConsts({ stages, sessionLength, nextRepeated }, updatable) {
+export function bakcupSessionConsts({ stages, sessionLength, nextRepeated }) {
     localStorage.setItem('tapSessionConsts', JSON.stringify(
-        { stages, sessionLength, nextRepeated, updatable: !!updatable }
+        { stages, sessionLength, nextRepeated }
     ));
 }
 
