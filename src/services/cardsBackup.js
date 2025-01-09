@@ -1,15 +1,16 @@
 import setPause from "../helpers/setPause";
 
-let db = null;
+// let db = null;
 
 export function openLocalDb() {
     return new Promise((resolve, reject) => {
-        console.timeLog('t', 'opening IndexedDB...');
+        // console.timeLog('t', 'opening IndexedDB...');
+        console.log('opening IndexedDB...')
         const openRequest = indexedDB.open('db', 7);
 
         openRequest.onupgradeneeded = () => {
             console.log('upgrading indexedDB!');
-            db = openRequest.result;
+            const db = openRequest.result;
             if(!db.objectStoreNames.contains('cards')) {
                 db.createObjectStore('cards', { keyPath: 'number' });
             } else {
@@ -20,21 +21,26 @@ export function openLocalDb() {
 
         openRequest.onerror = () => {
             console.error(openRequest.error);
+            alert('Error opening IndexedDb!');
             reject('Error opening IndexedDb!');
         };
 
         openRequest.onsuccess = () => {
             console.timeLog('t', 'opened IndexedDB...');
-            db = openRequest.result;
-            resolve('Success!');
+            // db = openRequest.result;
+            // resolve('Success!');
+            resolve(openRequest.result);
         }
     });
 }
 
-export async function restoreBackup() {
+const dbPromise = openLocalDb();
+console.log(dbPromise);
+
+export async function restoreAllCards() {
     if(!db) {
         await setPause(200);
-        return restoreBackup();
+        return restoreAllCards();
     }
     const transaction = db.transaction('cards');
     const cards = transaction.objectStore('cards');

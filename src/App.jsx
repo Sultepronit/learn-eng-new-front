@@ -7,6 +7,7 @@ import TapLessonView from './features/tap/TapLessonView.jsx';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { implementResotredUpdates } from './services/updateQueue.js';
+import WriteSessionView from './features/write/WriteSessionView.jsx';
 
 function App() {
   console.timeLog('t', 'inside the App');
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/list" element={<ListView />} />
           <Route path="/tap-lesson" element={<TapLessonView />} />
+          <Route path="/write-session" element={<WriteSessionView />} />
         </Routes>
       </main>
     </>

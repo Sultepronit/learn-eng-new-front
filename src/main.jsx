@@ -8,7 +8,7 @@ import { store } from './app/store.js'
 import { openLocalDb } from './services/cardsBackup.js'
 
 console.time('t');
-openLocalDb();
+// openLocalDb();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>

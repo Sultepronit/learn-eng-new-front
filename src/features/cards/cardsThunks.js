@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
-import { backupCard, restoreBackup, setBackup } from "../../services/cardsBackup";
+import { backupCard, restoreAllCards, setBackup } from "../../services/cardsBackup";
 import { addOneCard, selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
@@ -48,7 +48,7 @@ export const restoreAndRefreshCards = createAsyncThunk(
     async (_, { dispatch }) => {
         console.timeLog('t', 'start restore & refresh');
 
-        const restorePromise = restoreBackup();
+        const restorePromise = restoreAllCards();
         const fetchPromise = fetchCards();
         
         const firstResult = await Promise.any([restorePromise, fetchPromise]);
