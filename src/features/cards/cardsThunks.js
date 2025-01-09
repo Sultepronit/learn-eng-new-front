@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import updateWithQueue from "../../services/updateQueue";
-import { backupCard, restoreAllCards, setBackup } from "../../services/cardsBackup";
+import { backupCard, restoreAllCards, backupCards } from "../../services/cardsBackup";
 import { addOneCard, selectAllCards, selectCardByNumber, setAllCards, updateCardState, upsertManyCards } from "./cardsSlice";
 import { getVersion, updateVersion } from "../../services/versionHandlers";
 import createNewCard from "./createNewCard";
@@ -34,7 +34,7 @@ const updateCardsLocally = (update) => async (dispatch, getState) => {
 
     dispatch(setSelectedCardNumber(data.length)); // selecting last* card
 
-    const backupResult = await setBackup(selectAllCards(getState()));
+    const backupResult = await backupCards(selectAllCards(getState()));
 
     if (backupResult === 'success') {
         updateVersion(update.version);

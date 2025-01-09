@@ -1,4 +1,4 @@
-import setPause from "../helpers/setPause";
+// import setPause from "../helpers/setPause";
 
 // let db = null;
 
@@ -38,10 +38,14 @@ const dbPromise = openLocalDb();
 console.log(dbPromise);
 
 export async function restoreAllCards() {
-    if(!db) {
-        await setPause(200);
-        return restoreAllCards();
-    }
+    // console.log(db);
+    // console.log('here we go???');
+    // if(!db) {
+    //     await setPause(200);
+    //     return restoreAllCards();
+    // }
+    // console.log('here we go?');
+    const db = await dbPromise;
     const transaction = db.transaction('cards');
     const cards = transaction.objectStore('cards');
     const request = cards.getAll();
@@ -52,7 +56,7 @@ export async function restoreAllCards() {
     });
 }
 
-async function restoreCard(id) { // we don't use it separately, do we?
+async function restoreCard(id, db) {
     const transaction = db.transaction('cards');
     const cards = transaction.objectStore('cards');
     const request = cards.get(id);
@@ -64,31 +68,33 @@ async function restoreCard(id) { // we don't use it separately, do we?
 }
 
 export async function restoreCards(ids) {
-    if(!db) {
-        await setPause(200);
-        return restoreCards(ids)
-    }
+    // if(!db) {
+    //     await setPause(200);
+    //     return restoreCards(ids)
+    // }
+    const db = await dbPromise;
     try {
-        const promises = ids.map(id => restoreCard(id));
+        const promises = ids.map(id => restoreCard(id, db));
         return await Promise.all(promises);
     } catch (error) {
         console.error(error);
     }
 }
 
-function initWriting() {
+async function initWriting() {
+    const db = await dbPromise;
     return new Promise((resolve) => {
-        if(!db) {
-            setTimeout(() => initWriting(), 200);
-            return;
-        }
+        // if(!db) {
+        //     setTimeout(() => initWriting(), 200);
+        //     return;
+        // }
         const transaction = db.transaction('cards', 'readwrite');
         const cards = transaction.objectStore('cards');
         resolve({ transaction, cards });
     })
 }
 
-export async function setBackup(list) {
+export async function backupCards(list) {
     const { transaction, cards } = await initWriting();
 
     console.log(list);
