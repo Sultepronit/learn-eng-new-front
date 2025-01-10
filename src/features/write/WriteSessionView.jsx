@@ -2,7 +2,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./writeThunks";
-// import { getSession } from "./tapThunks";
+import { getNextCard, selectCurrentCard, selectSession } from "./writeSlice";
+import { prepareSpeech } from "../pronunciation/pronunciation";
+import CardView from "./CardView";
+import KeyboardControls from "./KeyboardControls";
 // import { getVersion } from "../../services/versionHandlers";
 // import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectProgress, selectStages } from "./tapSlice";
 // import CardView from './CardView';
@@ -15,68 +18,72 @@ import { getSession } from "./writeThunks";
 export default function WriteSessionView() {
     const dispatch = useDispatch();
     
-    // const session = useSelector(selectSession);
+    const session = useSelector(selectSession);
     // const resetIsActual = useSelector(selectResetIsActual);
-    // const card = useSelector(selectCurrentCard);
+    const card = useSelector(selectCurrentCard);
     // const progress = useSelector(selectProgress);
-    // const stages = useSelector(selectStages); // maybe not in here...
 
-    // const [questionMode, setQuestionMode] = useState(true);
-
-    // // const [cardsPassed, setCardsPassed] = useState(0);
+    const [questionMode, setQuestionMode] = useState(true);
+    const [stage, setStage] = useState('question');
+    const [mark, setMark] = useState(null);
+    console.log(stage);
 
     useEffect(() => {
         dispatch(getSession());
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     console.log(session);
-    //     if (!session) return;
+    useEffect(() => {
+        console.log(session);
+        if (!session) return;
 
-    //     backupSession(session, progress);
+        // backupSession(session, progress);
 
-    //     if (session.length < 1) return;
+        if (session.length < 1) return;
 
-    //     dispatch(getNextCard());
-    // }, [dispatch, session]);
+        dispatch(getNextCard());
 
-    // useEffect(() => {
-    //     console.log(card);
-    //     if (!card) return;
-    //     prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
-    // }, [card]);
+        setMark(null);
+    }, [dispatch, session]);
+
+    useEffect(() => {
+        console.log(card);
+        if (!card) return;
+        prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
+    }, [card]);
 
     // const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 
-    return (
-        <h1>Here we go!</h1>
-    );
-
-    // return !card ? (<h1>Loading...</h1>) : (
-    //     <section className="tap-view" onClick={handleGlobalClick}>
-    //         <StatsView
-    //             progress={progress}
-    //             stages={stages}
-    //             cardsPassed={progress.sessionLength - session.length}
-    //         />
-
-    //         {session.length < 1 ? (<h1>Happy End!</h1>) : (
-    //             <>
-    //                 <CardView
-    //                     card={card}
-    //                     questionMode={questionMode}
-    //                 />
-
-    //                 <ResetButton resetIsActual={resetIsActual} />
-
-    //                 <NavButtons
-    //                     card={card}
-    //                     questionMode={questionMode}
-    //                     setQuestionMode={setQuestionMode}
-    //                     retryMode={progress.tries >= progress.sessionLength}
-    //                 />
-    //             </>
-    //         )}
-    //     </section>
+    // return (
+    //     <h1>Here we go!</h1>
     // );
+
+    return !card ? (<h1>Loading...</h1>) : (
+        <section>
+            {/* <StatsView
+                progress={progress}
+                stages={stages}
+                cardsPassed={progress.sessionLength - session.length}
+            /> */}
+
+            {session.length < 1 ? (<h1>Happy End!</h1>) : (
+                <>
+                    <KeyboardControls
+                        card={card}
+                        questionMode={questionMode}
+                        setQuestionMode={setQuestionMode}
+                        stage={stage}
+                        setStage={setStage}
+                        mark={mark}
+                        setMark={setMark}
+                    />
+
+                    <CardView
+                        card={card}
+                        // questionMode={questionMode}
+                        questionMode={stage === 'question'}
+                    />
+                </>
+            )}
+        </section>
+    );
 }

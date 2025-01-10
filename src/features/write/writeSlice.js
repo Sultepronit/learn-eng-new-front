@@ -1,8 +1,8 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import { getSession } from "./tapThunks";
+import { getSession } from "./writeThunks";
 import logProxy from "../../dev-helpers/logProxy";
-import { directions, stages } from "./statuses";
 import parseWord from "../../services/wordParser";
+import { directions } from "./statuses";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -14,7 +14,10 @@ const initialState = cardsAdapter.getInitialState({
     progress: {
         tries: 0,
         cardsPassed: 0,
-        stats: { good: 0, retry: 0, upgrade: 0, degrade: 0 }
+        good: 0,
+        retry: 0,
+        upgrade: 0,
+        degrade: 0
     },
     currentCard: null,
     nextRepeated: 0
@@ -37,12 +40,12 @@ const writeSlice = createSlice({
             }
         },
         updateProgress: (state, action) => {
-            // console.log(action.payload);
-            const { stage, updates } = action.payload;
+            console.log(action.payload);
+            const { updates } = action.payload; // ???
             state.progress.tries++;
-            state.progress.cardsPassed = state.progress.sessionLength - state.session.length;
+            state.progress.cardsPassed = state.sessionLength - state.session.length;
             for (const field of updates) {
-                state.progress[stage][field]++;
+                state.progress[field]++;
             }
             // logProxy(state.progress);
         }
@@ -53,29 +56,14 @@ const writeSlice = createSlice({
                 const {
                     cards,
                     session,
-                    progress,
                     sessionLength,
-                    stages,
-                    nextRepeated,
-                    backup
+                    nextRepeated
                 } = action.payload;
                 cardsAdapter.setAll(state, cards);
                 state.session = session;
-                state.stages = stages;
-
+                state.sessionLength = sessionLength;
                 state.nextRepeated = nextRepeated;
 
-                if (backup) {
-                    state.resetIsActual = true;
-
-                    state.progress = progress;
-                } else {
-                    state.progress.sessionLength = sessionLength;
-                }
-
-                // state.progress.sessionLength = sessionLength;
-
-                // state.resetIsActual = !!backup;
                 logProxy(state);
             });
     }
@@ -83,25 +71,21 @@ const writeSlice = createSlice({
 
 export const {
     setCurrentCard,
-    removeReset,
     updateCardState,
     updateSession,
     updateProgress
 } = writeSlice.actions;
 
-export const selectSession = (state) => state.tap.session;
-export const selectStages = (state) => state.tap.stages;
-export const selectNextRepeated = (state) => state.tap.nextRepeated;
-export const selectResetIsActual = (state) => state.tap.resetIsActual;
-const selectNextCardNumber = (state) => state.tap.session[state.tap.session.length - 1];
-export const selectCurrentCard = (state) => state.tap.currentCard;
-export const selectProgress = (state) => state.tap.progress;
+export const selectSession = (state) => state.write.session;
+export const selectNextRepeated = (state) => state.write.nextRepeated;
+export const selectCurrentCard = (state) => state.write.currentCard;
+export const selectProgress = (state) => state.write.progress;
+const selectNextCardNumber = (state) => state.write.session[state.write.session.length - 1];
 
 export const {
     selectById: selectCardByNumber
-} = cardsAdapter.getSelectors(state => state.tap);
+} = cardsAdapter.getSelectors(state => state.write);
 
-// thunk, is what this thing called
 export const getNextCard = () => (dispatch, getState) => {
     const nextCardNumber = selectNextCardNumber(getState());
     const rawCard = selectCardByNumber(getState(), nextCardNumber);
@@ -110,14 +94,7 @@ export const getNextCard = () => (dispatch, getState) => {
     const parsedCard = {
         ...rawCard,
         word: parseWord(rawCard?.word),
-        get repeatStage() {
-            return this.repeatStatus === 0 ? stages.LEARN
-                : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
-        },
-        get direction() {
-            return this.tapFProgress > this.tapBProgress
-                ? directions.BACKWARD : directions.FORWARD;
-        }
+        direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD,
     };
 
     dispatch(setCurrentCard(parsedCard));

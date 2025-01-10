@@ -22,8 +22,6 @@ export default function TapLessonView() {
 
     const [questionMode, setQuestionMode] = useState(true);
 
-    // const [cardsPassed, setCardsPassed] = useState(0);
-
     useEffect(() => {
         dispatch(getSession(getVersion()));
     }, [dispatch]);
