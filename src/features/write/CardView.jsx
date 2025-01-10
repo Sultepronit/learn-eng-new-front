@@ -1,6 +1,6 @@
 import { directions } from "./statuses";
 
-export default function CardView({ card, questionMode }) {
+export default function CardView({ card, questionMode, children }) {
     console.log(questionMode);
     let wordHtml = '';
     if (typeof card.word === 'string') {
@@ -22,6 +22,7 @@ export default function CardView({ card, questionMode }) {
                     <span className="spaced">{card.writeFRecord} {card.writeBRecord}</span>
                 </p>
             </div>
+            <div>{children}</div>
             <div className="card-view">
                 {/* <p className="word">{wordHtml}</p> */}
                 <p className="word" dangerouslySetInnerHTML={{ __html: wordHtml }} />

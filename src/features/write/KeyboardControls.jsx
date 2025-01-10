@@ -16,31 +16,43 @@ export default function KeyboardControls({
 }) {
     const dispatch = useDispatch();
     const [keyPressed, setKeyPressed] = useState('_');
+    const [pressCount, setPressCount] = useState(0);
 
-    const [question, evaluation, training] = ['question', 'evaluation', 'training']
+    const [question, evaluation, training] = ['question', 'evaluation', 'training'];
+
+    function increment() {
+        setPressCount((prev) => prev + 1);
+        console.log(pressCount);
+    }
 
     useEffect(() => {
         const handleKeyPress = (e) => {
             // console.log(e);
             setKeyPressed(e.key === ' ' ? 'Space' : e.key);
+            // setPressCount((prev) => prev + 1);
+            // setPressCount(pressCount + 1);
+            increment();
             if (e.key === 'Alt') speak();
+            // console.log(e.key);
         };
 
         document.addEventListener('keyup', handleKeyPress);
 
         return () => document.removeEventListener('keydown', handleKeyPress)
     }, []);
-    // }, [card]);
+
+    console.log(pressCount);
+
+    function finishIt() {
+        console.log('We did it!');
+        dispatch(updateSession());
+    }
 
     useEffect(() => {
         // console.log('action!');
         // console.log(questionMode, stage);
-        if (keyPressed === 'Alt') {
-            // speak();
-        } else if (keyPressed === 'Enter') {
-            // console.log('Enter!');
-            // console.log(stage);
-            
+        if (keyPressed === 'Enter') {  
+            console.log(stage);   
             if (questionMode) {
                 setQuestionMode(false);
             }
@@ -50,13 +62,13 @@ export default function KeyboardControls({
             } else if (stage === evaluation && mark) {
                 console.log(mark);
                 if (card.direction === directions.BACKWARD && mark === marks.GOOD) { // no training
-                    console.log('Next!');
+                    finishIt();
                 } else { // training
                     setStage(training);
                     console.log(stage);
                 }
             } else if (stage === training) {
-                dispatch(updateSession());
+                finishIt();
             }
         } else if (stage === evaluation) {
             // console.log('here we go')
@@ -67,7 +79,7 @@ export default function KeyboardControls({
         }
         // console.log(stage);
 
-    }, [keyPressed]);
+    }, [keyPressed, pressCount]);
 
     return (
         <p>{keyPressed}</p>
