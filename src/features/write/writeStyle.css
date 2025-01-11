@@ -1,7 +1,41 @@
+.write-session {
+    font-size: 1.4rem;
+    padding: 0.5rem;
+}
+
 .learn-input {
     width: 100%;
     font-size: 4rem;
     font-family: 'Times New Roman', Times, serif;
     font-style: italic;
     text-align: center;
+}
+
+.write-card-view {
+    border-left: 6px solid white;
+    /* border-right: 6px solid white; */
+    padding-inline: 0.2rem;
+}
+
+.mark-g {
+    border-color: green;
+}
+
+.mark-r {
+    border-color: yellow;
+}
+.mark-b {
+    border-color: red;
+}
+
+.write-session .word {
+    font-size: 4rem;
+}
+
+.wrong-input {
+    color: red;
+}
+
+.correct-input {
+    color: blue;
 }

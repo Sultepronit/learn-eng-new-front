@@ -63,7 +63,7 @@ export default function WriteSessionView() {
     console.log(inputIsActive);
 
     return !card ? (<h1>Loading...</h1>) : (
-        <section>
+        <section className="write-session">
             {/* <StatsView
                 progress={progress}
                 stages={stages}
@@ -80,25 +80,30 @@ export default function WriteSessionView() {
                         setStage={setStage}
                         mark={mark}
                         setMark={setMark}
+                        correctSpelling={correctSpelling}
                     />
 
-                    {/* <TheInput
+                    <TheInput
                         expectedValue={card.word}
-                    /> */}
+                        // isDisabled={true}
+                        isActive={inputIsActive}
+                        correctSpelling={correctSpelling}
+                        setCorrectSpelling={setCorrectSpelling}
+                    />
 
                     <CardView
                         card={card}
-                        // questionMode={questionMode}
                         questionMode={stage === 'question'}
+                        mark={mark}
                     // />
                     >
-                        <TheInput
+                        {/* <TheInput
                             expectedValue={card.word}
                             // isDisabled={true}
                             isActive={inputIsActive}
                             correctSpelling={correctSpelling}
                             setCorrectSpelling={setCorrectSpelling}
-                        />
+                        /> */}
                     </CardView>
                 </>
             )}

@@ -7,6 +7,7 @@ export default function TheInput({
     setCorrectSpelling
 }) {
     const [inputValue, setInputValue] = useState('');
+    const [goodSoFar, setGoodSoFar] = useState(true);
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -22,14 +23,23 @@ export default function TheInput({
             console.log('bingo!');
             setCorrectSpelling(true);
         } else {
+            if (inputValue === expectedValue.substring(0, inputValue.length)) {
+                setGoodSoFar(true);
+            } else {
+                setGoodSoFar(false);
+            }
             setCorrectSpelling(false);
         }
     }, [expectedValue, inputValue]);
 
+    const addStyle = correctSpelling ? 'correct-input'
+        : goodSoFar ? '' : 'wrong-input';
+
     return (
         <input
             type="text"
-            className="learn-input"
+            // className="learn-input"
+            className={`learn-input ${addStyle}`}
             disabled={!isActive}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

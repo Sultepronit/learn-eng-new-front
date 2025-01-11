@@ -12,6 +12,7 @@ export default function KeyboardControls({
     setStage,
     mark,
     setMark,
+    correctSpelling,
     retryMode
 }) {
     const dispatch = useDispatch();
@@ -29,11 +30,8 @@ export default function KeyboardControls({
         const handleKeyPress = (e) => {
             // console.log(e);
             setKeyPressed(e.key === ' ' ? 'Space' : e.key);
-            // setPressCount((prev) => prev + 1);
-            // setPressCount(pressCount + 1);
             increment();
             if (e.key === 'Alt') speak();
-            // console.log(e.key);
         };
 
         document.addEventListener('keyup', handleKeyPress);
@@ -50,12 +48,11 @@ export default function KeyboardControls({
 
     useEffect(() => {
         // console.log('action!');
-        // console.log(questionMode, stage);
         if (keyPressed === 'Enter') {  
             console.log(stage);   
-            if (questionMode) {
-                setQuestionMode(false);
-            }
+            // if (questionMode) {
+            //     setQuestionMode(false);
+            // }
             if (stage === question) {
                 setStage(evaluation);
                 console.log(stage);
@@ -65,16 +62,20 @@ export default function KeyboardControls({
                     finishIt();
                 } else { // training
                     setStage(training);
-                    console.log(stage);
+                    // console.log(stage);
                 }
             } else if (stage === training) {
-                finishIt();
+                if (correctSpelling) finishIt();
             }
         } else if (stage === evaluation) {
             // console.log('here we go')
             if (keyPressed.toLowerCase() === 'g') {
                 console.log(marks.GOOD);
                 setMark(marks.GOOD)
+            } else if (keyPressed.toLowerCase() === 'n') {
+                setMark(marks.RETRY)
+            } else if (keyPressed.toLowerCase() === 'b') {
+                setMark(marks.BAD)
             }
         }
         // console.log(stage);
