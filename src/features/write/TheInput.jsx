@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 export default function TheInput({
     expectedValue,
     isActive,
+    stage,
     correctSpelling,
     setCorrectSpelling
 }) {
@@ -15,7 +16,12 @@ export default function TheInput({
     }, [expectedValue]);
 
     useEffect(() => {
-        if (isActive && inputRef.current) inputRef.current.focus();
+        // if (isActive && inputRef.current) inputRef.current.focus();
+        if (isActive) {
+            setInputValue('');
+
+            if (inputRef.current) inputRef.current.focus();
+        }
     }, [isActive])
 
     useEffect(() => {
@@ -32,13 +38,13 @@ export default function TheInput({
         }
     }, [expectedValue, inputValue]);
 
-    const addStyle = correctSpelling ? 'correct-input'
-        : goodSoFar ? '' : 'wrong-input';
+    const addStyle = stage === 'question' ? ''
+        : stage === 'evaluation' ? (correctSpelling ? 'correct-input' : 'wrong-input')
+            : correctSpelling ? 'correct-input' : goodSoFar ? '' : 'wrong-input';
 
     return (
         <input
             type="text"
-            // className="learn-input"
             className={`learn-input ${addStyle}`}
             disabled={!isActive}
             value={inputValue}

@@ -94,7 +94,8 @@ export const getNextCard = () => (dispatch, getState) => {
     const parsedCard = {
         ...rawCard,
         word: parseWord(rawCard?.word),
-        direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD,
+        // direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD,
+        direction: Math.random() > 0.5 ? directions.BACKWARD : directions.FORWARD
     };
 
     dispatch(setCurrentCard(parsedCard));

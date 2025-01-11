@@ -6,8 +6,6 @@ import { updateSession } from "./writeSlice";
 
 export default function KeyboardControls({
     card,
-    questionMode,
-    setQuestionMode,
     stage,
     setStage,
     mark,
@@ -21,16 +19,15 @@ export default function KeyboardControls({
 
     const [question, evaluation, training] = ['question', 'evaluation', 'training'];
 
-    function increment() {
-        setPressCount((prev) => prev + 1);
-        console.log(pressCount);
+    function updateKey(key) {        
+        // setPressCount((prev) => prev + 1);
+        // setKeyPressed(key === ' ' ? 'Space' : key);
     }
 
     useEffect(() => {
         const handleKeyPress = (e) => {
-            // console.log(e);
             setKeyPressed(e.key === ' ' ? 'Space' : e.key);
-            increment();
+            setPressCount((prev) => prev + 1);
             if (e.key === 'Alt') speak();
         };
 
@@ -39,10 +36,12 @@ export default function KeyboardControls({
         return () => document.removeEventListener('keydown', handleKeyPress)
     }, []);
 
-    console.log(pressCount);
+    // console.log(pressCount);
 
     function finishIt() {
         console.log('We did it!');
+        setStage('question');
+        // setTimeout(() => dispatch(updateSession()), 100);
         dispatch(updateSession());
     }
 
@@ -50,36 +49,29 @@ export default function KeyboardControls({
         // console.log('action!');
         if (keyPressed === 'Enter') {  
             console.log(stage);   
-            // if (questionMode) {
-            //     setQuestionMode(false);
-            // }
             if (stage === question) {
                 setStage(evaluation);
-                console.log(stage);
+                speak();
             } else if (stage === evaluation && mark) {
                 console.log(mark);
                 if (card.direction === directions.BACKWARD && mark === marks.GOOD) { // no training
                     finishIt();
                 } else { // training
                     setStage(training);
-                    // console.log(stage);
                 }
             } else if (stage === training) {
                 if (correctSpelling) finishIt();
             }
         } else if (stage === evaluation) {
-            // console.log('here we go')
-            if (keyPressed.toLowerCase() === 'g') {
-                console.log(marks.GOOD);
+            const key = keyPressed.toLowerCase();
+            if (key === 'g') {
                 setMark(marks.GOOD)
-            } else if (keyPressed.toLowerCase() === 'n') {
+            } else if (key === 'n') {
                 setMark(marks.RETRY)
-            } else if (keyPressed.toLowerCase() === 'b') {
+            } else if (key === 'b') {
                 setMark(marks.BAD)
             }
         }
-        // console.log(stage);
-
     }, [keyPressed, pressCount]);
 
     return (

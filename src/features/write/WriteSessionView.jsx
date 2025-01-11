@@ -7,7 +7,7 @@ import { prepareSpeech } from "../pronunciation/pronunciation";
 import CardView from "./CardView";
 import KeyboardControls from "./KeyboardControls";
 import TheInput from "./TheInput";
-import { directions } from './statuses';
+import { directions, marks } from './statuses';
 // import { getVersion } from "../../services/versionHandlers";
 // import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectProgress, selectStages } from "./tapSlice";
 // import CardView from './CardView';
@@ -25,11 +25,10 @@ export default function WriteSessionView() {
     const card = useSelector(selectCurrentCard);
     // const progress = useSelector(selectProgress);
 
-    const [questionMode, setQuestionMode] = useState(true);
-    const [stage, setStage] = useState('');
+    const [stage, setStage] = useState('question');
     const [mark, setMark] = useState(null);
     const [correctSpelling, setCorrectSpelling] = useState(false);
-    console.log(stage);
+    // console.log(stage);
 
     useEffect(() => {
         dispatch(getSession());
@@ -43,6 +42,7 @@ export default function WriteSessionView() {
 
         if (session.length < 1) return;
 
+        // setStage('question');
         dispatch(getNextCard());
 
         setMark(null);
@@ -52,11 +52,19 @@ export default function WriteSessionView() {
         console.log(card);
         if (!card) return;
 
-        setStage('question');
+        // setStage('question');
         prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
     }, [card]);
 
-    // const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
+    useEffect(() => {
+        if (stage === 'evaluation' && card?.direction === directions.BACKWARD) {
+            if (correctSpelling) {
+                setMark(marks.GOOD)
+            } else {
+                setMark(marks.RETRY)
+            }
+        }
+    }, [stage, card, correctSpelling])
 
     const inputIsActive = stage === 'training'
         || (stage === 'question' && card?.direction === directions.BACKWARD);
@@ -74,8 +82,6 @@ export default function WriteSessionView() {
                 <>
                     <KeyboardControls
                         card={card}
-                        questionMode={questionMode}
-                        setQuestionMode={setQuestionMode}
                         stage={stage}
                         setStage={setStage}
                         mark={mark}
@@ -84,9 +90,10 @@ export default function WriteSessionView() {
                     />
 
                     <TheInput
-                        expectedValue={card.word}
+                        expectedValue={typeof card.word === 'string' ? card.word : card.word.questionF}
                         // isDisabled={true}
                         isActive={inputIsActive}
+                        stage={stage}
                         correctSpelling={correctSpelling}
                         setCorrectSpelling={setCorrectSpelling}
                     />
