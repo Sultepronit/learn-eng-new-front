@@ -2,7 +2,7 @@ import './writeStyle.css';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./writeThunks";
-import { getNextCard, selectCurrentCard, selectSession } from "./writeSlice";
+import { getNextCard, selectCurrentCard, selectSession, updateSession } from "./writeSlice";
 import { prepareSpeech } from "../pronunciation/pronunciation";
 import CardView from "./CardView";
 import KeyboardControls from "./KeyboardControls";
@@ -35,6 +35,17 @@ export default function WriteSessionView() {
     }, [dispatch]);
 
     useEffect(() => {
+        if (stage === 'question') {
+            console.log('new question!');
+            try {
+                dispatch(updateSession());
+            } catch (error) {
+                console.log(error.message)
+            }
+        }
+    }, [stage]);
+
+    useEffect(() => {
         console.log(session);
         if (!session) return;
 
@@ -42,7 +53,6 @@ export default function WriteSessionView() {
 
         if (session.length < 1) return;
 
-        // setStage('question');
         dispatch(getNextCard());
 
         setMark(null);
@@ -52,7 +62,6 @@ export default function WriteSessionView() {
         console.log(card);
         if (!card) return;
 
-        // setStage('question');
         prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
     }, [card]);
 
@@ -68,7 +77,6 @@ export default function WriteSessionView() {
 
     const inputIsActive = stage === 'training'
         || (stage === 'question' && card?.direction === directions.BACKWARD);
-    console.log(inputIsActive);
 
     return !card ? (<h1>Loading...</h1>) : (
         <section className="write-session">
@@ -91,7 +99,6 @@ export default function WriteSessionView() {
 
                     <TheInput
                         expectedValue={typeof card.word === 'string' ? card.word : card.word.questionF}
-                        // isDisabled={true}
                         isActive={inputIsActive}
                         stage={stage}
                         correctSpelling={correctSpelling}

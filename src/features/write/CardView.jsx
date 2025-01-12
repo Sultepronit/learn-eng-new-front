@@ -1,7 +1,6 @@
 import { directions } from "./statuses";
 
 export default function CardView({ card, questionMode, mark, children }) {
-    console.log(questionMode);
     let wordHtml = '';
     if (typeof card.word === 'string') {
         wordHtml = questionMode && card.direction === directions.BACKWARD ? '' : card.word;

@@ -13,22 +13,16 @@ export default function KeyboardControls({
     correctSpelling,
     retryMode
 }) {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const [keyPressed, setKeyPressed] = useState('_');
     const [pressCount, setPressCount] = useState(0);
 
     const [question, evaluation, training] = ['question', 'evaluation', 'training'];
 
-    function updateKey(key) {        
-        // setPressCount((prev) => prev + 1);
-        // setKeyPressed(key === ' ' ? 'Space' : key);
-    }
-
     useEffect(() => {
         const handleKeyPress = (e) => {
             setKeyPressed(e.key === ' ' ? 'Space' : e.key);
             setPressCount((prev) => prev + 1);
-            if (e.key === 'Alt') speak();
         };
 
         document.addEventListener('keyup', handleKeyPress);
@@ -36,13 +30,9 @@ export default function KeyboardControls({
         return () => document.removeEventListener('keydown', handleKeyPress)
     }, []);
 
-    // console.log(pressCount);
 
     function finishIt() {
-        console.log('We did it!');
         setStage('question');
-        // setTimeout(() => dispatch(updateSession()), 100);
-        dispatch(updateSession());
     }
 
     useEffect(() => {
@@ -71,6 +61,8 @@ export default function KeyboardControls({
             } else if (key === 'b') {
                 setMark(marks.BAD)
             }
+        } else if (keyPressed === 'Alt') {
+            speak();
         }
     }, [keyPressed, pressCount]);
 
