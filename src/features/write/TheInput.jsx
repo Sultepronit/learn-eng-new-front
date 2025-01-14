@@ -26,7 +26,7 @@ export default function TheInput({
 
     useEffect(() => {
         if (inputValue === expectedValue) {
-            console.log('bingo!');
+            // console.log('bingo!');
             setCorrectSpelling(true);
         } else {
             if (inputValue === expectedValue.substring(0, inputValue.length)) {

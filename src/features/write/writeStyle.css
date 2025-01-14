@@ -39,6 +39,18 @@
     font-size: 4rem;
 }
 
+.write-session .transcription {
+    font-size: 2rem;
+}
+
+.write-session .translation {
+    font-size: 2rem;
+}
+
+.write-session .example {
+    font-size: 2rem;
+}
+
 .wrong-input {
     color: red;
 }

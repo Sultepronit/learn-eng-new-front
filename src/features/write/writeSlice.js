@@ -40,11 +40,11 @@ const writeSlice = createSlice({
             }
         },
         updateProgress: (state, action) => {
-            console.log(action.payload);
-            const { updates } = action.payload; // ???
+            // console.log(action.payload);
+            // const { updates } = action.payload; // ???
             state.progress.tries++;
             state.progress.cardsPassed = state.sessionLength - state.session.length;
-            for (const field of updates) {
+            for (const field of action.payload) {
                 state.progress[field]++;
             }
             // logProxy(state.progress);

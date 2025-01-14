@@ -20,7 +20,7 @@ function tryAndUpgrade(card, progressUpdate) {
         card.writeFProgress = 0;
         card.writeBProgress = 0;
 
-        card.repeatStatus = selectNextRepeated(store.getState());
+        card.writeStatus = selectNextRepeated(store.getState());
 
         progressUpdate.push('upgrade');
     }

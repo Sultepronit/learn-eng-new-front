@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { speak } from "../pronunciation/pronunciation";
 import { directions, marks } from "./statuses";
 import { useDispatch } from "react-redux";
-import { updateSession } from "./writeSlice";
+// import { updateSession } from "./writeSlice";
 import evaluate from "./evaluation";
+import { updateCard } from "./writeThunks";
 
 export default function KeyboardControls({
     card,
@@ -14,7 +15,7 @@ export default function KeyboardControls({
     correctSpelling,
     retryMode
 }) {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [keyPressed, setKeyPressed] = useState('_');
     const [pressCount, setPressCount] = useState(0);
 
@@ -37,14 +38,9 @@ export default function KeyboardControls({
         console.log('mark:', mark);
         const changes = evaluate(card, mark);
 
+        // save
         const retry = mark === marks.RETRY;
-
-        // // save
-        // dispatch(updateCard({ number: card.number, dbid: card.dbid, changes, retry }));
-
-        // ask    
-        // dispatch(updateSession(retry && card.number));
-        // setStage('question');
+        dispatch(updateCard({ number: card.number, dbid: card.dbid, changes, retry }));
     }
 
     useEffect(() => {

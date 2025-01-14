@@ -31,13 +31,16 @@ export default function WriteSessionView() {
     }, [dispatch]);
 
     useEffect(() => {
+        if (!session) return;
         if (stage === 'question') {
             console.log('new question!');
-            try {
-                dispatch(updateSession());
-            } catch (error) {
-                console.log(error.message)
-            }
+            dispatch(updateSession(mark === marks.RETRY && card.number));
+            // try {
+            //     // dispatch(updateSession());
+            //     dispatch(updateSession(mark === marks.RETRY && card.number));
+            // } catch (error) {
+            //     console.log(error.message)
+            // }
         }
     }, [stage]);
 

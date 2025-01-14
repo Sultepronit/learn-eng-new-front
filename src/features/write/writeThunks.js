@@ -74,6 +74,7 @@ export const updateCard = createAsyncThunk(
         
         // update db
         const fetchPromise = updateWithQueue(`/cards/${dbid}`, cardChanges);
+        // const fetchPromise = null;
 
         if (upToDate || retry) {
             // update sate
