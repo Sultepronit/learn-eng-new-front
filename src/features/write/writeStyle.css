@@ -25,12 +25,14 @@
 .mark-g {
     border-color: green;
 }
-
 .mark-r {
     border-color: yellow;
 }
 .mark-b {
     border-color: red;
+}
+.mark-p {
+    border-color: grey;
 }
 
 .write-session .word {

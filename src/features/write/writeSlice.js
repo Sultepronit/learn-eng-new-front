@@ -80,6 +80,7 @@ export const selectSession = (state) => state.write.session;
 export const selectNextRepeated = (state) => state.write.nextRepeated;
 export const selectCurrentCard = (state) => state.write.currentCard;
 export const selectProgress = (state) => state.write.progress;
+export const selectSessionLength = (state) => state.write.sessionLength;
 const selectNextCardNumber = (state) => state.write.session[state.write.session.length - 1];
 
 export const {
@@ -94,8 +95,8 @@ export const getNextCard = () => (dispatch, getState) => {
     const parsedCard = {
         ...rawCard,
         word: parseWord(rawCard?.word),
-        // direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD,
-        direction: Math.random() > 0.5 ? directions.BACKWARD : directions.FORWARD
+        direction: rawCard.writeFProgress > rawCard.writeBProgress ? directions.BACKWARD : directions.FORWARD,
+        // direction: Math.random() > 0.5 ? directions.BACKWARD : directions.FORWARD
     };
 
     dispatch(setCurrentCard(parsedCard));

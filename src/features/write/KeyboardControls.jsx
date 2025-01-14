@@ -3,6 +3,7 @@ import { speak } from "../pronunciation/pronunciation";
 import { directions, marks } from "./statuses";
 import { useDispatch } from "react-redux";
 import { updateSession } from "./writeSlice";
+import evaluate from "./evaluation";
 
 export default function KeyboardControls({
     card,
@@ -30,9 +31,20 @@ export default function KeyboardControls({
         return () => document.removeEventListener('keydown', handleKeyPress)
     }, []);
 
+    // function evaluateSaveAsk() {
+    function evaluateAndSave() {
+        // evaluate
+        console.log('mark:', mark);
+        const changes = evaluate(card, mark);
 
-    function finishIt() {
-        setStage('question');
+        const retry = mark === marks.RETRY;
+
+        // // save
+        // dispatch(updateCard({ number: card.number, dbid: card.dbid, changes, retry }));
+
+        // ask    
+        // dispatch(updateSession(retry && card.number));
+        // setStage('question');
     }
 
     useEffect(() => {
@@ -43,26 +55,27 @@ export default function KeyboardControls({
                 setStage(evaluation);
                 speak();
             } else if (stage === evaluation && mark) {
-                console.log(mark);
+                evaluateAndSave();
+
                 if (card.direction === directions.BACKWARD && mark === marks.GOOD) { // no training
-                    finishIt();
+                    setStage('question');
                 } else { // training
                     setStage(training);
                 }
-            } else if (stage === training) {
-                if (correctSpelling) finishIt();
-            }
-        } else if (stage === evaluation) {
-            const key = keyPressed.toLowerCase();
-            if (key === 'g') {
-                setMark(marks.GOOD)
-            } else if (key === 'n') {
-                setMark(marks.RETRY)
-            } else if (key === 'b') {
-                setMark(marks.BAD)
+            } else if (stage === training && correctSpelling) {
+                setStage('question');
             }
         } else if (keyPressed === 'Alt') {
             speak();
+        } else if (stage === evaluation) {
+            const key = keyPressed.toLowerCase();
+            if (key === 'g') {
+                retryMode ? setMark(marks.PASS) : setMark(marks.GOOD);
+            } else if (key === 'n') {
+                setMark(marks.RETRY);
+            } else if (key === 'b') {
+                setMark(marks.BAD);
+            }
         }
     }, [keyPressed, pressCount]);
 

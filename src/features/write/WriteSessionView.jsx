@@ -2,20 +2,13 @@ import './writeStyle.css';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./writeThunks";
-import { getNextCard, selectCurrentCard, selectSession, updateSession } from "./writeSlice";
+import { getNextCard, selectCurrentCard, selectProgress, selectSession, selectSessionLength, updateSession } from "./writeSlice";
 import { prepareSpeech } from "../pronunciation/pronunciation";
 import CardView from "./CardView";
 import KeyboardControls from "./KeyboardControls";
 import TheInput from "./TheInput";
 import { directions, marks } from './statuses';
-// import { getVersion } from "../../services/versionHandlers";
-// import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectProgress, selectStages } from "./tapSlice";
-// import CardView from './CardView';
-// import NavButtons from './NavButtons';
-// import { prepareSpeech } from '../pronunciation/pronunciation';
-// import ResetButton from './ResetButton';
-// import { backupSession } from './sessionBackup';
-// import StatsView from './StatsView';
+import StatsView from './StatsView';
 
 export default function WriteSessionView() {
     const dispatch = useDispatch();
@@ -23,11 +16,14 @@ export default function WriteSessionView() {
     const session = useSelector(selectSession);
     // const resetIsActual = useSelector(selectResetIsActual);
     const card = useSelector(selectCurrentCard);
-    // const progress = useSelector(selectProgress);
+    const progress = useSelector(selectProgress);
+    const sessionLength = useSelector(selectSessionLength);
 
     const [stage, setStage] = useState('question');
     const [mark, setMark] = useState(null);
     const [correctSpelling, setCorrectSpelling] = useState(false);
+
+    const retryMode = progress.tries >= sessionLength;
     // console.log(stage);
 
     useEffect(() => {
@@ -68,7 +64,7 @@ export default function WriteSessionView() {
     useEffect(() => {
         if (stage === 'evaluation' && card?.direction === directions.BACKWARD) {
             if (correctSpelling) {
-                setMark(marks.GOOD)
+                retryMode ? setMark(marks.PASS) : setMark(marks.GOOD)
             } else {
                 setMark(marks.RETRY)
             }
@@ -80,22 +76,32 @@ export default function WriteSessionView() {
 
     return !card ? (<h1>Loading...</h1>) : (
         <section className="write-session">
-            {/* <StatsView
+            <KeyboardControls
+                card={card}
+                stage={stage}
+                setStage={setStage}
+                mark={mark}
+                setMark={setMark}
+                correctSpelling={correctSpelling}
+                retryMode={retryMode}
+            />
+            <StatsView
                 progress={progress}
-                stages={stages}
-                cardsPassed={progress.sessionLength - session.length}
-            /> */}
+                cardsPassed={sessionLength - session.length}
+                sessionLength={sessionLength}
+            />
 
             {session.length < 1 ? (<h1>Happy End!</h1>) : (
                 <>
-                    <KeyboardControls
+                    {/* <KeyboardControls
                         card={card}
                         stage={stage}
                         setStage={setStage}
                         mark={mark}
                         setMark={setMark}
                         correctSpelling={correctSpelling}
-                    />
+                        retryMode={true}
+                    /> */}
 
                     <TheInput
                         expectedValue={typeof card.word === 'string' ? card.word : card.word.questionF}
@@ -109,16 +115,7 @@ export default function WriteSessionView() {
                         card={card}
                         questionMode={stage === 'question'}
                         mark={mark}
-                    // />
-                    >
-                        {/* <TheInput
-                            expectedValue={card.word}
-                            // isDisabled={true}
-                            isActive={inputIsActive}
-                            correctSpelling={correctSpelling}
-                            setCorrectSpelling={setCorrectSpelling}
-                        /> */}
-                    </CardView>
+                    />
                 </>
             )}
         </section>
