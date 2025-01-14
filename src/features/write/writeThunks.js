@@ -33,12 +33,12 @@ export const getSession = createAsyncThunk('write/getSession', async () => {
     const data = await fetchSession();
 
     if (data.session) {
-        data.session.length = 10;
+        // data.session.length = 10;
         // data.session[data.session.length - 1] = 624;
         // data.session[data.session.length - 1] = 382;
         data.cards = await restoreCards(data.session);
     } else {
-        data.cards.length = 10;
+        // data.cards.length = 10;
         data.session = data.cards.map(card => card.number);
 
         const storedCards = await restoreCards(data.session);
