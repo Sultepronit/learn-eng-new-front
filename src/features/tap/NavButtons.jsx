@@ -23,13 +23,12 @@ export default function NavButtons({ card, questionMode, setQuestionMode, retryM
         ]).then(() => setLearningPronunciation(false));
 
         const notBadButtons = retryMode ? { pass, retry } : { good, retry };
-        if (card.repeatStage === stages.CONFIRM) {
+        /*if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, pass, bad });
-        } else if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
-            // setButtons({ good, ...notBadButtons });
+        } else*/
+        if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
             setButtons({ ...notBadButtons });
         } else {
-            // setButtons({ good, ...notBadButtons, bad });
             setButtons({ ...notBadButtons, bad });
         }
 
