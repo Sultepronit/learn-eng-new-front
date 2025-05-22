@@ -13,24 +13,13 @@ import checkIntLimits from '../../helpers/chekIntLimits.js';
 import CardEditor from './CardEditor.jsx';
 import SearchBar from './SearchBar.jsx';
 import Table from "./Table.jsx";
-import { implementResotredUpdates } from '../../services/updateQueue.js';
-import { selectImplementingResotredUpdates } from '../status/statusSlice.js';
 
 export default function ListView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // dispatch(implementResotredUpdates());
         dispatch(restoreAndRefreshCards());
     }, [dispatch]);
-
-    // const implementingResotredUpdates = useSelector(selectImplementingResotredUpdates);
-    // console.log(implementingResotredUpdates);
-    // if (implementingResotredUpdates) {
-    //     console.log('implementing!')
-    // } else {
-    //     console.log('implemented!')
-    // }
 
     const preparedList = useSelector(selectPreparedList);
     const rowNumber = useSelector(selectRowNumber);

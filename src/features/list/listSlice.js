@@ -2,8 +2,14 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
 
+console.log(window.innerHeight);
 const initialState = {
-    rowNumber: 22,
+    // rowNumber: 22,
+    rowNumber: Math.round(window.innerHeight / 25) - 7,
+    // rowNumber: Math.round(window.innerHeight / 26) - 6,
+    // rowNumber: Math.round(window.innerHeight / 27) - 5,
+    // rowNumber: Math.round(window.innerHeight / 28) - 4,
+    // rowNumber: Math.round(window.innerHeight / 31),
     firstRow: 0,
     backupFirstRow: 0,
     selectedCardNumber: 1,
