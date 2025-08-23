@@ -2,7 +2,7 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import logProxy from "../../dev-helpers/logProxy";
 import { selectAllCards } from "../cards/cardsSlice";
 
-console.log(window.innerHeight);
+// console.log(window.innerHeight);
 const initialState = {
     // rowNumber: 22,
     rowNumber: Math.round(window.innerHeight / 25) - 7,

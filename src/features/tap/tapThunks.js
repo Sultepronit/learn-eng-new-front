@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchWithFeatures from "../../services/fetchWithFeatures";
 import { backupCard, restoreCards, backupCards } from "../../services/cardsBackup";
-import { restoreSession, bakcupSessionConsts } from "./sessionBackup";
+import { restoreSession, bakcupSessionConsts, removeSessionBackup } from "./sessionBackup";
 import { selectCardByNumber, updateCardState, updateProgress } from "./tapSlice";
 import updateWithQueue from "../../services/updateQueue";
 import { incrementVersion, updateVersion } from "../../services/versionHandlers";
@@ -29,6 +29,7 @@ export const getSession = createAsyncThunk(
     async (dbVersion, { _, getState }) => {   
         // const data = restoreSession() || await fetchSession(dbVersion);
         let data = restoreSession();
+        // console.log(data);
 
         if (!data) {
             // const state = getState();
@@ -50,6 +51,13 @@ export const getSession = createAsyncThunk(
             // data.session[data.session.length - 1] = 624;
             // data.session[data.session.length - 1] = 382;
             data.cards = await restoreCards(data.session);
+            // console.log(data.cards)
+            
+            // in case of clean-up if IndexedDB
+            if (!data.cards[0]) {
+                removeSessionBackup();
+                location.reload();
+            }
         } else {
             data.session = data.cards.map(card => card.number);
 
