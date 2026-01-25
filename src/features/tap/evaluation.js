@@ -3,9 +3,10 @@ import { selectNextRepeated } from "./tapSlice";
 import { store } from "../../app/store";
 
 function tryAndDegrade(card, progressUpdate) {
-    card.repeatStatus = 0;
     card.tapFProgress = 0;
     card.tapBProgress = 0;
+
+    card.repeatStatus = card.repeatStage === stages.LEARN ? -2 : 0;
 
     progressUpdate.push('degrade');
 }

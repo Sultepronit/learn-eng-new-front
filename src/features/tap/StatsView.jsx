@@ -7,7 +7,7 @@ export default function StatsView({ progress, stages, cardsPassed }) {
                     <span className="spaced b u">{stages.learn}</span>
                     <span className="spaced i">{progress.learn.retry}</span>
                     <span className="spaced">{progress.learn.good}</span>
-                    <span className="spaced b">{progress.learn.upgrade}</span>
+                    <span className="spaced b">{progress.learn.upgrade}-{progress.learn.degrade}</span>
                 </span> |
                 <span className="blue">
                     <span className="spaced b u">{stages.confirm}</span>

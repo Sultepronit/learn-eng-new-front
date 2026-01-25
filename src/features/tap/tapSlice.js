@@ -15,7 +15,7 @@ const initialState = cardsAdapter.getInitialState({
         sessionLength: 0,
         tries: 0,
         cardsPassed: 0,
-        learn: { good: 0, retry: 0, upgrade: 0 },
+        learn: { good: 0, retry: 0, upgrade: 0, degrade: 0 },
         confirm: { good: 0, retry: 0, upgrade: 0, degrade: 0 },
         repeat: { good: 0, retry: 0, upgrade: 0, degrade: 0 }
     },

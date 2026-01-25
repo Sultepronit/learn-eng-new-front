@@ -26,11 +26,13 @@ export default function NavButtons({ card, questionMode, setQuestionMode, retryM
         /*if (card.repeatStage === stages.CONFIRM) {
             setButtons({ good, pass, bad });
         } else*/
-        if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
-            setButtons({ ...notBadButtons });
-        } else {
-            setButtons({ ...notBadButtons, bad });
-        }
+        // if (card.repeatStage === stages.LEARN && card.direction === directions.FORWARD) {
+        //     setButtons({ ...notBadButtons });
+        // } else {
+        //     setButtons({ ...notBadButtons, bad });
+        // }
+        // this is stupid, so must be changed!!!
+        setButtons({ ...notBadButtons, bad });
 
         // setButtons({ ...buttons)
     }
