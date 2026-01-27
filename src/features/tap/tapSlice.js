@@ -119,7 +119,8 @@ export const getNextCard = () => (dispatch, getState) => {
         word: parseWord(rawCard?.word),
         get repeatStage() {
             return this.repeatStatus === 0 ? stages.LEARN
-                : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
+            //     : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
+                : stages.REPEAT;
         },
         get direction() {
             return this.tapFProgress > this.tapBProgress
