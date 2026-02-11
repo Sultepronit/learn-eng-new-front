@@ -1,16 +1,16 @@
+import { useOutlet } from "react-router-dom";
 import { getRecords } from "./audioSources";
 
 const audio = new Audio();
 
-async function asyncPlayback(url) {
+async function asyncPlayback0(url) {
     return new Promise((resolve, reject) => {
         try {
             console.log('playing', url);
             audio.src = url;
             audio.onended = () => resolve('ended');
             audio.onerror = () => reject('error playing');
-            // audio.oncanplay = () => audio.play();   
-            audio.play();   
+            audio.play();
 
             setTimeout(() => resolve('too long'), 9000);
         } catch (error) {
@@ -18,6 +18,51 @@ async function asyncPlayback(url) {
             reject('error!');
         }
     });
+}
+
+async function getVoice(url) {
+    const resp = await fetch(url);
+    const voice = resp.headers.get('X-Voice');
+    console.log(voice);
+    return voice;
+}
+
+async function getMedia(url) {
+    const resp = await fetch(url);
+    const voice = resp.headers.get('X-Voice');
+    const blob = await resp.blob();
+    const localUrl = URL.createObjectURL(blob);
+
+    return {
+        localUrl,
+        voice
+    };
+}
+
+async function asyncPlayback(url) {
+    console.log('playing', url);
+    try {
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+
+        // const { localUrl, voice } = await getMedia(url);
+        // console.log(voice);
+        
+        audio.src = url;
+        // audio.src = localUrl;
+        audio.load();
+
+        const playback = audio.play();
+        const control = new Promise(res => setTimeout(res, 5000));
+        await Promise.race([playback, control]);
+        // getVoice(url);
+        
+        return 'ended';
+    } catch (err) {
+        console.warn(err);
+        return 'failed';
+    }
 }
 
 class ChattyExpression {
@@ -33,12 +78,13 @@ class ChattyExpression {
     }
 
     async speak() {
-        try {
-            await asyncPlayback(this.nextUrl); 
-            return 'ended';
-        } catch (error) {
-            return 'failed';
-        }
+        // try {
+        //     await asyncPlayback(this.nextUrl); 
+        //     return 'ended';
+        // } catch (error) {
+        //     return 'failed';
+        // }
+        return await asyncPlayback(this.nextUrl);
     }
 }
 
@@ -56,11 +102,11 @@ export async function prepareSpeech(variants) {
     // If situation is rather reverse the decision is bad!!!
 
     // preloading
-    const allUrls = urlsForVariants.flat();
-    // console.log('preloading', allUrls);
-    for (const url of allUrls) {
-        new Audio(url);
-    }
+    // const allUrls = urlsForVariants.flat();
+    // // console.log('preloading', allUrls);
+    // for (const url of allUrls) {
+    //     new Audio(url);
+    // }
 
     // preparing for speaking
     // console.log('variants', urlsForVariants);
