@@ -1,6 +1,6 @@
 import { marks, stages } from "./statuses";
 import { selectNextRepeated } from "./tapSlice";
-import { store } from "../../app/store";
+import { store } from "../../app/store.ts";
 
 function tryAndDegrade(card, progressUpdate) {
     card.tapFProgress = 0;
