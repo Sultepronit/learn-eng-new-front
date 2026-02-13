@@ -1,43 +1,45 @@
 import { useOutlet } from "react-router-dom";
 import { getRecords } from "./audioSources";
+import { store } from "../../app/store";
+import { setPronList } from "./pronunciationSlice";
 
 const audio = new Audio();
 
-async function asyncPlayback0(url) {
-    return new Promise((resolve, reject) => {
-        try {
-            console.log('playing', url);
-            audio.src = url;
-            audio.onended = () => resolve('ended');
-            audio.onerror = () => reject('error playing');
-            audio.play();
+// async function asyncPlayback0(url) {
+//     return new Promise((resolve, reject) => {
+//         try {
+//             console.log('playing', url);
+//             audio.src = url;
+//             audio.onended = () => resolve('ended');
+//             audio.onerror = () => reject('error playing');
+//             audio.play();
 
-            setTimeout(() => resolve('too long'), 9000);
-        } catch (error) {
-            console.warn(error);
-            reject('error!');
-        }
-    });
-}
+//             setTimeout(() => resolve('too long'), 9000);
+//         } catch (error) {
+//             console.warn(error);
+//             reject('error!');
+//         }
+//     });
+// }
 
-async function getVoice(url) {
-    const resp = await fetch(url);
-    const voice = resp.headers.get('X-Voice');
-    console.log(voice);
-    return voice;
-}
+// async function getVoice(url) {
+//     const resp = await fetch(url);
+//     const voice = resp.headers.get('X-Voice');
+//     console.log(voice);
+//     return voice;
+// }
 
-async function getMedia(url) {
-    const resp = await fetch(url);
-    const voice = resp.headers.get('X-Voice');
-    const blob = await resp.blob();
-    const localUrl = URL.createObjectURL(blob);
+// async function getMedia(url) {
+//     const resp = await fetch(url);
+//     const voice = resp.headers.get('X-Voice');
+//     const blob = await resp.blob();
+//     const localUrl = URL.createObjectURL(blob);
 
-    return {
-        localUrl,
-        voice
-    };
-}
+//     return {
+//         localUrl,
+//         voice
+//     };
+// }
 
 async function asyncPlayback(url) {
     console.log('playing', url);
@@ -66,9 +68,9 @@ async function asyncPlayback(url) {
 }
 
 class ChattyExpression {
-    constructor(urls) {
-        this.urls = urls;
-        this.index = Math.floor(Math.random() * urls.length);
+    constructor(srcs) {
+        this.urls = srcs.map(({ url }) => url);
+        this.index = Math.floor(Math.random() * srcs.length);
     }
 
     get nextUrl() {
@@ -96,6 +98,8 @@ export async function prepareSpeech(variants) {
     const urlsForVariants = await Promise.all(
         variants.map((variant) => getRecords(variant))
     );
+
+    store.dispatch(setPronList(urlsForVariants))
 
     // This is strategy for the case that we most of time have not so bad connection
     // (and perfectly wroking caching).

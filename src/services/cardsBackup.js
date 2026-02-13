@@ -123,5 +123,3 @@ export async function backupCard(card) {
         }
     });
 }
-
-// https://learn.javascript.ru/indexeddb

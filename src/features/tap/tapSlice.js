@@ -117,15 +117,16 @@ export const getNextCard = () => (dispatch, getState) => {
     const parsedCard = {
         ...rawCard,
         word: parseWord(rawCard?.word),
-        get repeatStage() {
+        get repeatStage() { // WHY THE HECK GETTER?
             return this.repeatStatus === 0 ? stages.LEARN
             //     : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
                 : stages.REPEAT;
         },
-        get direction() {
-            return this.tapFProgress > this.tapBProgress
-                ? directions.BACKWARD : directions.FORWARD;
-        }
+        // get direction() {
+        //     return this.tapFProgress > this.tapBProgress
+        //         ? directions.BACKWARD : directions.FORWARD;
+        // }
+        direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD
     };
 
     dispatch(setCurrentCard(parsedCard));
