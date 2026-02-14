@@ -1,3 +1,5 @@
+import { PronList, RecordData } from "./types";
+
 // real records
 async function getRecordUrls() {
     const resp = await fetch('/recordUrls.json');
@@ -26,7 +28,7 @@ async function getVerifiedRecords(expression) {
 
     if (!compactUrls) return [];
     
-    const re = [];
+    const re: RecordData[] = [];
     for (const compactUrl of compactUrls) {
         const [encoded, query] = compactUrl.split('*');
         if (encoded === "cb" || encoded === "ob") continue;
@@ -42,9 +44,13 @@ async function getVerifiedRecords(expression) {
 
 const ttsUrl = import.meta.env.VITE_TTS_URL;
 function getSynthRecords(expression, limit = 6) {
-    const re = [];
+    const re: RecordData[] = [];
     for (let i = 1; i <= limit; i++) {
-        re.push(`${ttsUrl}/${expression}/${i}.mp3`);
+        re.push({
+            url: `${ttsUrl}/${expression}/${i}.mp3`,
+            type: 'synth',
+            code: i.toString()
+        });
     }
     return re;
 }
@@ -56,4 +62,19 @@ export async function getRecords(expression) {
     if (verified.length > 2) return verified;
     if (verified.length > 0) return [...verified, ...getSynthRecords(expression, 2)];
     return getSynthRecords(expression);
+}
+
+export async function preparePronList(variants) {
+    // return await Promise.all(
+    //     variants.map((variant) => ({
+    //         records: getRecords(variant)
+    //     }))
+    // );
+    const re: PronList[] = [];
+    for (const variant of variants) {
+        const list = await getRecords(variant);
+        const currentIndex = Math.floor(Math.random() * list.length);
+        re.push({ list, currentIndex, isStale: false });
+    }
+    return re;
 }

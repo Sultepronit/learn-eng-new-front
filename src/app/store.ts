@@ -5,6 +5,7 @@ import listReducer from "../features/list/listSlice";
 import tapReducer from "../features/tap/tapSlice";
 import writeReducer from "../features/write/writeSlice";
 import pronunciationReducer from "../features/pronunciation/pronunciationSlice";
+import { listenerMiddleware } from "./listeners";
 
 export const store = configureStore({
     reducer: {
@@ -14,5 +15,10 @@ export const store = configureStore({
         tap: tapReducer,
         write: writeReducer,
         pronunciation: pronunciationReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => 
+        getDefaultMiddleware().prepend(listenerMiddleware.middleware) 
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

@@ -6,6 +6,8 @@ import evaluate from "./evaluation";
 import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
 import setPause from "../../helpers/setPause";
+import PronDetails from "../pronunciation/PronDetails";
+import { speakNewly } from "../pronunciation/speakThunk";
 
 export default function NavButtons({ card, questionMode, setQuestionMode, retryMode }) {
     const dispatch = useDispatch();
@@ -18,8 +20,9 @@ export default function NavButtons({ card, questionMode, setQuestionMode, retryM
     function pronounceAndPrepareEvaluation() {
         if (card.direction === directions.FORWARD) setLearningPronunciation(true);
         Promise.any([
-            speak(),
-            setPause(2000)
+            // speak(),
+            dispatch(speakNewly()).unwrap(),
+            setPause(2000) // clean the timer!
         ]).then(() => setLearningPronunciation(false));
 
         const notBadButtons = retryMode ? { pass, retry } : { good, retry };
@@ -62,7 +65,8 @@ export default function NavButtons({ card, questionMode, setQuestionMode, retryM
 
     return (
         <>
-        <button className="speaker" onClick={() => speak()}>🔊</button>
+        {/* <button className="speaker" onClick={() => speak()}>🔊</button> */}
+        <PronDetails />
         <div className="nav-buttons">
             {learningPronunciation ? '' : (<>
                 <button className={buttons.good} onClick={() => act(marks.GOOD)} />

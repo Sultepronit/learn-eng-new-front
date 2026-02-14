@@ -53,7 +53,7 @@ async function asyncPlayback(url) {
         
         audio.src = url;
         // audio.src = localUrl;
-        audio.load();
+        // audio.load();
 
         const playback = audio.play();
         const control = new Promise(res => setTimeout(res, 5000));

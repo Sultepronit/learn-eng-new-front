@@ -37,11 +37,11 @@ export default function TapLessonView() {
         dispatch(getNextCard());
     }, [dispatch, session]);
 
-    useEffect(() => {
-        console.log(card);
-        if (!card) return;
-        prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
-    }, [card]);
+    // useEffect(() => {
+    //     console.log(card);
+    //     // if (!card) return;
+    //     // prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
+    // }, [card]);
 
     const handleGlobalClick = resetIsActual ? () => dispatch(removeReset()) : null;
 

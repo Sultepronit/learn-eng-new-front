@@ -3,6 +3,7 @@ import { getSession } from "./tapThunks";
 import logProxy from "../../dev-helpers/logProxy";
 import { directions, stages } from "./statuses";
 import parseWord from "../../services/wordParser";
+import { cardChanged } from "../../app/events";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -117,19 +118,21 @@ export const getNextCard = () => (dispatch, getState) => {
     const parsedCard = {
         ...rawCard,
         word: parseWord(rawCard?.word),
-        get repeatStage() { // WHY THE HECK GETTER?
-            return this.repeatStatus === 0 ? stages.LEARN
-            //     : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
-                : stages.REPEAT;
-        },
+        // get repeatStage() { // WHY THE HECK GETTER?
+        //     return this.repeatStatus === 0 ? stages.LEARN
+        //     //     : this.repeatStatus === 1 ? stages.CONFIRM : stages.REPEAT;
+        //         : stages.REPEAT;
+        // },
         // get direction() {
         //     return this.tapFProgress > this.tapBProgress
         //         ? directions.BACKWARD : directions.FORWARD;
         // }
+        repeatStage: rawCard.repeatStatus === 0 ? stages.LEARN : stages.REPEAT,
         direction: rawCard.tapFProgress > rawCard.tapBProgress ? directions.BACKWARD : directions.FORWARD
     };
 
     dispatch(setCurrentCard(parsedCard));
+    dispatch(cardChanged(parsedCard));
 }
 
 export default tapSlice.reducer;
