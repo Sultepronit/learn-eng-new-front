@@ -49,7 +49,7 @@ function getSynthRecords(expression, limit = 6) {
         re.push({
             url: `${ttsUrl}/${expression}/${i}.mp3`,
             type: 'synth',
-            code: i.toString()
+            code: `synth-${i}`
         });
     }
     return re;

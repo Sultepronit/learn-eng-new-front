@@ -6,7 +6,7 @@ import evaluate from "./evaluation";
 import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
 import setPause from "../../helpers/setPause";
-import PronDetails from "../pronunciation/PronDetails";
+import PronTap from "../pronunciation/PronTap";
 import { speakNewly } from "../pronunciation/speakThunk";
 
 export default function NavButtons({ card, questionMode, setQuestionMode, retryMode }) {
@@ -66,7 +66,7 @@ export default function NavButtons({ card, questionMode, setQuestionMode, retryM
     return (
         <>
         {/* <button className="speaker" onClick={() => speak()}>🔊</button> */}
-        <PronDetails />
+        <PronTap />
         <div className="nav-buttons">
             {learningPronunciation ? '' : (<>
                 <button className={buttons.good} onClick={() => act(marks.GOOD)} />

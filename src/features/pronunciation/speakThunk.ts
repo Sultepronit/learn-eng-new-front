@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { setCurrentIndex, setStale } from "./pronunciationSlice";
+import { setTrackIndex, setStale } from "./pronunciationSlice";
 import asyncPlayback from "./asyncPlayback";
 
 export const speakNewly = createAsyncThunk(
@@ -8,20 +8,23 @@ export const speakNewly = createAsyncThunk(
     async (_, { getState, dispatch }) => {
         const state = getState() as RootState;
         const pronList = state.pronunciation.list;
-        console.log(pronList);
-        for (const [vi, variant] of pronList.entries()) {
-            let trackI = variant.currentIndex;
-            if (variant.isStale) {
-                trackI = (trackI + 1) % variant.list.length;
-                dispatch(setCurrentIndex({ variantI: vi, trackI }));
-            } else {
-                dispatch(setStale(vi));
-            }
-            console.log(variant);
-            
-            const track = variant.list[trackI];
-            console.log(trackI, track);
-            for (let tries = 0; tries < 3; tries++) {
+        
+        for (const [variantI, variant] of pronList.entries()) {
+            let trackI = variant.currentIndex;   
+            let isStale = variant.isStale;     
+            for (let tries = 0; tries < 6; tries++) {
+                // console.log(variant.isStale, trackI);
+                // if (variant.isStale) {
+                if (isStale) {
+                    trackI = (trackI + 1) % variant.list.length;
+                    dispatch(setTrackIndex({ variantI, trackI }));
+                } else {
+                    isStale = true;
+                    dispatch(setStale(variantI));
+                }
+                // console.log(trackI);
+                const track = variant.list[trackI];
+                
                 const result = await asyncPlayback(track.url);
                 console.log(result);
                 if (result === 'ended') break;

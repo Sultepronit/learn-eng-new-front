@@ -6,6 +6,7 @@ import tapReducer from "../features/tap/tapSlice";
 import writeReducer from "../features/write/writeSlice";
 import pronunciationReducer from "../features/pronunciation/pronunciationSlice";
 import { listenerMiddleware } from "./listeners";
+import { useDispatch } from "react-redux";
 
 export const store = configureStore({
     reducer: {
@@ -22,3 +23,5 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();

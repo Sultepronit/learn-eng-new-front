@@ -19,8 +19,9 @@ const pronunciationSlice = createSlice({
             state.list = action.payload;
             console.log(action.payload)
         },
-        setCurrentIndex(state, action: PayloadAction<{ variantI : number, trackI : number }>) {
+        setTrackIndex(state, action: PayloadAction<{ variantI : number, trackI : number }>) {
             const { variantI, trackI } = action.payload;
+            // console.log(variantI, trackI)
             const variant = state.list[variantI];
             variant.currentIndex = trackI;
         },
@@ -32,7 +33,7 @@ const pronunciationSlice = createSlice({
 
 export const {
     setPronList,
-    setCurrentIndex,
+    setTrackIndex,
     setStale
 } = pronunciationSlice.actions;
 

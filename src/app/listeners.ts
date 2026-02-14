@@ -14,7 +14,7 @@ listenerMiddleware.startListening({
         if (!card) return;
 
         const variants = card.word.toPlay ? card.word.toPlay : [card.word]
-        console.log(variants);
+        // console.log(variants);
 
         const pronList = await preparePronList(variants);
 
