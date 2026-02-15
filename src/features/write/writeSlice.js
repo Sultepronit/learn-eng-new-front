@@ -3,6 +3,7 @@ import { getSession } from "./writeThunks";
 import logProxy from "../../dev-helpers/logProxy";
 import parseWord from "../../services/wordParser";
 import { directions } from "./statuses";
+import { cardChanged } from "../../app/events";
 
 const cardsAdapter = createEntityAdapter({
     selectId: (card) => card.number
@@ -100,6 +101,7 @@ export const getNextCard = () => (dispatch, getState) => {
     };
 
     dispatch(setCurrentCard(parsedCard));
+    dispatch(cardChanged(parsedCard));
 }
 
 export default writeSlice.reducer;

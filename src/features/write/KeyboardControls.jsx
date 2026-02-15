@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 // import { updateSession } from "./writeSlice";
 import evaluate from "./evaluation";
 import { updateCard } from "./writeThunks";
+import { speakNewly } from "../pronunciation/speakThunks";
 
 export default function KeyboardControls({
     card,
@@ -49,7 +50,8 @@ export default function KeyboardControls({
             console.log(stage);   
             if (stage === question) {
                 setStage(evaluation);
-                speak();
+                // speak();
+                dispatch(speakNewly());
             } else if (stage === evaluation && mark) {
                 evaluateAndSave();
 
@@ -62,7 +64,8 @@ export default function KeyboardControls({
                 setStage('question');
             }
         } else if (keyPressed === 'Alt') {
-            speak();
+            // speak();
+            dispatch(speakNewly());
         } else if (stage === evaluation) {
             const key = keyPressed.toLowerCase();
             if (key === 'g') {

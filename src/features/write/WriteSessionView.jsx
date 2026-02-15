@@ -9,6 +9,7 @@ import KeyboardControls from "./KeyboardControls";
 import TheInput from "./TheInput";
 import { directions, marks } from './statuses';
 import StatsView from './StatsView';
+import PronListView from '../pronunciation/PronListView';
 
 export default function WriteSessionView() {
     const dispatch = useDispatch();
@@ -35,20 +36,12 @@ export default function WriteSessionView() {
         if (stage === 'question') {
             console.log('new question!');
             dispatch(updateSession(mark === marks.RETRY && card.number));
-            // try {
-            //     // dispatch(updateSession());
-            //     dispatch(updateSession(mark === marks.RETRY && card.number));
-            // } catch (error) {
-            //     console.log(error.message)
-            // }
         }
     }, [stage]);
 
     useEffect(() => {
         console.log(session);
         if (!session) return;
-
-        // backupSession(session, progress);
 
         if (session.length < 1) return;
 
@@ -57,12 +50,12 @@ export default function WriteSessionView() {
         setMark(null);
     }, [dispatch, session]);
 
-    useEffect(() => {
-        console.log(card);
-        if (!card) return;
+    // useEffect(() => {
+    //     console.log(card);
+    //     if (!card) return;
 
-        prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
-    }, [card]);
+    //     prepareSpeech(card.word.toPlay ? card.word.toPlay : [card.word]);
+    // }, [card]);
 
     useEffect(() => {
         if (stage === 'evaluation' && card?.direction === directions.BACKWARD) {
@@ -96,16 +89,6 @@ export default function WriteSessionView() {
 
             {session.length < 1 ? (<h1>Happy End!</h1>) : (
                 <>
-                    {/* <KeyboardControls
-                        card={card}
-                        stage={stage}
-                        setStage={setStage}
-                        mark={mark}
-                        setMark={setMark}
-                        correctSpelling={correctSpelling}
-                        retryMode={true}
-                    /> */}
-
                     <TheInput
                         expectedValue={typeof card.word === 'string' ? card.word : card.word.questionF}
                         isActive={inputIsActive}
@@ -119,6 +102,9 @@ export default function WriteSessionView() {
                         questionMode={stage === 'question'}
                         mark={mark}
                     />
+                    <div className="pron-list">
+                        <PronListView />
+                    </div>
                 </>
             )}
         </section>

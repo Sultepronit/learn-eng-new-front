@@ -99,7 +99,7 @@ export async function prepareSpeech(variants) {
         variants.map((variant) => getRecords(variant))
     );
 
-    store.dispatch(setPronList(urlsForVariants))
+    // store.dispatch(setPronList(urlsForVariants))
 
     // This is strategy for the case that we most of time have not so bad connection
     // (and perfectly wroking caching).

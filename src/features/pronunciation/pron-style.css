@@ -8,12 +8,12 @@
     position: relative;
 }
 
-.pront-list {
+.pron-list {
     position: absolute;
     bottom: 0.6rem;
     right: 1px;
 }
 
-.pront-list ul {
+.pron-list ul {
     list-style: none;
 }

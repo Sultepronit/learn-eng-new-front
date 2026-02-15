@@ -1,7 +1,19 @@
 const audio = new Audio();
 let playPromise = null;
 
-async function asyncPlayback(url: string, volume = 1) {
+const tempUrlVersions: Record<string, number> = {};
+export function updateVersion(url: string) {
+    if (tempUrlVersions[url]) {
+        tempUrlVersions[url]++;
+    } else {
+        tempUrlVersions[url] = 1;
+    }
+    console.log(tempUrlVersions);
+}
+
+export default async function asyncPlayback(url: string, volume = 1) {
+    if (tempUrlVersions[url]) url = `${url}?v=${tempUrlVersions[url]}`;
+
     console.log('playing:', volume, url);
     // if (playPromise) await playPromise.catch((e) => {console.warn(e)});
     if (playPromise) await playPromise.catch(() => {});
@@ -51,5 +63,3 @@ async function asyncPlayback(url: string, volume = 1) {
 
     return 'ended';
 }
-
-export default asyncPlayback;

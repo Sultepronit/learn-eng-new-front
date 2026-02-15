@@ -9,7 +9,7 @@ export default function PronTap() {
 
     return (
         <div className="speak-block">
-            <div className="pront-list">
+            <div className="pron-list">
                 <PronListView />
             </div>
             <button className="speaker" onClick={() => dispatch(speakNewly())}>🔊</button>
