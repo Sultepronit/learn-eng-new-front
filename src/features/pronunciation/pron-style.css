@@ -3,3 +3,17 @@
     border: none;
     width: fit-content;
 }
+
+.speak-block {
+    position: relative;
+}
+
+.pront-list {
+    position: absolute;
+    bottom: 0.6rem;
+    right: 1px;
+}
+
+.pront-list ul {
+    list-style: none;
+}

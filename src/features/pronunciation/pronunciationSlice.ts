@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PronList, RecordData } from "./types";
+import { PronList } from "./types";
 
 
 type PronState = {
-    // list: Array<RecordData[]>
     list: PronList[]
 }
 

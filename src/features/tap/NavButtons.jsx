@@ -7,7 +7,7 @@ import { updateCard } from "./tapThunks";
 import { speak } from "../pronunciation/pronunciation";
 import setPause from "../../helpers/setPause";
 import PronTap from "../pronunciation/PronTap";
-import { speakNewly } from "../pronunciation/speakThunk";
+import { speakNewly } from "../pronunciation/speakThunks";
 
 export default function NavButtons({ card, questionMode, setQuestionMode, retryMode }) {
     const dispatch = useDispatch();

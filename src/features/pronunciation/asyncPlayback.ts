@@ -1,15 +1,17 @@
 const audio = new Audio();
 let playPromise = null;
 
-async function asyncPlayback(url: string) {
-    console.log('playing', url);
-    if (playPromise) await playPromise.catch((e) => {console.warn(e)});
+async function asyncPlayback(url: string, volume = 1) {
+    console.log('playing:', volume, url);
+    // if (playPromise) await playPromise.catch((e) => {console.warn(e)});
+    if (playPromise) await playPromise.catch(() => {});
 
     // audio.pause();
     // audio.removeAttribute('src');
     // audio.load();
-    if (!audio.paused) audio.pause();
+    // if (!audio.paused) audio.pause();
     
+    audio.volume = volume;
     audio.src = url;
     
     const re = await new Promise(res => {
@@ -29,7 +31,6 @@ async function asyncPlayback(url: string) {
             res('error playing');
             console.warn(audio.error);
             // alert('error playing')
-            // alert(audio.error.message)
         }
 
         audio.addEventListener('ended', onEnded);

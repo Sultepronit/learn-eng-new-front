@@ -2,8 +2,8 @@ import { useDispatch } from "react-redux";
 import { PronList } from "./types";
 import { setTrackIndex } from "./pronunciationSlice";
 import asyncPlayback from "./asyncPlayback";
-import { deleteTrack } from "./deleteThunk";
 import { useAppDispatch } from "../../app/store";
+import { deleteTrack } from "./speakThunks";
 
 export default function PronSelect({ variantI, list }: { variantI: number, list: PronList }) {
     // const dispatch = useDispatch();
