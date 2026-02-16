@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSession } from "./writeThunks";
 import { getNextCard, selectCurrentCard, selectProgress, selectSession, selectSessionLength, updateSession } from "./writeSlice";
-import { prepareSpeech } from "../pronunciation/pronunciation";
+// import { prepareSpeech } from "../pronunciation/pronunciation";
 import CardView from "./CardView";
 import KeyboardControls from "./KeyboardControls";
 import TheInput from "./TheInput";

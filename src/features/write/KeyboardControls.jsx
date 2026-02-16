@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { speak } from "../pronunciation/pronunciation";
+// import { speak } from "../pronunciation/pronunciation";
 import { directions, marks } from "./statuses";
 import { useDispatch } from "react-redux";
 // import { updateSession } from "./writeSlice";

@@ -6,7 +6,7 @@ import { getVersion } from "../../services/versionHandlers";
 import { getNextCard, removeReset, selectCurrentCard, selectResetIsActual, selectSession, selectProgress, selectStages } from "./tapSlice";
 import CardView from './CardView';
 import NavButtons from './NavButtons';
-import { prepareSpeech } from '../pronunciation/pronunciation';
+// import { prepareSpeech } from '../pronunciation/pronunciation';
 import ResetButton from './ResetButton';
 import { backupSession } from './sessionBackup';
 import StatsView from './StatsView';

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { directions, marks, stages } from "./statuses";
 import evaluate from "./evaluation";
 import { updateCard } from "./tapThunks";
-import { speak } from "../pronunciation/pronunciation";
+// import { speak } from "../pronunciation/pronunciation";
 import setPause from "../../helpers/setPause";
 import PronTap from "../pronunciation/PronTap";
 import { speakNewly } from "../pronunciation/speakThunks";

@@ -1,10 +1,11 @@
 import { PronList, RecordData } from "./types";
 
-// real records
 async function getRecordUrls() {
     const resp = await fetch('/recordUrls.json');
     return await resp.json();
 }
+const urlsPromise = getRecordUrls();
+
 // to remove
 // "cb": "https://dictionary.cambridge.org/us/media/english/uk_pron/",
 // "ob": "https://www.onelook.com/pronounce/macmillan/UK/"
@@ -22,7 +23,7 @@ const codes = {
 };
 
 async function getVerifiedRecords(expression) {
-    const urlList = await getRecordUrls();
+    const urlList = await urlsPromise;
 
     const compactUrls = urlList[expression];
 
